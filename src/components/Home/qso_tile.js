@@ -51,8 +51,8 @@ function DateTimeFormat(d,t) {
 export default function QsoTile( props ) {
   const classes = useStyles();
   const theme = useTheme();
-  const hasLocation = props.qso.QTH != "" || props.qso.GRID != '';
-  const locationText = props.qso.QTH==""?props.qso.GRID:props.qso.QTH;
+  const hasLocation = props.qso.QTH != null || props.qso.GRID != null;
+  const locationText = props.qso.QTH==null?props.qso.GRID:props.qso.QTH;
   return (
     <Card className={classes.card}>
       <CardMedia
@@ -71,8 +71,9 @@ export default function QsoTile( props ) {
              {props.qso.country_}
              {props.qso.PROP_MODE=='SAT'?<SatelliteIcon/>:""}{" "}{props.qso.MODE}
           </Typography>
+
           <Typography variant="body2" component="p">
-            {props.qso.NAME != "" ? <><PersonIcon/>{props.qso.NAME}</>:""}
+            {props.qso.NAME != null ? <><PersonIcon/>{props.qso.NAME}</>:""}
             {hasLocation? <><LocationOnIcon/>{locationText}</>:""}
             <FormControlLabel control={<Checkbox name="checkedC" />} label="S" />
             <FormControlLabel control={<Checkbox name="checkedC" />} label="R" />

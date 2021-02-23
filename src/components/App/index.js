@@ -33,6 +33,7 @@ import AccountPage from '../Account';
 import AdminPage from '../Admin';
 import Navigation from '../Navigation';
 import AddPage from '../Add';
+import MapPage from '../Map';
 import SettingsPage from "../Settings";
 
 import * as ROUTES from '../constants/routes';
@@ -147,6 +148,7 @@ function App () {
               component={PasswordForgetPage}
             />
             <Route path={ROUTES.ADD} component={AddPage} />
+            <Route path={ROUTES.MAP} component={MapPage} />
             <Route path={ROUTES.ACCOUNT} component={AccountPage} />
             <Route path={ROUTES.SETTINGS} component={SettingsPage} />
 
