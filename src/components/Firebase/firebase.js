@@ -15,8 +15,11 @@ const config = {
 
 class Firebase {
   constructor() {
-    app.initializeApp(config);
-
+    if (!app.apps.length) {
+      app.initializeApp(config);
+    }else {
+      app.app(); // if already initialized, use that one
+    }
     this.auth = app.auth();
     this.db = app.firestore();
     this.storage = app.storage();
@@ -47,6 +50,7 @@ class Firebase {
 
   // *** Storage API ***
 
+  storage = () => this.storage;
   storageRef = () => this.storage.ref();
 
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
@@ -8,11 +9,11 @@ import PasswordChangeForm from '../PasswordChange';
 import { AuthUserContext, withAuthorization } from '../Session';
 import SignOutButton from '../SignOut';
 
-const styles = (theme) => ({
+const useStyles = makeStyles((theme) => ({
   input: {
       display: 'none'
   }
-});
+}));
 
 const AccountPage = () => {
   const isInvalid = false;
@@ -25,6 +26,8 @@ const AccountPage = () => {
 
   const onSubmit = (event) => {
   };
+
+  const classes = useStyles();
 
   return  <AuthUserContext.Consumer>
     {authUser => (
@@ -55,6 +58,9 @@ const AccountPage = () => {
             Save
           </button>
         </form>
+        <Button variant="text" component="span" className={classes.button}>
+            Sync
+        </Button>
         <hr/>
 
         qrz.com
@@ -75,9 +81,12 @@ const AccountPage = () => {
             Save
           </button>
         </form>
+        <Button variant="text" component="span" className={classes.button}>
+            Sync
+        </Button>
         <hr/>
 
-        lotw
+        LoTW
         <form onSubmit={onSubmit}>
           <input
             name="lotw_username"
@@ -95,6 +104,32 @@ const AccountPage = () => {
             Save
           </button>
         </form>
+        <Button variant="text" component="span" className={classes.button}>
+            Sync
+        </Button>
+        <hr/>
+
+        ClubLog
+        <form onSubmit={onSubmit}>
+          <input
+            name="lotw_username"
+            value={lotw_username}
+            type="text"
+            placeholder="username"
+          />
+          <input
+            name="lotw_password"
+            value={lotw_password}
+            type="password"
+            placeholder="Password"
+          />
+          <button disabled={isInvalid} type="submit">
+            Save
+          </button>
+        </form>
+        <Button variant="text" component="span" className={classes.button}>
+            Sync
+        </Button>
       </div>
     )}
   </AuthUserContext.Consumer>

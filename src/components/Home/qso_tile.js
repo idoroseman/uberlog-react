@@ -6,6 +6,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 
 
 import Checkbox from '@material-ui/core/Checkbox';
@@ -19,6 +20,8 @@ const useStyles = makeStyles(theme => ({
   card: {
     display: 'flex',
 		width: 530,
+    maxHeight: "120px"
+
   },
   details: {
     display: 'flex',
@@ -30,7 +33,7 @@ const useStyles = makeStyles(theme => ({
   },
   cover: {
     width: 180,
-    maxHeight: "140px"
+    maxHeight: "120px"
   },
   controls: {
     display: 'flex',
@@ -62,22 +65,29 @@ export default function QsoTile( props ) {
       />
       <div className={classes.details}>
         <CardContent className={classes.content}>
-        <Grid container justify="space-between">  
-            <Typography inline="true" variant="h5" align="left">{props.qso.CALL}</Typography>
-            <Typography inline="true" variant="h5" align="right">{DateTimeFormat(props.qso.QSO_DATE, props.qso.TIME_ON)} </Typography>
-        </Grid>
+          <Grid container justify="space-between">  
+              <Typography inline="true" variant="h5" align="left">{props.qso.CALL}</Typography>
+              <Typography inline="true" variant="h5" align="right">{DateTimeFormat(props.qso.QSO_DATE, props.qso.TIME_ON)} </Typography>
+          </Grid>
 
           <Typography variant="subtitle1" color="textSecondary">
              {props.qso.country_}
-             {props.qso.PROP_MODE=='SAT'?<SatelliteIcon/>:""}{" "}{props.qso.MODE}
+             {props.qso.NAME != null ? <><PersonIcon/>{props.qso.NAME}</>:""}
+              {hasLocation? <><LocationOnIcon/>{locationText}</>:""}
           </Typography>
 
+          <Grid container justify="space-between">  
+          
+            <Typography variant="body2" component="p">
+              {props.qso.PROP_MODE=='SAT'?<SatelliteIcon/>:""}{" "}{props.qso.MODE}
+            </Typography>
+          
           <Typography variant="body2" component="p">
-            {props.qso.NAME != null ? <><PersonIcon/>{props.qso.NAME}</>:""}
-            {hasLocation? <><LocationOnIcon/>{locationText}</>:""}
+            <Button size="small" onClick={()=>{}}>Send</Button>
             <FormControlLabel control={<Checkbox name="checkedC" />} label="S" />
             <FormControlLabel control={<Checkbox name="checkedC" />} label="R" />
           </Typography>
+          </Grid>
 
         </CardContent>
         {/* <div className={classes.controls}>

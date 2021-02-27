@@ -14,7 +14,7 @@ import { AuthUserContext, withAuthorization } from '../Session';
 import { withFirebase } from '../Firebase';
 import { Unsubscribe } from '@material-ui/icons';
 import Adif from '../Adif';
-
+import { DXCC } from '../Helpers'
 const useStyles = makeStyles((theme) => ({
     formControl: {
       margin: theme.spacing(1),
@@ -50,6 +50,41 @@ const SettingsPage = ({firebase}) => {
 
     const handleSubmit = () => {
 
+    }
+
+    const handleCheckDB = () => {
+      console.log("fetching meta data")
+      const dxcc = new DXCC();
+      firebase.logbook(selected).get().then((snapshot)=>{
+        snapshot.forEach((doc)=>{
+          const qso = doc.data()
+          // fix missing country_
+          if (qso.country_ !== undefined)
+            firebase.logbook(selected).doc(doc.id).update({country_:firebase.firestore.FieldValue.delete()})
+          if (qso.COUNTRY === undefined)
+            firebase.logbook(selected).doc(doc.id).update({COUNTRY:dxcc.countryOf(qso.CALL).name})
+          if (qso.DXCC === undefined)
+            firebase.logbook(selected).doc(doc.id).update({COUNTRY:dxcc.countryOf(qso.CALL).entity_code})
+          if (qso.CQZ === undefined)
+            firebase.logbook(selected).doc(doc.id).update({COUNTRY:dxcc.countryOf(qso.CALL).cq_zone})
+          if (qso.ITUZ === undefined)
+            firebase.logbook(selected).doc(doc.id).update({COUNTRY:dxcc.countryOf(qso.CALL).itu_zone})
+          if (qsp.flag_ === undefined) 
+            firebase.logbook(selected).doc(doc.id).update({COUNTRY:dxcc.countryOf(qso.CALL).flag})
+
+          // fix bad formated grid
+          if (qso.GRID){
+            var grid = ""
+            for (var i=0; i<qso.GRID.length; i+=4)
+              if (i == 0)
+                grid += qso.GRID.substr(i,4).toUpperCase()
+              else
+                grid += qso.GRID.substr(i,4).toLowerCase()
+            if (qso.GRID != grid)
+            firebase.logbook(selected).doc(doc.id).update({GRID:grid})
+            }
+        })
+      })
     }
 
     const handleImportAdif = (e) => {
@@ -94,6 +129,12 @@ const SettingsPage = ({firebase}) => {
         <Button size="small" onClick={()=>{setFields(logbooks[selected])}}>Reset</Button>
         <hr/>
 
+        Database
+        <Button variant="text" component="span" className={classes.button} onClick={handleCheckDB}>
+            Check 
+        </Button>
+        <hr/>
+
         import
         <input
           accept=".adi,.adif"
@@ -113,10 +154,10 @@ const SettingsPage = ({firebase}) => {
 
         <Button variant="text" component="span" className={classes.button}>
             ADIF
-          </Button>
-          <Button variant="text" component="span" className={classes.button}>
-            PDF
-          </Button>
+        </Button>
+        <Button variant="text" component="span" className={classes.button}>
+          PDF
+        </Button>
         <hr/>
       </div>
     )}
