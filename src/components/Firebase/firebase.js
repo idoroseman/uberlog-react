@@ -48,6 +48,8 @@ class Firebase {
 
   logbook = (index) => this.db.collection('hams').doc(this.auth.currentUser.uid).collection('log_'+index.toString())
 
+  deleteField = () => app.firestore.FieldValue.delete()
+  
   // *** Storage API ***
 
   storage = () => this.storage;

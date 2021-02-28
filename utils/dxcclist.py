@@ -84,7 +84,7 @@ iban_dict["Galapagos Islands"] = iban_dict['Ecuador']
 iban_dict["Malpelo Island"] = iban_dict['Colombia']
 iban_dict["San Andres and Providencia"] = iban_dict['Colombia']
 iban_dict["Republic of Korea"] = iban_dict['Korea (the Republic of)']
-iban_dict["Vatican"] = ['--','---','000']
+iban_dict["Vatican"] = ['VA','---','000']
 iban_dict["Sardinia"] = iban_dict['Italy']
 iban_dict["Saint Vincent"] = iban_dict['Saint Vincent and the Grenadines']
 iban_dict["Minami Torishima"] = iban_dict['Japan']
@@ -239,19 +239,23 @@ while lines[index].strip() != '':
             list[base[:len(base)-len(p)] +p ] = entity
 
         else:
-            list[p] = entity
+            if p!='':
+              list[p] = entity
     index+=1
 
 # undocumented
 list["R"] = { 'name':"Russia", 'continent':'AS', 'cq_zone':0, 'itu_zone':0, 'entity_code':0, 'flag':'RU'}
+list["HF"] = { 'name':"Poland", 'continent':'EU', 'cq_zone':0, 'itu_zone':0, 'entity_code':0, 'flag':'PL'}
+list["AU"] = { 'name':"India", 'continent':'AS', 'cq_zone':0, 'itu_zone':0, 'entity_code':0, 'flag':'IN'}
+list['TM'] = { 'name':"France", 'continent':'EU', 'cq_zone':0, 'itu_zone':0, 'entity_code':0, 'flag':'FR'}
 list["1B"] = { 'name':"N. Cyprus", 'continent':'AS', 'cq_zone':0, 'itu_zone':0, 'entity_code':0, 'flag':''}
 list["1S"] = { 'name':"Spratly Is", 'continent':'AS', 'cq_zone':0, 'itu_zone':0, 'entity_code':0, 'flag':'PG'}
-list["2E"] = { 'name':"England (Novices)", 'continent':'AS', 'cq_zone':0, 'itu_zone':0, 'entity_code':0, 'flag':'GB'}
-list["2I"] = { 'name':"Northern Ireland (Novices)", 'continent':'AS', 'cq_zone':0, 'itu_zone':0, 'entity_code':0, 'flag':'GB'}
-list["2J"] = { 'name':"Jersey (Novices)", 'continent':'AS', 'cq_zone':0, 'itu_zone':0, 'entity_code':0, 'flag':'GB'}
-list["2M"] = { 'name':"Scotland (Novices)", 'continent':'AS', 'cq_zone':0, 'itu_zone':0, 'entity_code':0, 'flag':'GB'}
-list["2U"] = { 'name':"Guernsey & Dependencies (Novices)", 'continent':'AS', 'cq_zone':0, 'itu_zone':0, 'entity_code':0, 'flag':'GB'}
-list["2W"] = { 'name':"Wales (Novices)", 'continent':'AS', 'cq_zone':0, 'itu_zone':0, 'entity_code':0, 'flag':'GB'}
+list["2E"] = { 'name':"England (Novices)", 'continent':'EU', 'cq_zone':0, 'itu_zone':0, 'entity_code':0, 'flag':'GB'}
+list["2I"] = { 'name':"Northern Ireland (Novices)", 'continent':'EU', 'cq_zone':0, 'itu_zone':0, 'entity_code':0, 'flag':'GB'}
+list["2J"] = { 'name':"Jersey (Novices)", 'continent':'EU', 'cq_zone':0, 'itu_zone':0, 'entity_code':0, 'flag':'GB'}
+list["2M"] = { 'name':"Scotland (Novices)", 'continent':'EU', 'cq_zone':0, 'itu_zone':0, 'entity_code':0, 'flag':'GB'}
+list["2U"] = { 'name':"Guernsey & Dependencies (Novices)", 'continent':'EU', 'cq_zone':0, 'itu_zone':0, 'entity_code':0, 'flag':'GB'}
+list["2W"] = { 'name':"Wales (Novices)", 'continent':'EU', 'cq_zone':0, 'itu_zone':0, 'entity_code':0, 'flag':'GB'}
 
 # export
 with open("dxcclist.csv",'w') as fout:

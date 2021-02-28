@@ -58,19 +58,17 @@ const SettingsPage = ({firebase}) => {
       firebase.logbook(selected).get().then((snapshot)=>{
         snapshot.forEach((doc)=>{
           const qso = doc.data()
-          // fix missing country_
-          if (qso.country_ !== undefined)
-            firebase.logbook(selected).doc(doc.id).update({country_:firebase.firestore.FieldValue.delete()})
+          // fix missing calculated fields
           if (qso.COUNTRY === undefined)
             firebase.logbook(selected).doc(doc.id).update({COUNTRY:dxcc.countryOf(qso.CALL).name})
           if (qso.DXCC === undefined)
-            firebase.logbook(selected).doc(doc.id).update({COUNTRY:dxcc.countryOf(qso.CALL).entity_code})
+            firebase.logbook(selected).doc(doc.id).update({DXCC:dxcc.countryOf(qso.CALL).entity_code})
           if (qso.CQZ === undefined)
-            firebase.logbook(selected).doc(doc.id).update({COUNTRY:dxcc.countryOf(qso.CALL).cq_zone})
+            firebase.logbook(selected).doc(doc.id).update({CQZ:dxcc.countryOf(qso.CALL).cq_zone})
           if (qso.ITUZ === undefined)
-            firebase.logbook(selected).doc(doc.id).update({COUNTRY:dxcc.countryOf(qso.CALL).itu_zone})
-          if (qsp.flag_ === undefined) 
-            firebase.logbook(selected).doc(doc.id).update({COUNTRY:dxcc.countryOf(qso.CALL).flag})
+            firebase.logbook(selected).doc(doc.id).update({ITUZ:dxcc.countryOf(qso.CALL).itu_zone})
+          if (qso.flag_ === undefined) 
+            firebase.logbook(selected).doc(doc.id).update({flag_:dxcc.countryOf(qso.CALL).flag})
 
           // fix bad formated grid
           if (qso.GRID){

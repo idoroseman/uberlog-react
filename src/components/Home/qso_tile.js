@@ -16,6 +16,8 @@ import PersonIcon from '@material-ui/icons/Person';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import SatelliteIcon from '@material-ui/icons/Satellite';
 
+var flag = require('emoji-flag')
+
 const useStyles = makeStyles(theme => ({
   card: {
     display: 'flex',
@@ -71,7 +73,7 @@ export default function QsoTile( props ) {
           </Grid>
 
           <Typography variant="subtitle1" color="textSecondary">
-             {props.qso.country_}
+             {props.qso.flag_?flag(props.qso.flag_):<span>&#x1f3f3;</span>}{props.qso.COUNTRY}
              {props.qso.NAME != null ? <><PersonIcon/>{props.qso.NAME}</>:""}
               {hasLocation? <><LocationOnIcon/>{locationText}</>:""}
           </Typography>
