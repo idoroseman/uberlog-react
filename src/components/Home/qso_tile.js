@@ -17,6 +17,7 @@ import LocationOnIcon from '@material-ui/icons/LocationOn';
 import SatelliteIcon from '@material-ui/icons/Satellite';
 
 var flag = require('emoji-flag')
+var moment = require('moment');
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -56,14 +57,21 @@ function DateTimeFormat(d,t) {
 export default function QsoTile( props ) {
   const classes = useStyles();
   const theme = useTheme();
+  // var datetime = moment().utc(props.qso.QSO_DATE + " " + props.qso.TIME_ON , "YYYYMMDD HHmm").locale("en-gb")
   const hasLocation = props.qso.QTH != null || props.qso.GRID != null;
   const locationText = props.qso.QTH==null?props.qso.GRID:props.qso.QTH;
+
+  const has_picture_qsl = !((props.qso.QSL_RCVD==undefined) || ((props.qso.QSL_RCVD_VIA==undefined) && (props.qso.APP_LoTW_MODEGROUP!=undefined)))
+  const has_lotw_qsl = props.qso.APP_LoTW_MODEGROUP !== undefined
+  const has_qrzcom_qsl = props.qso.APP_QRZLOG_STATUS == "C"
+  const has_qsl_rcvd = has_picture_qsl || has_lotw_qsl || has_qrzcom_qsl
+  const has_qsl_sent = props.qso.QSL_SENT=="Y"
   return (
     <Card className={classes.card}>
       <CardMedia
         className={classes.cover}
         image="http://via.placeholder.com/320x240"
-        title="Live from space album cover"
+        title="qsl card"
       />
       <div className={classes.details}>
         <CardContent className={classes.content}>
@@ -72,23 +80,25 @@ export default function QsoTile( props ) {
               <Typography inline="true" variant="h5" align="right">{DateTimeFormat(props.qso.QSO_DATE, props.qso.TIME_ON)} </Typography>
           </Grid>
 
-          <Typography variant="subtitle1" color="textSecondary">
-             {props.qso.flag_?flag(props.qso.flag_):<span>&#x1f3f3;</span>}{props.qso.COUNTRY}
-             {props.qso.NAME != null ? <><PersonIcon/>{props.qso.NAME}</>:""}
+          <Grid container justify="space-between">            
+            <Typography variant="subtitle1" color="textSecondary">
+             <span style={{fontSize: "150%"}}>{props.qso.flag_?flag(props.qso.flag_):<span>&#x1f3f3;</span>}</span>{props.qso.COUNTRY}
               {hasLocation? <><LocationOnIcon/>{locationText}</>:""}
-          </Typography>
-
-          <Grid container justify="space-between">  
-          
+            </Typography>
+            <Typography variant="body2" component="p">
+                {props.qso.NAME != null ? <><PersonIcon/>{props.qso.NAME}</>:""}
+            </Typography>
+          </Grid>
+          <Grid container justify="space-between">            
             <Typography variant="body2" component="p">
               {props.qso.PROP_MODE=='SAT'?<SatelliteIcon/>:""}{" "}{props.qso.MODE}
             </Typography>
           
-          <Typography variant="body2" component="p">
-            <Button size="small" onClick={()=>{}}>Send</Button>
-            <FormControlLabel control={<Checkbox name="checkedC" />} label="S" />
-            <FormControlLabel control={<Checkbox name="checkedC" />} label="R" />
-          </Typography>
+            <Typography variant="body2" component="p">
+              {has_qsl_sent ? "": <Button size="small" onClick={()=>{}}>Send</Button>}
+              <FormControlLabel control={<Checkbox name="checkedC" checked={has_qsl_sent} />} label="S" />
+              <FormControlLabel control={<Checkbox name="checkedC" checked={has_qsl_rcvd} />} label="R" />
+            </Typography>
           </Grid>
 
         </CardContent>
