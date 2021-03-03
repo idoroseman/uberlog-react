@@ -39,7 +39,13 @@ const AddPage = ( {firebase} ) => {
     const classes = useStyles();
     const [text, setText] = React.useState('');
     const [state, setState] = React.useState(empty)
-
+    const [freqSelected, setFreq] = React.useState("14");
+    const [modeSelected, setMode] = React.useState('SSB');
+    const [satSelected, setSat] =React.useState("");
+    const city = null
+    const specialCallsign = null
+    const operator_name = null
+    
     const handleKeyPress = (event) => {
         if ((event.metaKey) && (event.keyCode == 8)){
             setState(empty);
@@ -135,10 +141,37 @@ const AddPage = ( {firebase} ) => {
     const handleSubmit = () => {
       console.log("submit")
       var qso = state;
+      // add time and date
       if (qso.QSO_DATE=="")
         qso.QSO_DATE = moment().utc().format("YYYYMMDD");
       if (qso.TIME_ON=="")
         qso.TIME_ON = moment().utc().format("HHmm");
+      // add freq / mode/ sat
+      if (!qso.FREQ)
+        qso.FREQ = freqSelected;
+      var m = (this.state.mode+"|").split("|",2)
+      if (!qso.MODE) {
+        qso.MODE = m[0];
+        if (m[1]!='')
+          qso.SUBMODE = m[1];
+      }
+      if (satSelected)
+        {
+          var FreqLUT = { "V":144, "U":440, "S":2400, "X":10000 }
+          var s = satSelected.split("|",2)
+          qso["PROP_MODE"] = "SAT"
+          qso["SAT_NAME"] = s[0]
+          qso["FREQ"] = FreqLUT[s[1][0]]
+          qso["FREQ_RX"] = FreqLUT[s[1][1]]
+        }
+      // location / op / special call sign
+      if (city)
+        qso["MY_CITY"] = city;
+      if (specialCallsign)
+        qso["STATION_CALLSIGN"] = specialCallsign
+      if (operator_name)
+        qso["MY_NAME"] = operator_name
+      // submit
       console.log(qso)
       firebase.logbook(0).add(qso)
       .then(()=>{console.log("ok")})
@@ -183,9 +216,80 @@ const AddPage = ( {firebase} ) => {
         return d.format("HHmm")
     }
 
+    const handleFreqChanged = (event) => {
+      setFreq(event.target.value)
+    }
+
+    const handleModeChanged = (event) => {
+      setMode(event.target.value)
+    }
+
+    const handleSatChanged = (event) => {
+      setSat(event.target.value)
+    }
+
     return (
       <Card className={classes.root} variant="outlined">
         <CardContent>
+          <select name="band" id="band" value={freqSelected} onChange={handleFreqChanged} disabled={satSelected!=""}>
+            <option value="1.8"     key="1.8">1.8 MHz / 160m</option>
+            <option value="3.5"     key="3.5">3.5 MHz / 80m</option>
+            <option value="7"       key="7">7 MHz / 40m</option>
+            <option value="10"      key="10">10 MHz / 30m</option>
+            <option value="14"      key="14">14 MHz / 20m</option>
+            <option value="18"      key="18">18 MHz / 17m</option>
+            <option value="21"      key="21">21 MHz / 15m</option>
+            <option value="25"      key="25">25 MHz / 12m</option>
+            <option value="28"      key="28">28 MHz / 10m</option>
+            <option value="50"      key="50">50 MHz / 6m</option>
+            <option value="144"     key="144">144 MHz / 2m</option>
+            <option value="220"     key="220">220 MHz / 1.25m</option>
+            <option value="432"     key="432">432 MHz / 70cm</option>
+            <option value="902"     key="902">902 MHz / 35cm</option>
+            <option value="1300"    key="1300">1.3 GHz / 23cm</option>
+            <option value="2300"    key="2300">2.3 GHz / 13cm</option>
+            <option value="3300"    key="3300">3.3 GHz / 9cm</option>
+            <option value="5660"    key="5660">5.66 GHz / 6cm</option>
+            <option value="10000"   key="10000">10 GHz / 3cm</option>
+            <option value="24000"   key="24000">24 GHz / 1.25cm</option>
+            <option value="47000"   key="47000">47 GHz / 6mm</option>
+            <option value="75000"   key="75000">75 GHz / 4mm</option>
+            <option value="120000"  key="120000">120 GHz / 2.5mm</option>
+            <option value="142000"  key="142000">142 GHz / 2mm</option>
+            <option value="241000"  key="241000">241 GHz / 1mm</option>
+          </select>
+          <select name="mode" id="mode" value={modeSelected} onChange={handleModeChanged}>
+            <option value="SSB">SSB</option>
+            <option value="SSB|USB">USB</option>
+            <option value="SSB|LSB">LSB</option>
+            <option value="CW">CW</option>
+            <option value="RTTY">RTTY</option>
+            <option value="AMTOR">AMTOR</option>
+            <option value="PKT">PKT</option>
+            <option value="AM">AM</option>
+            <option value="FM">FM</option>
+            <option value="SSTV">SSTV</option>
+            <option value="ATV">ATV</option>
+            <option value="PACTOR">PACTOR</option>
+            <option value="CLOVER">CLOVER</option>
+            <option value="PSK|PSK31">PSK31</option>
+            <option value="PSK|PSK63">PSK63</option>
+            <option value="JT65">JT65</option>
+            <option value="JT9">JT9</option>
+            <option value="FT8">FT8</option>
+            <option value="MFSK|JS8">JS8Call</option>
+            <option value="DIGITALVOICE|FreeDV">FreeDV</option>
+          </select>
+          <select name="Satellite" id="Satellite" value={satSelected} onChange={handleSatChanged}>
+            <option value="">Satellite</option>
+            <option value="QO-100|SX">QO-100</option>
+            <option value="ARISS|UV">ARISS</option>
+            <option value="SO-50|VU">SO-50</option>
+            <option value="A0-91|UV">AO-91</option>
+            <option value="AO-92|UV">AO-92</option>
+          </select>
+          <br/>
+          <br/>
           <Typography variant="h5" component="h2">
             {state.CALL=="" ? "Callsign" : state.CALL }
           </Typography>

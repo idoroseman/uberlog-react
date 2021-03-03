@@ -27,14 +27,17 @@ const useStyles = makeStyles((theme) => ({
 
 const SettingsPage = ({firebase}) => {
     const classes = useStyles();
-    const [selected, setSelected] = React.useState(localStorage.getItem('selectedLogbook'));
+    const [selected, setSelected] = React.useState(localStorage.getItem('selectedLogbook') || 0 );
     const [logbooks, setLogbooks] = React.useState({});
     const [fields, setFields] = React.useState({title:"", callsign:"", grid:""})
 
     useEffect(() => {
       return firebase.user().onSnapshot((snapshot) => {
         setLogbooks(snapshot.data().logbooks)
-        setFields(snapshot.data().logbooks[selected]);
+        if (selected in snapshot.data().logbooks)
+          setFields(snapshot.data().logbooks[selected]);
+        else
+          setFields({title:"New logbook", callsign:"N0CALL", grid:""})
         })
     }, []);
 
@@ -45,11 +48,17 @@ const SettingsPage = ({firebase}) => {
     const handleSelectChange = (event) => {
         localStorage.setItem('selectedLogbook', event.target.value)
         setSelected(event.target.value);
-        setFields(logbooks[event.target.value]);
+        if (event.target.value in logbooks)
+          setFields(logbooks[event.target.value]);
+        else
+          setFields({title:"New logbook", callsign:"N0CALL", grid:""})
     };
 
     const handleSubmit = () => {
-
+      const lbks = logbooks
+      lbks[selected]=fields
+      console.log(lbks)
+      firebase.user().update({logbooks:lbks})
     }
 
     const handleCheckDB = () => {
@@ -116,6 +125,7 @@ const SettingsPage = ({firebase}) => {
             onChange={handleSelectChange}
           >
             {lbs}
+            <MenuItem key="add new" value={lbs.length}><i>Add new logbook</i></MenuItem>
           </Select>
         </FormControl>
         <form className={classes.root} noValidate autoComplete="off">

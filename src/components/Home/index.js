@@ -73,14 +73,17 @@ class HomePage extends Component {
       const ukey = qso.QSO_DATE+"-"+qso.TIME_ON+"-"+qso.CALL;
       qso_list.push(<QsoTile key={ukey} qso={qso}/>)
     });
-
+    if (qso_list.length==0)
+      qso_list.push(<Typography variant="body2" component="p">
+      No QSOs to show
+    </Typography>)
     return (
         <Paper className={clsx(classes.paper,classes.logbook)}>
         {/* <Typography component="h2" variant="h6" color="primary" gutterBottom>
           Logbook1
         </Typography> */}
         <List>
-        {loading ? <div>Loading ...</div> : <ul>{qso_list}</ul>}
+        {loading ? <div>Loading ...</div> : <>{qso_list}</>}
         </List>
         </Paper>
 
