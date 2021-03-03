@@ -58,8 +58,8 @@ export default function QsoTile( props ) {
   const classes = useStyles();
   const theme = useTheme();
   // var datetime = moment().utc(props.qso.QSO_DATE + " " + props.qso.TIME_ON , "YYYYMMDD HHmm").locale("en-gb")
-  const hasLocation = props.qso.QTH != null || props.qso.GRID != null;
-  const locationText = props.qso.QTH==null?props.qso.GRID:props.qso.QTH;
+  const hasLocation = props.qso.QTH || props.qso.GRID ;
+  const locationText = props.qso.QTH==null || props.qso.QTH=="" ?props.qso.GRID:props.qso.QTH;
 
   const has_picture_qsl = !((props.qso.QSL_RCVD==undefined) || ((props.qso.QSL_RCVD_VIA==undefined) && (props.qso.APP_LoTW_MODEGROUP!=undefined)))
   const has_lotw_qsl = props.qso.APP_LoTW_MODEGROUP !== undefined

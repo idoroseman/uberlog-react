@@ -352,7 +352,7 @@ const AddPage = ( {firebase} ) => {
 
         <CardActions>
             <Button size="small" onClick={handleSubmit}>Add</Button>
-            <Button size="small" onClick={() => { setState(empty); setText('')}}>Cancel</Button>
+            <Button size="small" onClick={() => { setState(empty); setText('')}}>Clear</Button>
         </CardActions>
       </Card>
     );
