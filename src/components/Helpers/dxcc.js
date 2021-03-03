@@ -26,6 +26,9 @@ class DXCC {
   }
 
   parseDxccCsv(doc) {
+    if (doc == null){
+      return
+    }
     console.log("parsing dxcc");
     this.list = {};
     doc.split('\n').forEach((line)=>{

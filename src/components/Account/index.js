@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
+import { withFirebase } from '../Firebase';
+import { compose } from 'recompose';
 
 import { PasswordForgetForm } from '../PasswordForget';
 import PasswordChangeForm from '../PasswordChange';
@@ -15,20 +17,43 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const AccountPage = () => {
+const AccountPage = ({firebase}) => {
   const isInvalid = false;
-  const eqsl_username = '';
-  const eqsl_password = '';
+
   const qrz_username = '';
   const qrz_password ='';
   const lotw_username = '';
   const lotw_password = '';
 
-  const onSubmit = (event) => {
+  const [secrets, setSecrets] = React.useState({});
+
+  useEffect(() => {
+    return firebase.user().collection("secrets").onSnapshot(snapshot => { 
+      var s = {}
+      snapshot.docs.forEach((doc)=>{s[doc.id] = doc.data()})
+      setSecrets(s)
+    })
+  }, []);
+
+  const handleTextChange = (e) => {
+    const t = e.target.name.split("_")
+    let s = Object.assign({},secrets);
+    s[t[0]][t[1]] = e.target.value;
+    setSecrets(s)
+  }
+
+  const handleSave = (event) => {
+    firebase.user().collection("secrets").doc(event.target.name).set(secrets[event.target.name])
   };
 
-  const classes = useStyles();
+  const handleEqslSync = () => {
+    console.log("click")
+    // const eqsl = new Eqsl(secrets["eqsl.cc"].username, secrets["eqsl.cc"].password)
+    // eqsl.fetchQsls().then(text=>console.log(text)).catch(err=>console.log(err))
+  }
 
+  const classes = useStyles();
+  console.log(secrets)
   return  <AuthUserContext.Consumer>
     {authUser => (
       <div>
@@ -39,43 +64,47 @@ const AccountPage = () => {
         
         <SignOutButton />
         <hr/>
-        
+
         eqsl.cc
-        <form onSubmit={onSubmit}>
+        <br/>
           <input
-            name="eqsl_username"
-            value={eqsl_username}
+            name="eqsl.cc_username"
+            value={'eqsl.cc' in secrets ? secrets['eqsl.cc'].username || '':''}
             type="text"
             placeholder="username"
+            onChange={handleTextChange}
           />
           <input
-            name="eqsl_password"
-            value={eqsl_password}
+            name="eqsl.cc_password"
+            value={'eqsl.cc' in secrets ? secrets['eqsl.cc'].password || '':''}
             type="password"
             placeholder="Password"
+            onChange={handleTextChange}
           />
-          <button disabled={isInvalid} type="submit">
+          <button name="eqsl.cc" disabled={isInvalid} onClick={handleSave}>
             Save
           </button>
-        </form>
-        <Button variant="text" component="span" className={classes.button}>
+          <br/>
+        <Button variant="text" component="span" className={classes.button} onClick={handleEqslSync}>
             Sync
         </Button>
         <hr/>
 
         qrz.com
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSave}>
           <input
             name="qrz_username"
             value={qrz_username}
             type="text"
             placeholder="username"
+            readOnly
           />
           <input
             name="qrz_password"
             value={qrz_password}
             type="password"
             placeholder="Password"
+            readOnly
           />
           <button disabled={isInvalid} type="submit">
             Save
@@ -87,18 +116,20 @@ const AccountPage = () => {
         <hr/>
 
         LoTW
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSave}>
           <input
             name="lotw_username"
             value={lotw_username}
             type="text"
             placeholder="username"
+            readOnly
           />
           <input
             name="lotw_password"
             value={lotw_password}
             type="password"
             placeholder="Password"
+            readOnly
           />
           <button disabled={isInvalid} type="submit">
             Save
@@ -110,18 +141,20 @@ const AccountPage = () => {
         <hr/>
 
         ClubLog
-        <form onSubmit={onSubmit}>
+        <form onSubmit={handleSave}>
           <input
             name="lotw_username"
             value={lotw_username}
             type="text"
             placeholder="username"
+            readOnly
           />
           <input
             name="lotw_password"
             value={lotw_password}
             type="password"
             placeholder="Password"
+            readOnly
           />
           <button disabled={isInvalid} type="submit">
             Save
@@ -138,4 +171,7 @@ const AccountPage = () => {
 
 const condition = authUser => !!authUser;
 
-export default withAuthorization(condition)(AccountPage);
+export default compose(
+  withAuthorization(condition),
+  withFirebase,
+)(AccountPage);

@@ -4,7 +4,7 @@
 var path = require('path')
 var fs = require("fs");
 
-class Adif {
+export default class Adif {
 
     objectToAdif(qso){
       var rv = "";
@@ -60,4 +60,3 @@ class Adif {
     }
   }
 
-  module.exports = new Adif()
