@@ -9,8 +9,10 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import { withFirebase } from '../Firebase';
+import { DXCC } from '../Helpers'
 
 var moment = require('moment');
+var flag = require('emoji-flag')
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -33,7 +35,9 @@ const useStyles = makeStyles((theme) => ({
     },
     
   }));
-  
+
+const dxcc = new DXCC();
+
 const AddPage = ( {firebase} ) => {
     const empty = { CALL:"", RST_SENT:"", RST_RCVD:"", NAME:"", QTH:"", GRID:"", COMMENT:"", QSO_DATE:"", TIME_ON:""};
     const classes = useStyles();
@@ -45,7 +49,7 @@ const AddPage = ( {firebase} ) => {
     const city = null
     const specialCallsign = null
     const operator_name = null
-    
+
     const handleKeyPress = (event) => {
         if ((event.metaKey) && (event.keyCode == 8)){
             setState(empty);
@@ -110,26 +114,36 @@ const AddPage = ( {firebase} ) => {
             s.GRID = line.substr(1).trim().substr(0,2).toUpperCase() + line.substr(1).trim().substr(2).toLowerCase();
           else if (line != "")
             s.COMMENT += line
-    
-          setState(s);
+          })
 
-          // change of callsign
-          if(s.CALL != state.callsign)
-          {
-            // this.hamqth.lookup(s.CALL.trim())
-            // .then((info)=>{this.qrz = info; this.forceUpdate();})
-            // .catch((err)=>{
-            //     console.log("hamqth:"+err); 
-            //     if (err.split(":",2)[0] == this.callsign)
-            //       this.qrz={}
-            //     })
-            // this.callsign = s.CALL.trim();
-            // this.props.onNewCallsign(this.callsign);
-          }
-        })
+        // change of callsign
+        if(s.CALL != state.callsign)
+        {
+            // dxcc info
+            const info = dxcc.countryOf(s.CALL)
+            s.COUNTRY = info.name
+            s.DXCC = info.entity_code
+            s.CQZ = info.cq_zone
+            s.ITUZ = info.itu_zone
+            s.flag_ = info.flag
+          // this.hamqth.lookup(s.CALL.trim())
+          // .then((info)=>{this.qrz = info; this.forceUpdate();})
+          // .catch((err)=>{
+          //     console.log("hamqth:"+err); 
+          //     if (err.split(":",2)[0] == this.callsign)
+          //       this.qrz={}
+          //     })
+          // this.callsign = s.CALL.trim();
+          // this.props.onNewCallsign(this.callsign);
+        }
+
+        setState(s);
 
         // enter accept
         if (event.target.value.endsWith('\n\n\n')){
+          handleSubmit()
+          setState(empty)
+          setText("")
         //   var success = this.props.onSubmit(s);
         //   console.log("submit success is", success);
         //   if (success){
@@ -139,7 +153,6 @@ const AddPage = ( {firebase} ) => {
     }
     
     const handleSubmit = () => {
-      console.log("submit")
       var qso = state;
       // add time and date
       if (qso.QSO_DATE=="")
@@ -149,7 +162,7 @@ const AddPage = ( {firebase} ) => {
       // add freq / mode/ sat
       if (!qso.FREQ)
         qso.FREQ = freqSelected;
-      var m = (this.state.mode+"|").split("|",2)
+      var m = (modeSelected+"|").split("|",2)
       if (!qso.MODE) {
         qso.MODE = m[0];
         if (m[1]!='')
@@ -171,10 +184,12 @@ const AddPage = ( {firebase} ) => {
         qso["STATION_CALLSIGN"] = specialCallsign
       if (operator_name)
         qso["MY_NAME"] = operator_name
+
       // submit
+      const l  = localStorage.getItem('selectedLogbook') || 0;
       console.log(qso)
-      firebase.logbook(0).add(qso)
-      .then(()=>{console.log("ok")})
+      firebase.logbook(l).add(qso)
+      .then(()=>{console.log("submited")})
       .catch((err)=>{console.log(err)})
 
     }
@@ -294,9 +309,8 @@ const AddPage = ( {firebase} ) => {
             {state.CALL=="" ? "Callsign" : state.CALL }
           </Typography>
           <Typography className={classes.pos} color="textSecondary">
-            Country ... {
-            //state.callsign ? dxcc.countryOf(state.callsign):"..."
-            }
+            <span style={{fontSize: "100%"}}>{state.flag_?flag(state.flag_):<span>&#x1f3f3;</span>}</span>
+            { state.COUNTRY || "..." }
           </Typography>
           <Typography variant="body2" component="p">
             Report His {state.RST_SENT==""?"...":state.RST_SENT} Mine {state.RST_RCVD==""?"...":state.RST_RCVD}
@@ -306,7 +320,7 @@ const AddPage = ( {firebase} ) => {
             {
             //(qrz.qth?<span style={{"color":"Gray"}}>{qrz.qth}</span>:"...") 
             }
-            {state.grid ? "  Grid "+state.grid: ""}
+            {state.GRID ? "  Grid "+state.GRID: ""}
             {
             //(qrz.grid?<span> Grid <span style={{color:"Gray"}}>{qrz.grid}</span></span>:"")}<br/>
             }
