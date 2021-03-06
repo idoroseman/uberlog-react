@@ -37,7 +37,7 @@ class HomePage extends Component {
   componentDidMount() {
     this.setState({ loading: true });
     const uid = this.props.firebase.auth.currentUser.uid;
-    const index = localStorage.getItem('selectedLogbook') 
+    const index = localStorage.getItem('selectedLogbook') || 0
     this.unsubscribe = this.props.firebase.logbook(index).onSnapshot(snapshot => {
       this.setState({
         qsos: snapshot.docs.map((doc)=>doc.data()).sort(this.comapare),

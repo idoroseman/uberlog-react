@@ -43,9 +43,9 @@ const AddPage = ( {firebase} ) => {
     const classes = useStyles();
     const [text, setText] = React.useState('');
     const [state, setState] = React.useState(empty)
-    const [freqSelected, setFreq] = React.useState("14");
-    const [modeSelected, setMode] = React.useState('SSB');
-    const [satSelected, setSat] =React.useState("");
+    const [freqSelected, setFreq] = React.useState(localStorage.getItem("inputFreq") || "14");
+    const [modeSelected, setMode] = React.useState(localStorage.getItem('inputMode') || 'SSB');
+    const [satSelected, setSat] =React.useState(localStorage.getItem("inputSat") || "");
     const city = null
     const specialCallsign = null
     const operator_name = null
@@ -232,14 +232,17 @@ const AddPage = ( {firebase} ) => {
     }
 
     const handleFreqChanged = (event) => {
+      localStorage.setItem("inputFreq", event.target.value) 
       setFreq(event.target.value)
     }
 
     const handleModeChanged = (event) => {
+      localStorage.setItem("inputMode", event.target.value) 
       setMode(event.target.value)
     }
 
     const handleSatChanged = (event) => {
+      localStorage.setItem("inputSat", event.target.value) 
       setSat(event.target.value)
     }
 

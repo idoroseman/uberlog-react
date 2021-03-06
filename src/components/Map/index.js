@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
 const MapPage = ( props ) => {
 
     const { firebase } = props
-    const index = localStorage.getItem('selectedLogbook') 
+    const index = localStorage.getItem('selectedLogbook') || 0
     const [state, setState] = React.useState([])
 
     useEffect(() => {

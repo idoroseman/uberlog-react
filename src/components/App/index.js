@@ -46,7 +46,7 @@ import Grid from '@material-ui/core/Grid';
 
 import {useStyles} from '../layout'
 
-function Copyright() {
+const Copyright = () => {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
@@ -59,9 +59,77 @@ function Copyright() {
   );
 };
 
+const MyAppBar = (props) => {
+  const classes = useStyles();
+
+  return <AppBar position="absolute" className={clsx(classes.appBar, props.open && classes.appBarShift)}>
+  <Toolbar className={classes.toolbar}>
+    <IconButton
+      edge="start"
+      color="inherit"
+      aria-label="open drawer"
+      onClick={props.onDrawerOpen}
+      className={clsx(classes.menuButton, props.open && classes.menuButtonHidden)}
+    >
+      <MenuIcon />
+    </IconButton>
+    <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+      UberLog
+    </Typography>
+    <div className={classes.search}>
+      <div className={classes.searchIcon}>
+        <SearchIcon />
+      </div>
+      <InputBase
+        clearable="true"
+        placeholder="Search…"
+        classes={{
+          root: classes.inputRoot,
+          input: classes.inputInput,
+        }}
+        inputProps={{ 
+          'aria-label': 'search' ,
+        }}
+        value={props.search}
+        onChange={props.onSearchChanged} 
+      />
+      <IconButton onClick={props.onClearSearch}> 
+              <ClearIcon />
+        </IconButton>
+    </div>
+    <IconButton color="inherit">
+      <Badge badgeContent={4} color="secondary">
+        <NotificationsIcon />
+      </Badge>
+    </IconButton>
+  </Toolbar>
+</AppBar>
+
+}
+const MyDrawer = (props) => {
+  const classes = useStyles();
+ return  <Drawer
+  variant="permanent"
+  classes={{
+    paper: clsx(classes.drawerPaper, !props.open && classes.drawerPaperClose),
+  }}
+  open={props.open}
+>
+  <div className={classes.toolbarIcon}>
+    <IconButton onClick={props.onDrawerClose}>
+      <ChevronLeftIcon />
+    </IconButton>
+  </div>
+  <Divider />
+  <List>{mainListItems}</List>
+  <Divider />
+  <List>{secondaryListItems}</List>
+</Drawer>
+}
+
 function App () {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState( true);
   const [search, setSearch] = React.useState("");
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -74,70 +142,24 @@ function App () {
     <div className={classes.root}>
       <CssBaseline />
 
-      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
-        <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            Dashboard
-          </Typography>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <SearchIcon />
-            </div>
-            <InputBase
-              clearable="true"
-              placeholder="Search…"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-              }}
-              inputProps={{ 
-                'aria-label': 'search' ,
-              }}
-              value={search}
-              onChange={(e)=>{setSearch(e.target.value)}}
-            />
-            <IconButton onClick={() => setSearch('')}>
-                    <ClearIcon />
-              </IconButton>
-          </div>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
+      <AuthUserContext.Consumer>
+        {authUser =>
+          authUser ? <>
+            <MyAppBar open={open} 
+              onDrawerClose={handleDrawerClose} 
+              onDrawerOpen={handleDrawerOpen}
+              search={search}
+              onSearchChanged={(e)=>{setSearch(e.target.value)}}
+              onClearSearch={() => setSearch('')}
+              />
+            <MyDrawer open={open} onDrawerClose={handleDrawerClose} />
+            </> : <MyAppBar open={false} />
+        }
+      </AuthUserContext.Consumer>
 
-      <Drawer
-        variant="permanent"
-        classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-        }}
-        open={open}
-      >
-        <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider />
-        <List>{mainListItems}</List>
-        <Divider />
-        <List>{secondaryListItems}</List>
-      </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
             <Route exact path={ROUTES.HOME} render={(props) => (
               <Navigation {...props} filterText={search} />
             )} />
@@ -151,8 +173,6 @@ function App () {
             <Route path={ROUTES.MAP} component={MapPage} />
             <Route path={ROUTES.ACCOUNT} component={AccountPage} />
             <Route path={ROUTES.SETTINGS} component={SettingsPage} />
-
-            </Grid>
           <Box pt={4}>
             <Copyright />
           </Box>
