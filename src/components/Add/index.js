@@ -319,6 +319,9 @@ const AddPage = ( {firebase} ) => {
             Report His {state.RST_SENT==""?"...":state.RST_SENT} Mine {state.RST_RCVD==""?"...":state.RST_RCVD}
           </Typography>
           <Typography variant="body2" component="p">
+            Name {state.NAME?state.NAME:"..."}
+          </Typography>
+          <Typography variant="body2" component="p">
             QTH {state.QTH ? state.QTH : "..."} 
             {
             //(qrz.qth?<span style={{"color":"Gray"}}>{qrz.qth}</span>:"...") 
