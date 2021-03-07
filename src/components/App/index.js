@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router , Route, } from 'react-router-dom';
+import { compose } from 'recompose';
 
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -61,7 +62,7 @@ const Copyright = () => {
 
 const MyAppBar = (props) => {
   const classes = useStyles();
-
+  
   return <AppBar position="absolute" className={clsx(classes.appBar, props.open && classes.appBarShift)}>
   <Toolbar className={classes.toolbar}>
     <IconButton
@@ -74,7 +75,7 @@ const MyAppBar = (props) => {
       <MenuIcon />
     </IconButton>
     <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-      UberLog
+      UberLog {props.callsign?" - "+props.callsign.toUpperCase():""}
     </Typography>
     <div className={classes.search}>
       <div className={classes.searchIcon}>
@@ -104,8 +105,8 @@ const MyAppBar = (props) => {
     </IconButton>
   </Toolbar>
 </AppBar>
-
 }
+
 const MyDrawer = (props) => {
   const classes = useStyles();
  return  <Drawer
@@ -127,10 +128,11 @@ const MyDrawer = (props) => {
 </Drawer>
 }
 
-function App () {
+function App ({firebase}) {
   const classes = useStyles();
   const [open, setOpen] = React.useState( true);
   const [search, setSearch] = React.useState("");
+  const [user, setUser] = React.useState(null);
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -138,6 +140,18 @@ function App () {
     setOpen(false);
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  
+  useEffect(() => {
+    return firebase.auth.onAuthStateChanged( authUser => {
+        firebase.user().get().then((doc)=>{ setUser(doc.data()) })
+    })
+  })
+
+  var currentCallsign = ""
+  if (user){
+    const l  = localStorage.getItem('selectedLogbook') || 0;
+    currentCallsign = user.logbooks[l].callsign
+  }
   return  <Router>
     <div className={classes.root}>
       <CssBaseline />
@@ -151,6 +165,7 @@ function App () {
               search={search}
               onSearchChanged={(e)=>{setSearch(e.target.value)}}
               onClearSearch={() => setSearch('')}
+              callsign = {currentCallsign}
               />
             <MyDrawer open={open} onDrawerClose={handleDrawerClose} />
             </> : <MyAppBar open={false} />
@@ -182,4 +197,7 @@ function App () {
   </Router>
 }
 
-export default withAuthentication(App);
+export default compose(
+  withAuthentication,
+  withFirebase,
+)(App);
