@@ -43,6 +43,7 @@ const AddPage = ( {firebase} ) => {
     const classes = useStyles();
     const [text, setText] = React.useState('');
     const [state, setState] = React.useState(empty)
+    const [lastSeen, setLastSeen] = React.useState({})
     const [freqSelected, setFreq] = React.useState(localStorage.getItem("inputFreq") || "14");
     const [modeSelected, setMode] = React.useState(localStorage.getItem('inputMode') || 'SSB');
     const [satSelected, setSat] =React.useState(localStorage.getItem("inputSat") || "");
@@ -126,6 +127,7 @@ const AddPage = ( {firebase} ) => {
             s.CQZ = info.cq_zone
             s.ITUZ = info.itu_zone
             s.flag_ = info.flag
+            // check qrz
           // this.hamqth.lookup(s.CALL.trim())
           // .then((info)=>{this.qrz = info; this.forceUpdate();})
           // .catch((err)=>{
@@ -135,6 +137,18 @@ const AddPage = ( {firebase} ) => {
           //     })
           // this.callsign = s.CALL.trim();
           // this.props.onNewCallsign(this.callsign);
+           // check previous log
+           const l  = localStorage.getItem('selectedLogbook') || 0;
+           firebase.logbook(l).where("CALL", "==", s.CALL ).get()
+           .then((querySnapshot) => {
+               let seen = { QSO_DATE:"00000000", TIME_ON:"0000"}
+               querySnapshot.forEach((doc) => {
+                   const q = doc.data()
+                   if (q.QSO_DATE+q.TIME_ON > seen.QSO_DATE+seen.TIME_ON)
+                     seen = doc.data();
+               });
+               setLastSeen(seen);
+           })
         }
 
         setState(s);
@@ -246,6 +260,10 @@ const AddPage = ( {firebase} ) => {
       setSat(event.target.value)
     }
 
+    const  DateTimeFormat = (d,t) => {
+      return d.slice(0,4) + "-" + d.slice(4,6) + "-" + d.slice(6,8) + "   " + t.slice(0,2) + ":" + t.slice(2,4);
+    }
+
     return (
       <Card className={classes.root} variant="outlined">
         <CardContent>
@@ -349,11 +367,11 @@ const AddPage = ( {firebase} ) => {
             onChange={handleChange} 
             />
         </FormControl>
-
+            { lastSeen.CALL ?
             <Typography color="textSecondary">
-                Last seen 13/01/21 15:47<br/>
-                on 2400MHz SSB more...
-            </Typography>
+                Last seen {DateTimeFormat(lastSeen.QSO_DATE, lastSeen.TIME_ON)}<br/>
+                on {lastSeen.FREQ} {lastSeen.MODE} more...
+            </Typography>:""}
         </CardContent>
 
         <CardActions>
