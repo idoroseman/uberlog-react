@@ -11,6 +11,12 @@ import FormControl from '@material-ui/core/FormControl';
 import { withFirebase } from '../Firebase';
 import { DXCC } from '../Helpers'
 import Flag from 'react-world-flags'
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 var moment = require('moment');
 
@@ -44,6 +50,7 @@ const AddPage = ( {firebase} ) => {
     const [text, setText] = React.useState('');
     const [state, setState] = React.useState(empty)
     const [lastSeen, setLastSeen] = React.useState({})
+    const [snackOpen, setSnackOpen] = React.useState(false)
     const [freqSelected, setFreq] = React.useState(localStorage.getItem("inputFreq") || "14");
     const [modeSelected, setMode] = React.useState(localStorage.getItem('inputMode') || 'SSB');
     const [satSelected, setSat] =React.useState(localStorage.getItem("inputSat") || "");
@@ -122,7 +129,7 @@ const AddPage = ( {firebase} ) => {
         {
             // dxcc info
             const info = dxcc.countryOf(s.CALL)
-            s.COUNTRY = info.name
+            s.COUNTRY = info.name || ""
             s.DXCC = info.entity_code
             s.CQZ = info.cq_zone
             s.ITUZ = info.itu_zone
@@ -203,7 +210,12 @@ const AddPage = ( {firebase} ) => {
       const l  = localStorage.getItem('selectedLogbook') || 0;
       console.log(qso)
       firebase.logbook(l).add(qso)
-      .then(()=>{console.log("submited")})
+      .then(()=>{
+        console.log("submited")
+        setSnackOpen(true);
+        setState(empty); 
+        setText('');
+      })
       .catch((err)=>{console.log(err)})
 
     }
@@ -378,6 +390,11 @@ const AddPage = ( {firebase} ) => {
             <Button size="small" onClick={handleSubmit}>Add</Button>
             <Button size="small" onClick={() => { setState(empty); setText('')}}>Clear</Button>
         </CardActions>
+        <Snackbar anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }} open={snackOpen} autoHideDuration={6000} onClose={()=>setSnackOpen(false)}>
+          <Alert onClose={()=>setSnackOpen(false)} severity="success">
+            QSO was saved
+          </Alert>
+        </Snackbar>
       </Card>
     );
   }
