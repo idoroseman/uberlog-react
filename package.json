@@ -8,7 +8,6 @@
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.1",
-    "emoji-flag": "^1.1.0",
     "firebase": "^8.2.7",
     "google-maps-react": "^2.0.6",
     "moment": "^2.29.1",
@@ -16,6 +15,7 @@
     "react-dom": "^17.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.2",
+    "react-world-flags": "^1.4.0",
     "recompose": "^0.30.0",
     "web-vitals": "^1.1.0"
   },

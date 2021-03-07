@@ -15,8 +15,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import PersonIcon from '@material-ui/icons/Person';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import SatelliteIcon from '@material-ui/icons/Satellite';
+import Flag from 'react-world-flags'
 
-var flag = require('emoji-flag')
 var moment = require('moment');
 
 const useStyles = makeStyles(theme => ({
@@ -82,8 +82,8 @@ export default function QsoTile( props ) {
 
           <Grid container justify="space-between">            
             <Typography variant="subtitle1" color="textSecondary">
-             <span style={{fontSize: "150%"}}>{props.qso.flag_?flag(props.qso.flag_):<span>&#x1f3f3;</span>}</span>{props.qso.COUNTRY}
-              {hasLocation? <><LocationOnIcon/>{locationText}</>:""}
+             {props.qso.flag_?<Flag code={props.qso.flag_} height="16"/>:<span>&#x1f3f3;</span>}{" "}{props.qso.COUNTRY}
+            {hasLocation? <><LocationOnIcon/>{locationText}</>:""}
             </Typography>
             <Typography variant="body2" component="p">
                 {props.qso.NAME != null ? <><PersonIcon/>{props.qso.NAME}</>:""}

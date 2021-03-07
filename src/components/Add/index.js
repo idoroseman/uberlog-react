@@ -10,9 +10,9 @@ import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import { withFirebase } from '../Firebase';
 import { DXCC } from '../Helpers'
+import Flag from 'react-world-flags'
 
 var moment = require('moment');
-var flag = require('emoji-flag')
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -312,8 +312,8 @@ const AddPage = ( {firebase} ) => {
             {state.CALL=="" ? "Callsign" : state.CALL }
           </Typography>
           <Typography className={classes.pos} color="textSecondary">
-            <span style={{fontSize: "100%"}}>{state.flag_?flag(state.flag_):<span>&#x1f3f3;</span>}</span>
-            { state.COUNTRY || "..." }
+            {state.flag_?<Flag code={state.flag_} height="16"/>:<span>&#x1f3f3;</span>}
+            {" "}{ state.COUNTRY || "..." }
           </Typography>
           <Typography variant="body2" component="p">
             Report His {state.RST_SENT==""?"...":state.RST_SENT} Mine {state.RST_RCVD==""?"...":state.RST_RCVD}
