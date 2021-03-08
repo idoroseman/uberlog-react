@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router , Route, } from 'react-router-dom';
+import { BrowserRouter as Router , Redirect, Route, } from 'react-router-dom';
 import { compose } from 'recompose';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -29,10 +29,9 @@ import LandingPage from '../Landing';
 import SignUpPage from '../SignUp';
 import SignInPage from '../SignIn';
 import PasswordForgetPage from '../PasswordForget';
-import HomePage from '../Home';
+import LogbookPage from '../Logbook';
 import AccountPage from '../Account';
 import AdminPage from '../Admin';
-import Navigation from '../Navigation';
 import AddPage from '../Add';
 import MapPage from '../Map';
 import SettingsPage from "../Settings";
@@ -130,28 +129,52 @@ const MyDrawer = (props) => {
 
 function App ({firebase}) {
   const classes = useStyles();
-  const [open, setOpen] = React.useState( true);
+  const [drawerOpen, setDrawerOpen] = React.useState(true);
   const [search, setSearch] = React.useState("");
   const [user, setUser] = React.useState(null);
+  const [logbook, setLogbook] = React.useState({
+    loading: true,
+    qsos: [],
+  })
   const handleDrawerOpen = () => {
-    setOpen(true);
+    setDrawerOpen(true);
   };
   const handleDrawerClose = () => {
-    setOpen(false);
+    setDrawerOpen(false);
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   
+  // update user status
   useEffect(() => {
     return firebase.auth.onAuthStateChanged( authUser => {
-        firebase.user().get().then((doc)=>{ setUser(doc.data()) })
+        if (authUser){
+          firebase.user().get().then((doc)=>{ setUser(doc.data()) }).catch((err)=>{console.log(err)})
+        }
     })
-  })
+  }, [])
+
+  const comapare = (a,b) => {
+    if (a.QSO_DATE+a.TIME_ON > b.QSO_DATE+b.TIME_ON) return -1;
+    if (b.QSO_DATE+b.TIME_ON > a.QSO_DATE+b.TIME_ON) return 1;
+    return 0;
+  }
+  // get current logbook
+  useEffect(()=>{
+    const index = localStorage.getItem('selectedLogbook') || 0
+    return user ? firebase.logbook(index).onSnapshot(snapshot => {
+      setLogbook({
+        qsos: snapshot.docs.map((doc)=>doc.data()).sort(comapare),
+        loading: false,
+      });
+    }) : null;
+  }, [user]) // run only if user changed
 
   var currentCallsign = ""
   if (user){
     const l  = localStorage.getItem('selectedLogbook') || 0;
     currentCallsign = user.logbooks[l].callsign
   }
+
   return  <Router>
     <div className={classes.root}>
       <CssBaseline />
@@ -159,7 +182,7 @@ function App ({firebase}) {
       <AuthUserContext.Consumer>
         {authUser =>
           authUser ? <>
-            <MyAppBar open={open} 
+            <MyAppBar open={drawerOpen} 
               onDrawerClose={handleDrawerClose} 
               onDrawerOpen={handleDrawerOpen}
               search={search}
@@ -167,7 +190,7 @@ function App ({firebase}) {
               onClearSearch={() => setSearch('')}
               callsign = {currentCallsign}
               />
-            <MyDrawer open={open} onDrawerClose={handleDrawerClose} />
+            <MyDrawer open={drawerOpen} onDrawerClose={handleDrawerClose} />
             </> : <MyAppBar open={false} />
         }
       </AuthUserContext.Consumer>
@@ -175,9 +198,12 @@ function App ({firebase}) {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-            <Route exact path={ROUTES.HOME} render={(props) => (
-              <Navigation {...props} filterText={search} />
-            )} />
+            <Route exact path={ROUTES.HOME} render={(props) => {
+              {//<Navigation {...props} filterText={search} />
+            }
+              return !!user?<Redirect to={ROUTES.LOGBOOK}/>: <LandingPage {...props} />
+            }} />
+            <Route path={ROUTES.LOGBOOK} render={(props)=>(<LogbookPage {...props} filterText={search} />)} />
             <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
             <Route path={ROUTES.SIGN_IN} component={SignInPage} />
             <Route

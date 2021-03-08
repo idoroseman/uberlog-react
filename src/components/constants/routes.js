@@ -1,6 +1,7 @@
 export const SIGN_UP = '/signup';
 export const SIGN_IN = '/signin';
 export const HOME = '/';
+export const LOGBOOK = '/logbook';
 export const ACCOUNT = '/account';
 export const ADD = '/add';
 export const SETTINGS = '/settings';

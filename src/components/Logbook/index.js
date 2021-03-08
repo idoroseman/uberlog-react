@@ -18,7 +18,7 @@ import QsoTile from './qso_tile'
 
 var moment = require('moment');
 
-class HomePage extends Component {
+class LogbookPage extends Component {
   constructor(props) {
     super(props);
 
@@ -96,4 +96,4 @@ const condition = authUser => !!authUser;
 export default compose(
   withAuthorization(condition),
   withStyles(useStyles),
-)(HomePage);
+)(LogbookPage);

@@ -21,7 +21,7 @@ import { Link as RouterLink } from 'react-router-dom';
 
 export const mainListItems = (
   <div>
-    <ListItem button component={RouterLink} to={ROUTES.HOME}>
+    <ListItem button component={RouterLink} to={ROUTES.LOGBOOK}>
       <ListItemIcon>
         <ListIcon />
       </ListItemIcon>
