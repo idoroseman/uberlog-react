@@ -21,41 +21,12 @@ var moment = require('moment');
 class LogbookPage extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      loading: true,
-      qsos: [],
-    };
-  }
-
-  comapare(a,b){
-    if (a.QSO_DATE+a.TIME_ON > b.QSO_DATE+b.TIME_ON) return -1;
-    if (b.QSO_DATE+b.TIME_ON > a.QSO_DATE+b.TIME_ON) return 1;
-    return 0;
-  }
-
-  componentDidMount() {
-    this.setState({ loading: true });
-    const uid = this.props.firebase.auth.currentUser.uid;
-    const index = localStorage.getItem('selectedLogbook') || 0
-    this.unsubscribe = this.props.firebase.logbook(index).onSnapshot(snapshot => {
-      this.setState({
-        qsos: snapshot.docs.map((doc)=>doc.data()).sort(this.comapare),
-        loading: false,
-      });
-    });
-  }
-
-  componentWillUnmount() {
-    if (this.unsubsribe)
-      this.unsubscribe();
   }
 
   render() {
-    const { qsos, loading } = this.state;
     const { classes } = this.props;
     
-    const filtered_list = this.state.qsos.filter((item)=>{
+    const filtered_list = this.props.qsos.filter((item)=>{
       var isMatch = false;
 
       ["CALL", "FREQ", "MODE", "NAME", "QTH", "GRID", "COMMENT", "MY_CITY"].forEach((fieldName)=>{
@@ -83,7 +54,7 @@ class LogbookPage extends Component {
           Logbook1
         </Typography> */}
         <List>
-        {loading ? <div>Loading ...</div> : <>{qso_list}</>}
+        {this.props.loading ? <div>Loading ...</div> : <>{qso_list}</>}
         </List>
         </Paper>
 

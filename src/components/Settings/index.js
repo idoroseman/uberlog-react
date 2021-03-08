@@ -25,43 +25,35 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-const SettingsPage = ({firebase}) => {
+const SettingsPage = (props) => {
+    console.log(props)
     const classes = useStyles();
-    const [selected, setSelected] = React.useState(localStorage.getItem('selectedLogbook') || 0 );
-    const [logbooks, setLogbooks] = React.useState({});
-    const [fields, setFields] = React.useState({title:"", callsign:"", grid:""})
+    const [fields, setFields] = React.useState({})
 
-    useEffect(() => {
-      return firebase.user().onSnapshot((snapshot) => {
-        setLogbooks(snapshot.data().logbooks)
-        if (selected in snapshot.data().logbooks)
-          setFields(snapshot.data().logbooks[selected]);
-        else
-          setFields({title:"New logbook", callsign:"N0CALL", grid:""})
-        })
-    }, []);
+    useEffect(()=>{
+      setFields(props.logbooks[props.logbookIndex])
+    }, [props.logbooks, props.logbookIndex])
 
     const handleTextChange = (event) => {
       setFields({...fields, [event.target.id]: event.target.value})
     }
 
     const handleSelectChange = (event) => {
-        localStorage.setItem('selectedLogbook', event.target.value)
-        setSelected(event.target.value);
-        if (event.target.value in logbooks)
-          setFields(logbooks[event.target.value]);
+        props.onIndexChange(event.target.value)
+        if (event.target.value in props.logbooks)
+          setFields(props.logbooks[event.target.value]);
         else
           setFields({title:"New logbook", callsign:"N0CALL", grid:""})
     };
 
     const handleSubmit = () => {
-      const lbks = logbooks
-      lbks[selected]=fields
-      console.log(lbks)
-      firebase.user().update({logbooks:lbks})
+      const tmp = props.logbooks
+      tmp[props.logbookIndex]=fields
+      props.firebase.user().update({logbooks:tmp})
     }
 
     const handleCheckDB = () => {
+/*
       console.log("fetching meta data")
       const dxcc = new DXCC();
       firebase.logbook(selected).get().then((snapshot)=>{
@@ -92,9 +84,11 @@ const SettingsPage = ({firebase}) => {
             }
         })
       })
+      */
     }
 
     const handleImportAdif = (e) => {
+      /*
       var files = e.target.files;
       var filesArr = Array.prototype.slice.call(files);
       filesArr.forEach((file)=>{
@@ -106,10 +100,11 @@ const SettingsPage = ({firebase}) => {
         });
         reader.readAsText(file);
       })
+      */
     }
 
-    const lbs = Object.keys(logbooks)
-       .map((i)=><MenuItem key={i} value={i}>{logbooks[i].title}</MenuItem>)
+    const lbs = Object.keys(props.logbooks)
+       .map((i)=><MenuItem key={i} value={i}>{props.logbooks[i].title}</MenuItem>)
  
 
   return <AuthUserContext.Consumer>
@@ -121,7 +116,7 @@ const SettingsPage = ({firebase}) => {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value={selected}
+            value={props.logbookIndex}
             onChange={handleSelectChange}
           >
             {lbs}
@@ -129,12 +124,12 @@ const SettingsPage = ({firebase}) => {
           </Select>
         </FormControl>
         <form className={classes.root} noValidate autoComplete="off">
-        <TextField id="title" value={fields.title} label="Log Name" onChange={handleTextChange}/><br/>
-        <TextField id="callsign" value={fields.callsign} label="Callsign" onChange={handleTextChange}/><br/>
-        <TextField id="grid" value={fields.grid} label="Grid Locatior" onChange={handleTextChange}/><br/>
+        <TextField id="title" value={fields ? fields.title : "new logbook"} label="Log Name" onChange={handleTextChange}/><br/>
+        <TextField id="callsign" value={fields ? fields.callsign : "N0CALL"} label="Callsign" onChange={handleTextChange}/><br/>
+        <TextField id="grid" value={fields ? fields.grid : ""} label="Grid Locatior" onChange={handleTextChange}/><br/>
         </form>
         <Button size="small" onClick={handleSubmit}>Save</Button>
-        <Button size="small" onClick={()=>{setFields(logbooks[selected])}}>Reset</Button>
+        <Button size="small" onClick={()=>{setFields(props.logbooks[props.logbookIndex])}}>Reset</Button>
         <hr/>
 
         Database
@@ -175,8 +170,7 @@ const SettingsPage = ({firebase}) => {
 
 const condition = authUser => !!authUser;
 
-
 export default compose(
   withAuthorization(condition),
-  withFirebase,
-)(SettingsPage);
+  withFirebase)
+  (SettingsPage);

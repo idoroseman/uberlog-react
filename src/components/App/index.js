@@ -132,10 +132,12 @@ function App ({firebase}) {
   const [drawerOpen, setDrawerOpen] = React.useState(true);
   const [search, setSearch] = React.useState("");
   const [user, setUser] = React.useState(null);
+  const [logbookIndex, setLogbookIndex] = React.useState(localStorage.getItem('selectedLogbook') || 0)
   const [logbook, setLogbook] = React.useState({
     loading: true,
     qsos: [],
   })
+
   const handleDrawerOpen = () => {
     setDrawerOpen(true);
   };
@@ -147,6 +149,7 @@ function App ({firebase}) {
   // update user status
   useEffect(() => {
     return firebase.auth.onAuthStateChanged( authUser => {
+      // todo: this needs to be indipendent
         if (authUser){
           firebase.user().get().then((doc)=>{ setUser(doc.data()) }).catch((err)=>{console.log(err)})
         }
@@ -160,20 +163,16 @@ function App ({firebase}) {
   }
   // get current logbook
   useEffect(()=>{
-    const index = localStorage.getItem('selectedLogbook') || 0
-    return user ? firebase.logbook(index).onSnapshot(snapshot => {
+    setLogbook({loading:true, qsos:[]})
+    return user ? firebase.logbook(logbookIndex).onSnapshot(snapshot => {
       setLogbook({
         qsos: snapshot.docs.map((doc)=>doc.data()).sort(comapare),
         loading: false,
       });
     }) : null;
-  }, [user]) // run only if user changed
+  }, [user, logbookIndex]) // run only if user changed
 
-  var currentCallsign = ""
-  if (user){
-    const l  = localStorage.getItem('selectedLogbook') || 0;
-    currentCallsign = user.logbooks[l].callsign
-  }
+  const currentCallsign = user ? user.logbooks[logbookIndex].callsign : ""
 
   return  <Router>
     <div className={classes.root}>
@@ -203,7 +202,13 @@ function App ({firebase}) {
             }
               return !!user?<Redirect to={ROUTES.LOGBOOK}/>: <LandingPage {...props} />
             }} />
-            <Route path={ROUTES.LOGBOOK} render={(props)=>(<LogbookPage {...props} filterText={search} />)} />
+            <Route path={ROUTES.LOGBOOK} render={(props)=>(
+              <LogbookPage {...props} 
+                filterText={search} 
+                qsos={logbook.qsos}
+                loading={logbook.loading}
+                />)}
+            />
             <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
             <Route path={ROUTES.SIGN_IN} component={SignInPage} />
             <Route
@@ -213,7 +218,16 @@ function App ({firebase}) {
             <Route path={ROUTES.ADD} component={AddPage} />
             <Route path={ROUTES.MAP} component={MapPage} />
             <Route path={ROUTES.ACCOUNT} component={AccountPage} />
-            <Route path={ROUTES.SETTINGS} component={SettingsPage} />
+            <Route path={ROUTES.SETTINGS} render={(props)=>(
+              <SettingsPage {...props} 
+                  logbooks = {user ? user.logbooks : [] }
+                  logbookIndex = {logbookIndex}
+                  onIndexChange = {(value)=>{
+                    localStorage.setItem('selectedLogbook', value)
+                    setLogbookIndex(value);
+                  }}
+              />)}
+            />
           <Box pt={4}>
             <Copyright />
           </Box>

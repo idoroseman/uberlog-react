@@ -58,11 +58,12 @@ const AccountPage = ({firebase}) => {
     {authUser => (
       <div>
         <h1>Account: {authUser.email}</h1>
-
-        <PasswordChangeForm />
-        <hr/>
         
         <SignOutButton />
+        <hr/>
+
+        change password
+        <PasswordChangeForm />
         <hr/>
 
         eqsl.cc
