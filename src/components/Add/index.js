@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
 
 const dxcc = new DXCC();
 
-const AddPage = ( {firebase} ) => {
+const AddPage = ( props ) => {
     const empty = { CALL:"", RST_SENT:"", RST_RCVD:"", NAME:"", QTH:"", GRID:"", COMMENT:"", QSO_DATE:"", TIME_ON:""};
     const classes = useStyles();
     const [text, setText] = React.useState('');
@@ -144,18 +144,15 @@ const AddPage = ( {firebase} ) => {
           //     })
           // this.callsign = s.CALL.trim();
           // this.props.onNewCallsign(this.callsign);
-           // check previous log
-           const l  = localStorage.getItem('selectedLogbook') || 0;
-           firebase.logbook(l).where("CALL", "==", s.CALL ).get()
-           .then((querySnapshot) => {
-               let seen = { QSO_DATE:"00000000", TIME_ON:"0000"}
-               querySnapshot.forEach((doc) => {
-                   const q = doc.data()
-                   if (q.QSO_DATE+q.TIME_ON > seen.QSO_DATE+seen.TIME_ON)
-                     seen = doc.data();
-               });
-               setLastSeen(seen);
-           })
+           
+          // check previous log
+           const prev = props.qsos.filter((item)=>{return item.CALL == s.CALL });
+           let seen = { QSO_DATE:"00000000", TIME_ON:"0000"}
+           prev.forEach((doc) => {
+                if (doc.QSO_DATE+doc.TIME_ON > seen.QSO_DATE+seen.TIME_ON)
+                  seen = doc;
+            });
+            setLastSeen(seen);
         }
 
         setState(s);
@@ -207,9 +204,8 @@ const AddPage = ( {firebase} ) => {
         qso["MY_NAME"] = operator_name
 
       // submit
-      const l  = localStorage.getItem('selectedLogbook') || 0;
       console.log(qso)
-      firebase.logbook(l).add(qso)
+      props.firebase.logbook(props.logbookIndex).add(qso)
       .then(()=>{
         console.log("submited")
         setSnackOpen(true);

@@ -215,7 +215,12 @@ function App ({firebase}) {
               path={ROUTES.PASSWORD_FORGET}
               component={PasswordForgetPage}
             />
-            <Route path={ROUTES.ADD} component={AddPage} />
+            <Route path={ROUTES.ADD} render={(props)=>(
+              <AddPage {...props} 
+                qsos = { logbook.qsos }
+                logbookIndex = {logbookIndex}
+              />)}
+            />
             <Route path={ROUTES.MAP} component={MapPage} />
             <Route path={ROUTES.ACCOUNT} component={AccountPage} />
             <Route path={ROUTES.SETTINGS} render={(props)=>(
