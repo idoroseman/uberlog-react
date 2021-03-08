@@ -221,7 +221,9 @@ function App ({firebase}) {
                 logbookIndex = {logbookIndex}
               />)}
             />
-            <Route path={ROUTES.MAP} component={MapPage} />
+            <Route path={ROUTES.MAP}>
+              <MapPage qsos = { logbook.qsos }/>
+            </Route>
             <Route path={ROUTES.ACCOUNT} component={AccountPage} />
             <Route path={ROUTES.SETTINGS} render={(props)=>(
               <SettingsPage {...props} 
