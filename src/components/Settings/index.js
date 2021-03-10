@@ -26,7 +26,6 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 const SettingsPage = (props) => {
-    console.log(props)
     const classes = useStyles();
     const [fields, setFields] = React.useState({})
 

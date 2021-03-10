@@ -11,7 +11,6 @@ import List from '@material-ui/core/List';
 
 import { withAuthorization } from '../Session';
 import { useStyles } from '../layout'
-import { withFirebase } from '../Firebase';
 import { withStyles } from '@material-ui/styles';
 
 import QsoTile from './qso_tile'

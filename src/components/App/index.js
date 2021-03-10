@@ -131,6 +131,7 @@ function App ({firebase}) {
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = React.useState(true);
   const [search, setSearch] = React.useState("");
+  const [authUser, setAuthUser]= React.useState(null);
   const [user, setUser] = React.useState(null);
   const [logbookIndex, setLogbookIndex] = React.useState(localStorage.getItem('selectedLogbook') || 0)
   const [logbook, setLogbook] = React.useState({
@@ -148,29 +149,34 @@ function App ({firebase}) {
   
   // update user status
   useEffect(() => {
-    return firebase.auth.onAuthStateChanged( authUser => {
-      // todo: this needs to be indipendent
-        if (authUser){
-          firebase.user().get().then((doc)=>{ setUser(doc.data()) }).catch((err)=>{console.log(err)})
-        }
-    })
-  }, [])
+    return firebase.auth.onAuthStateChanged( user => { setAuthUser(user); } );
+  })
 
-  const comapare = (a,b) => {
-    if (a.QSO_DATE+a.TIME_ON > b.QSO_DATE+b.TIME_ON) return -1;
-    if (b.QSO_DATE+b.TIME_ON > a.QSO_DATE+b.TIME_ON) return 1;
-    return 0;
-  }
+  // update user details
+  useEffect(() => {
+    if (authUser)
+      return firebase.user().onSnapshot(querySnapshot => { setUser(querySnapshot.data()) })
+    else
+      return null      
+    }, [authUser])
+
   // get current logbook
   useEffect(()=>{
     setLogbook({loading:true, qsos:[]})
     return user ? firebase.logbook(logbookIndex).onSnapshot(snapshot => {
+      console.log("snapshot")
       setLogbook({
         qsos: snapshot.docs.map((doc)=>doc.data()).sort(comapare),
         loading: false,
       });
     }) : null;
   }, [user, logbookIndex]) // run only if user changed
+
+  const comapare = (a,b) => {
+    if (a.QSO_DATE+a.TIME_ON > b.QSO_DATE+b.TIME_ON) return -1;
+    if (b.QSO_DATE+b.TIME_ON > a.QSO_DATE+b.TIME_ON) return 1;
+    return 0;
+  }
 
   const currentCallsign = user ? user.logbooks[logbookIndex].callsign : ""
 
