@@ -48,9 +48,9 @@ class DXCC {
   countryOf(callsign)
   {
     if (this.list===null)
-      return "";
+      return null
     if (!(callsign))
-      return ""
+      return null
 
     while (callsign != "")
     {
@@ -59,7 +59,7 @@ class DXCC {
       callsign = callsign.slice(0, -1);
     }
 
-    return "";
+    return null;
   }
 }
 

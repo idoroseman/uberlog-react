@@ -86,7 +86,7 @@ export default function QsoTile( props ) {
             {hasLocation? <><LocationOnIcon/>{locationText}</>:""}
             </Typography>
             <Typography variant="body2" component="p">
-                {props.qso.NAME != null ? <><PersonIcon/>{props.qso.NAME}</>:""}
+                {((props.qso.NAME != null) && (props.qso.NAME != "")) ? <><PersonIcon/>{props.qso.NAME}</>:""}
             </Typography>
           </Grid>
           <Grid container justify="space-between">            

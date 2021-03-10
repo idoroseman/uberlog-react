@@ -51,12 +51,12 @@ const AddPage = ( props ) => {
     const [state, setState] = React.useState(empty)
     const [lastSeen, setLastSeen] = React.useState({})
     const [snackOpen, setSnackOpen] = React.useState(false)
+    const [location, setLocation] = React.useState("")
+    const [operator, setOperator] = React.useState("")
     const [freqSelected, setFreq] = React.useState(localStorage.getItem("inputFreq") || "14");
     const [modeSelected, setMode] = React.useState(localStorage.getItem('inputMode') || 'SSB');
     const [satSelected, setSat] =React.useState(localStorage.getItem("inputSat") || "");
-    const city = null
     const specialCallsign = null
-    const operator_name = null
 
     const handleKeyPress = (event) => {
         if ((event.metaKey) && (event.keyCode == 8)){
@@ -129,11 +129,13 @@ const AddPage = ( props ) => {
         {
             // dxcc info
             const info = dxcc.countryOf(s.CALL)
-            s.COUNTRY = info.name || ""
-            s.DXCC = info.entity_code
-            s.CQZ = info.cq_zone
-            s.ITUZ = info.itu_zone
-            s.flag_ = info.flag
+            if(info){
+              s.COUNTRY = info.name 
+              s.DXCC = info.entity_code 
+              s.CQZ = info.cq_zone
+              s.ITUZ = info.itu_zone
+              s.flag_ = info.flag
+              }
             // check qrz
           // this.hamqth.lookup(s.CALL.trim())
           // .then((info)=>{this.qrz = info; this.forceUpdate();})
@@ -196,12 +198,12 @@ const AddPage = ( props ) => {
           qso["FREQ_RX"] = FreqLUT[s[1][1]]
         }
       // location / op / special call sign
-      if (city)
-        qso["MY_CITY"] = city;
+      if (location!="")
+        qso["MY_CITY"] = location;
       if (specialCallsign)
         qso["STATION_CALLSIGN"] = specialCallsign
-      if (operator_name)
-        qso["MY_NAME"] = operator_name
+      if (operator!="")
+        qso["MY_NAME"] = operator
 
       // submit
       console.log(qso)
@@ -268,6 +270,14 @@ const AddPage = ( props ) => {
       setSat(event.target.value)
     }
 
+    const handleLocationChanged = (event) => {
+      setLocation(event.target.value)
+    }
+
+    const handleOperatorChanged = (event) => {
+      setOperator(event.target.value)
+    }
+
     const  DateTimeFormat = (d,t) => {
       return d.slice(0,4) + "-" + d.slice(4,6) + "-" + d.slice(6,8) + "   " + t.slice(0,2) + ":" + t.slice(2,4);
     }
@@ -275,6 +285,9 @@ const AddPage = ( props ) => {
     return (
       <Card className={classes.root} variant="outlined">
         <CardContent>
+          <input type="text" id="location" name="location" placeholder="location" onChange={handleLocationChanged}/>
+          <input type="text" id="operator" name="operator" placeholder="operator" onChange={handleOperatorChanged}/>
+          <br/> 
           <select name="band" id="band" value={freqSelected} onChange={handleFreqChanged} disabled={satSelected!=""}>
             <option value="1.8"     key="1.8">1.8 MHz / 160m</option>
             <option value="3.5"     key="3.5">3.5 MHz / 80m</option>

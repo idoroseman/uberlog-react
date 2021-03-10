@@ -53,12 +53,12 @@ const LogbookPage = (props) => {
   })
 
   const renderRow = (props) => {
-    const { key, index, style } = props;
+    const { index, style } = props;
 
     return props.loading
       ? <Typography component="h2" variant="h6" color="primary" gutterBottom>Loading... </Typography>
-      : <div key={key} style={style}>
-          <QsoTile key={key} style={style} qso={filtered_list[index]} />
+      : <div key={index} style={style}>
+          <QsoTile key={index} style={style} qso={filtered_list[index]} />
         </div>
   }
 
