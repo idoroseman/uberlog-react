@@ -4,10 +4,13 @@ import { compose } from 'recompose';
 
 import { Button } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
+import { FixedSizeList } from 'react-window';
 
 import { withAuthorization } from '../Session';
 import { useStyles } from '../layout'
@@ -17,15 +20,21 @@ import QsoTile from './qso_tile'
 
 var moment = require('moment');
 
-class LogbookPage extends Component {
-  constructor(props) {
-    super(props);
+const LogbookPage = (props) => {
+
+  const renderRow = (props) => {
+    const { index, style } = props;
+  
+    return (
+      <ListItem button style={style} key={index}>
+        <ListItemText primary={`Item ${index + 1}`} />
+      </ListItem>
+    );
   }
 
-  render() {
-    const { classes } = this.props;
+  const { classes } = this.props;
     
-    const filtered_list = this.props.qsos.filter((item)=>{
+  const filtered_list = this.props.qsos.filter((item)=>{
       var isMatch = false;
 
       ["CALL", "FREQ", "MODE", "NAME", "QTH", "GRID", "COMMENT", "MY_CITY"].forEach((fieldName)=>{
@@ -38,27 +47,28 @@ class LogbookPage extends Component {
         isMatch= true;
       return isMatch;
     })
-    var qso_list = []
-    filtered_list.forEach((qso) => {
-      const ukey = qso.QSO_DATE+"-"+qso.TIME_ON+"-"+qso.CALL;
-      qso_list.push(<QsoTile key={ukey} qso={qso}/>)
-    });
-    if (qso_list.length==0)
-      qso_list.push(<Typography variant="body2" component="p">
-      No QSOs to show
-    </Typography>)
-    return (
+
+  var qso_list = []
+  filtered_list.forEach((qso) => {
+    const ukey = qso.QSO_DATE+"-"+qso.TIME_ON+"-"+qso.CALL;
+    qso_list.push(<QsoTile key={ukey} qso={qso}/>)
+  });
+  if (qso_list.length==0)
+    qso_list.push(<Typography variant="body2" component="p">
+    No QSOs to show
+  </Typography>)
+
+  return (
         <Paper className={clsx(classes.paper,classes.logbook)}>
-        {/* <Typography component="h2" variant="h6" color="primary" gutterBottom>
-          Logbook1
-        </Typography> */}
-        <List>
         {this.props.loading ? <div>Loading ...</div> : <>{qso_list}</>}
-        </List>
+
+        <FixedSizeList height={400} width={300} itemSize={46} itemCount={200}>
+          {renderRow}
+        </FixedSizeList>
         </Paper>
 
     );
-  }
+  
 }
 
 const condition = authUser => !!authUser;
