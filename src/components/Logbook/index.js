@@ -63,7 +63,6 @@ const LogbookPage = (props) => {
   }
 
   return (
-
     <Paper className={clsx(classes.paper, classes.logbook)}>
       <div style={{ height: '80vh' }}>
         <AutoSizer>
@@ -83,5 +82,4 @@ const condition = authUser => !!authUser;
 
 export default compose(
   withAuthorization(condition),
-  withStyles(useStyles),
 )(LogbookPage);

@@ -35,6 +35,7 @@ import AdminPage from '../Admin';
 import AddPage from '../Add';
 import MapPage from '../Map';
 import SettingsPage from "../Settings";
+import EditPage from "../Edit";
 
 import * as ROUTES from '../constants/routes';
 import { withFirebase } from '../Firebase';
@@ -166,7 +167,7 @@ function App ({firebase}) {
     return user ? firebase.logbook(logbookIndex).onSnapshot(snapshot => {
       console.log("snapshot")
       setLogbook({
-        qsos: snapshot.docs.map((doc)=>doc.data()).sort(comapare),
+        qsos: snapshot.docs.map((doc)=>Object.assign(doc.data(), {id_: doc.id})).sort(comapare),
         loading: false,
       });
     }) : null;
@@ -204,10 +205,12 @@ function App ({firebase}) {
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
             <Route exact path={ROUTES.HOME} render={(props) => {
-              {//<Navigation {...props} filterText={search} />
-            }
               return !!user?<Redirect to={ROUTES.LOGBOOK}/>: <LandingPage {...props} />
             }} />
+            <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
+            <Route path={ROUTES.SIGN_IN} component={SignInPage} />
+            <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage}/>
+
             <Route path={ROUTES.LOGBOOK} render={(props)=>(
               <LogbookPage {...props} 
                 filterText={search} 
@@ -215,18 +218,13 @@ function App ({firebase}) {
                 loading={logbook.loading}
                 />)}
             />
-            <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
-            <Route path={ROUTES.SIGN_IN} component={SignInPage} />
-            <Route
-              path={ROUTES.PASSWORD_FORGET}
-              component={PasswordForgetPage}
-            />
             <Route path={ROUTES.ADD} render={(props)=>(
               <AddPage {...props} 
                 qsos = { logbook.qsos }
                 logbookIndex = {logbookIndex}
               />)}
             />
+            <Route path={ROUTES.EDIT+"/:id" } component={EditPage} />
             <Route path={ROUTES.MAP}>
               <MapPage qsos = { logbook.qsos }/>
             </Route>

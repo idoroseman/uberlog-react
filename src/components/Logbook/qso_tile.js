@@ -1,5 +1,7 @@
 import React from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/Styles';
+import { useHistory } from "react-router-dom";
+
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -7,14 +9,14 @@ import CardMedia from '@material-ui/core/CardMedia';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-
-
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import PersonIcon from '@material-ui/icons/Person';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import SatelliteIcon from '@material-ui/icons/Satellite';
+import EditIcon from '@material-ui/icons/Edit';
+
 import Flag from 'react-world-flags'
 
 var moment = require('moment');
@@ -57,6 +59,8 @@ function DateTimeFormat(d,t) {
 export default function QsoTile( props ) {
   const classes = useStyles();
   const theme = useTheme();
+  const history = useHistory();
+
   // var datetime = moment().utc(props.qso.QSO_DATE + " " + props.qso.TIME_ON , "YYYYMMDD HHmm").locale("en-gb")
   const hasLocation = props.qso.QTH || props.qso.GRID ;
   const locationText = props.qso.QTH==null || props.qso.QTH=="" ?props.qso.GRID:props.qso.QTH;
@@ -98,6 +102,7 @@ export default function QsoTile( props ) {
               {has_qsl_sent ? "": <Button size="small" onClick={()=>{}}>Send</Button>}
               <FormControlLabel control={<Checkbox name="checkedC" checked={has_qsl_sent} />} label="S" />
               <FormControlLabel control={<Checkbox name="checkedC" checked={has_qsl_rcvd} />} label="R" />
+              <EditIcon onClick={()=>{history.push("/qso/"+props.qso.id_);}}/>
             </Typography>
           </Grid>
 
