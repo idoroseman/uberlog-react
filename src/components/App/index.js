@@ -48,6 +48,12 @@ import Grid from '@material-ui/core/Grid';
 
 import {useStyles} from '../layout'
 
+import moment from 'moment'
+import 'moment/locale/en-gb';
+
+
+//------------------------------------------------------------------------------
+
 const Copyright = () => {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -61,9 +67,21 @@ const Copyright = () => {
   );
 };
 
+//------------------------------------------------------------------------------
+
 const MyAppBar = (props) => {
   const classes = useStyles();
+  const [currentDateTime, setCurrentDateTime] = React.useState("")
   
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const locale = moment().locale("en-GB");
+      setCurrentDateTime(locale.utc().format("l LT"))
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   return <AppBar position="absolute" className={clsx(classes.appBar, props.open && classes.appBarShift)}>
   <Toolbar className={classes.toolbar}>
     <IconButton
@@ -76,7 +94,7 @@ const MyAppBar = (props) => {
       <MenuIcon />
     </IconButton>
     <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-      UberLog {props.callsign?" - "+props.callsign.toUpperCase():""}
+      {props.callsign?props.callsign.toUpperCase():"UberLog"} - {props.grid?props.grid:""} {currentDateTime}
     </Typography>
     <div className={classes.search}>
       <div className={classes.searchIcon}>
@@ -114,6 +132,8 @@ const MyAppBar = (props) => {
 </AppBar>
 }
 
+//------------------------------------------------------------------------------
+
 const MyDrawer = (props) => {
   const classes = useStyles();
  return  <Drawer
@@ -134,6 +154,8 @@ const MyDrawer = (props) => {
   <List>{secondaryListItems}</List>
 </Drawer>
 }
+
+//------------------------------------------------------------------------------
 
 function App ({firebase}) {
   const classes = useStyles();
@@ -187,7 +209,8 @@ function App ({firebase}) {
   }
 
   const currentCallsign = user ? user.logbooks[logbookIndex].callsign : ""
-
+  const currentGrid = user ? user.logbooks[logbookIndex].grid : ""
+  
   return  <Router>
     <div className={classes.root}>
       <CssBaseline />
@@ -202,6 +225,7 @@ function App ({firebase}) {
               onSearchChanged={(e)=>{setSearch(e.target.value)}}
               onClearSearch={() => setSearch('')}
               callsign = {currentCallsign}
+              grid = {currentGrid}
               />
             <MyDrawer open={drawerOpen} onDrawerClose={handleDrawerClose} />
             </> : <MyAppBar open={false} />

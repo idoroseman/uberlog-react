@@ -43,14 +43,14 @@ const SettingsPage = (props) => {
 
     const handleSelectChange = (event) => {
         props.onIndexChange(event.target.value)
-        if (event.target.value in props.logbooks)
-          setFields(props.logbooks[event.target.value]);
+        if (event.target.value in props.logbooksMetadata)
+          setFields(props.logbooksMetadata[event.target.value]);
         else
           setFields({title:"New logbook", callsign:"N0CALL", grid:""})
     };
 
     const handleSubmit = () => {
-      const tmp = props.logbooks
+      const tmp = props.logbooksMetadata
       tmp[props.logbookIndex]=fields
       props.firebase.user().update({logbooks:tmp})
     }
