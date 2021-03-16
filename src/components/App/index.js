@@ -122,7 +122,7 @@ const MyAppBar = (props) => {
     <Badge badgeContent={props.qsos_num} max={999} color="primary" className={classes.margin}>
         <ListIcon />
       </Badge>
-      <Badge color="secondary" className={classes.margin}>
+      <Badge color="secondary" className={classes.margin} onClick={()=>{console.log("sync")}}>
         <SyncIcon />
       </Badge>
       <Badge color="secondary" variant="dot" className={classes.margin}>

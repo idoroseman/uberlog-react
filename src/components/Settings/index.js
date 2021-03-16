@@ -38,7 +38,24 @@ const SettingsPage = (props) => {
     }, [props.logbooksMetadata, props.logbookIndex])
 
     const handleTextChange = (event) => {
-      setFields({...fields, [event.target.id]: event.target.value})
+      var val = event.target.value;
+      if (event.target.id == "callsign")
+        val = val.toUpperCase()
+      else if (event.target.id == "grid")
+        val = fixGridFormat(val)
+
+        setFields({...fields, [event.target.id]: val})
+    }
+
+    const fixGridFormat = (ingrid) => {
+      var outgrid = "";
+      for (var i = 0; i < ingrid.length; i += 4)
+        if (i == 0)
+          outgrid += ingrid.substr(i, 4).toUpperCase();
+    
+        else
+          outgrid += ingrid.substr(i, 4).toLowerCase();
+      return outgrid;
     }
 
     const handleSelectChange = (event) => {
@@ -75,12 +92,7 @@ const SettingsPage = (props) => {
 
           // fix bad formated grid
           if (qso.GRID){
-            var grid = ""
-            for (var i=0; i<qso.GRID.length; i+=4)
-              if (i == 0)
-                grid += qso.GRID.substr(i,4).toUpperCase()
-              else
-                grid += qso.GRID.substr(i,4).toLowerCase()
+            var grid = fixGridFormat(qso.GRID);
             if (qso.GRID != grid)
               props.firebase.logbook(props.logbookIndex).doc(doc.id).update({GRID:grid})
             }
@@ -200,3 +212,5 @@ export default compose(
   withAuthorization(condition),
   withFirebase)
   (SettingsPage);
+
+
