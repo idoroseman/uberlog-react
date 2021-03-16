@@ -8,11 +8,12 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
-import { withFirebase } from '../Firebase';
-import { DXCC } from '../Helpers'
 import Flag from 'react-world-flags'
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import { withFirebase } from '../Firebase';
+import { DXCC } from '../Helpers'
+import { lookup_QRZ_COM } from '../Information'
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -43,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 const dxcc = new DXCC();
+const lookupService = new lookup_QRZ_COM("4x6ub","12345678")
 
 const AddPage = ( props ) => {
     const empty = { CALL:"", RST_SENT:"", RST_RCVD:"", NAME:"", QTH:"", GRID:"", COMMENT:"", QSO_DATE:"", TIME_ON:""};
@@ -56,6 +58,7 @@ const AddPage = ( props ) => {
     const [freqSelected, setFreq] = React.useState(localStorage.getItem("inputFreq") || "14");
     const [modeSelected, setMode] = React.useState(localStorage.getItem('inputMode') || 'SSB');
     const [satSelected, setSat] =React.useState(localStorage.getItem("inputSat") || "");
+    const [lookup, setLookup] =  React.useState({})
     const specialCallsign = null
 
     const handleKeyPress = (event) => {
@@ -64,22 +67,22 @@ const AddPage = ( props ) => {
             //this.handleInput(event);
           }
           else if (event.keyCode == 9) {
-            // var size = Object.keys(this.qrz).length;
-            // if (size > 0) {
-            //   var pos = event.target.selectionEnd;
-            //   if (this.state.text[pos-1] == " ")
-            //     pos--;
-            //   if (this.state.text[pos-2] == "\n") {
-            //     event.preventDefault();
-            //     if (this.state.text[pos-1] == "n")
-            //        this.setState({text:this.state.text.substr(0,pos)+" "+this.qrz.name});
-            //     else if (this.state.text[pos-1] == "q")
-            //       this.setState({text:this.state.text.substr(0,pos)+" "+this.qrz.qth});
-            //     else if (this.state.text[pos-1] == "g")
-            //       this.setState({text:this.state.text.substr(0,pos)+" "+this.qrz.grid});
-            //   }
-            // }
-            console.log("Tab", event.target.selectionStart, event.target.selectionEnd);
+            var size = Object.keys(lookup).length;
+            if (size > 0) {
+              var pos = event.target.selectionEnd;
+              if (text[pos-1] == " ")
+                pos--;
+              if (text[pos-2] == "\n") {
+                event.preventDefault();
+                if (text[pos-1] == "n")
+                   setText(text.substr(0,pos)+" "+lookup.fname);
+                else if (text[pos-1] == "q")
+                  setText(text.substr(0,pos)+" "+(lookup.state ? lookup.addr2+" "+lookup.state:lookup.addr2));
+                else if (text[pos-1] == "g")
+                  setText(text.substr(0,pos)+" "+lookup.grid);
+              }
+            }
+            // console.log("Tab", event.target.selectionStart, event.target.selectionEnd);
           }   
         }
 
@@ -137,15 +140,9 @@ const AddPage = ( props ) => {
               s.flag_ = info.flag
               }
             // check qrz
-          // this.hamqth.lookup(s.CALL.trim())
-          // .then((info)=>{this.qrz = info; this.forceUpdate();})
-          // .catch((err)=>{
-          //     console.log("hamqth:"+err); 
-          //     if (err.split(":",2)[0] == this.callsign)
-          //       this.qrz={}
-          //     })
-          // this.callsign = s.CALL.trim();
-          // this.props.onNewCallsign(this.callsign);
+            if (s.CALL.length > 2) {
+              lookupService.lookup(s.CALL).then(info=>setLookup(info))
+            }
            
           // check previous log
            const prev = props.qsos.filter((item)=>{return item.CALL == s.CALL });
@@ -360,17 +357,12 @@ const AddPage = ( props ) => {
             Report His {state.RST_SENT==""?"...":state.RST_SENT} Mine {state.RST_RCVD==""?"...":state.RST_RCVD}
           </Typography>
           <Typography variant="body2" component="p">
-            Name {state.NAME?state.NAME:"..."}
+            Name {state.NAME?state.NAME:(lookup.fname?<span style={{"color":"Gray"}}>{lookup.fname}</span>:"...")}
           </Typography>
           <Typography variant="body2" component="p">
-            QTH {state.QTH ? state.QTH : "..."} 
-            {
-            //(qrz.qth?<span style={{"color":"Gray"}}>{qrz.qth}</span>:"...") 
-            }
-            {state.GRID ? "  Grid "+state.GRID: ""}
-            {
-            //(qrz.grid?<span> Grid <span style={{color:"Gray"}}>{qrz.grid}</span></span>:"")}<br/>
-            }
+            QTH {state.QTH ? state.QTH : (lookup.addr2?<span style={{"color":"Gray"}}>{lookup.state?lookup.addr2+" "+lookup.state:lookup.addr2}</span>:"...")} 
+            {state.GRID ? " Grid "+state.GRID: ""}
+            { lookup.grid?<span> Grid <span style={{color:"Gray"}}>{lookup.grid}</span></span>:"" }
           </Typography>
           <Typography variant="body2" component="p">
             {state.QSO_DATE ? "Date "+state.QSO_DATE:""}
