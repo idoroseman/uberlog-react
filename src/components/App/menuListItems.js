@@ -3,6 +3,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import Tooltip from '@material-ui/core/Tooltip';
+
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PeopleIcon from '@material-ui/icons/People';
@@ -23,31 +25,41 @@ export const mainListItems = (
   <div>
     <ListItem button component={RouterLink} to={ROUTES.LOGBOOK}>
       <ListItemIcon>
-        <ListIcon />
+        <Tooltip title="Logbook" placement="right-start">
+          <ListIcon />
+        </Tooltip>
       </ListItemIcon>
       <ListItemText primary="Logbook" />
     </ListItem>
     <ListItem button component={RouterLink} to={ROUTES.ADD}>
       <ListItemIcon>
-        <AddIcon />
+        <Tooltip title="Add" placement="right-start">
+          <AddIcon />
+        </Tooltip>
       </ListItemIcon>
       <ListItemText primary="Add" />
     </ListItem>
     <ListItem button component={RouterLink} to={ROUTES.STATS}>
       <ListItemIcon>
-        <DashboardIcon />
+        <Tooltip title="Statistics" placement="right-start">
+          <DashboardIcon />
+        </Tooltip>
       </ListItemIcon>
       <ListItemText primary="Statistics" />
     </ListItem>
     <ListItem button component={RouterLink} to={ROUTES.REPORTER}>
       <ListItemIcon>
-        <WavesIcon />
+        <Tooltip title="Reporter" placement="right-start">
+          <WavesIcon />
+        </Tooltip>
       </ListItemIcon>
       <ListItemText primary="Reporter" />
     </ListItem>
     <ListItem button component={RouterLink} to={ROUTES.MAP}>
       <ListItemIcon>
-        <MapIcon />
+        <Tooltip title="Map" placement="right-start">
+          <MapIcon />
+        </Tooltip>
       </ListItemIcon>
       <ListItemText primary="Map" />
     </ListItem>
@@ -61,13 +73,17 @@ export const secondaryListItems = (
     }
     <ListItem button component={RouterLink} to={ROUTES.SETTINGS}>
       <ListItemIcon>
-        <SettingsIcon />
+        <Tooltip title="Settings" placement="right-start">
+          <SettingsIcon />
+        </Tooltip>
       </ListItemIcon>
       <ListItemText primary="Settings" />
     </ListItem>
     <ListItem button component={RouterLink} to={ROUTES.ACCOUNT}>
       <ListItemIcon>
-        <PersonIcon />
+        <Tooltip title="Account" placement="right-start">
+          <PersonIcon />
+        </Tooltip>
       </ListItemIcon>
       <ListItemText primary="Account" />
     </ListItem>

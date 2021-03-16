@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import clsx from 'clsx';
-import { mainListItems, secondaryListItems } from '../layout/menuListItems';
+import { mainListItems, secondaryListItems } from './menuListItems';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -160,7 +160,7 @@ const MyDrawer = (props) => {
 
 function App ({firebase}) {
   const classes = useStyles();
-  const [drawerOpen, setDrawerOpen] = React.useState(true);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
   const [authUser, setAuthUser]= React.useState(null);
   const [user, setUser] = React.useState(null);
