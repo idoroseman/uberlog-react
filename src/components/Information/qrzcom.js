@@ -61,7 +61,20 @@ class lookup_QRZ_COM {
 }
 
 class qsl_QRZ_COM {
+    constructor(key){
+        this.key = key;
+    }
 
+    getImage(callsign){
+        const data = {
+            tquery: callsign,
+            mode: "callsign"
+        }
+        fetch(baseUrl+"/lookup",{
+            method: 'POST', 
+            body: JSON.stringify(data) 
+        })
+    }
 }
 
 export {lookup_QRZ_COM, qsl_QRZ_COM}

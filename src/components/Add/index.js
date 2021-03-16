@@ -281,6 +281,7 @@ const AddPage = ( props ) => {
       return d.slice(0,4) + "-" + d.slice(4,6) + "-" + d.slice(6,8) + "   " + t.slice(0,2) + ":" + t.slice(2,4);
     }
 
+    console.log(lookup)
     return (
       <Card className={classes.root} variant="outlined">
         <CardContent>
