@@ -25,6 +25,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from "@material-ui/icons/Clear";
 import SyncIcon from '@material-ui/icons/Sync';
 import SettingsEthernetIcon from '@material-ui/icons/SettingsEthernet';
+import ListIcon from '@material-ui/icons/List';
 
 import LandingPage from '../Landing';
 import SignUpPage from '../SignUp';
@@ -118,14 +119,14 @@ const MyAppBar = (props) => {
         </IconButton>
     </div>
     <IconButton color="inherit">
+    <Badge badgeContent={props.qsos_num} max={999} color="primary" className={classes.margin}>
+        <ListIcon />
+      </Badge>
       <Badge color="secondary" className={classes.margin}>
         <SyncIcon />
       </Badge>
       <Badge color="secondary" variant="dot" className={classes.margin}>
         <SettingsEthernetIcon />
-      </Badge>
-      <Badge badgeContent={0} color="secondary" className={classes.margin}>
-        <NotificationsIcon />
       </Badge>
     </IconButton>
   </Toolbar>
@@ -210,7 +211,7 @@ function App ({firebase}) {
 
   const currentCallsign = user ? user.logbooks[logbookIndex].callsign : ""
   const currentGrid = user ? user.logbooks[logbookIndex].grid : ""
-  
+
   return  <Router>
     <div className={classes.root}>
       <CssBaseline />
@@ -226,6 +227,7 @@ function App ({firebase}) {
               onClearSearch={() => setSearch('')}
               callsign = {currentCallsign}
               grid = {currentGrid}
+              qsos_num = { logbook.qsos.length }
               />
             <MyDrawer open={drawerOpen} onDrawerClose={handleDrawerClose} />
             </> : <MyAppBar open={false} />
