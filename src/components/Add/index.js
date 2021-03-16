@@ -204,6 +204,8 @@ const AddPage = ( props ) => {
         qso["STATION_CALLSIGN"] = specialCallsign
       if (operator!="")
         qso["MY_NAME"] = operator
+      // OWNER_CALLSIGN	-  	the callsign of the owner of the station used to log the contact
+      // STATION_CALLSIGN	- the logging station's callsign (the callsign used over the air)
 
       // submit
       console.log(qso)

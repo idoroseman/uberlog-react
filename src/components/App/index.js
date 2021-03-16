@@ -23,7 +23,8 @@ import Link from '@material-ui/core/Link';
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from "@material-ui/icons/Clear";
-
+import SyncIcon from '@material-ui/icons/Sync';
+import SettingsEthernetIcon from '@material-ui/icons/SettingsEthernet';
 
 import LandingPage from '../Landing';
 import SignUpPage from '../SignUp';
@@ -99,7 +100,13 @@ const MyAppBar = (props) => {
         </IconButton>
     </div>
     <IconButton color="inherit">
-      <Badge badgeContent={4} color="secondary">
+      <Badge color="secondary" className={classes.margin}>
+        <SyncIcon />
+      </Badge>
+      <Badge color="secondary" variant="dot" className={classes.margin}>
+        <SettingsEthernetIcon />
+      </Badge>
+      <Badge badgeContent={0} color="secondary" className={classes.margin}>
         <NotificationsIcon />
       </Badge>
     </IconButton>
@@ -231,8 +238,10 @@ function App ({firebase}) {
             <Route path={ROUTES.ACCOUNT} component={AccountPage} />
             <Route path={ROUTES.SETTINGS} render={(props)=>(
               <SettingsPage {...props} 
-                  logbooks = {user ? user.logbooks : [] }
+                  logbooksMetadata = {user ? user.logbooks : [] }
                   logbookIndex = {logbookIndex}
+                  qsos = { logbook.qsos }
+
                   onIndexChange = {(value)=>{
                     localStorage.setItem('selectedLogbook', value)
                     setLogbookIndex(value);

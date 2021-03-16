@@ -44,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: 'yellow',
 
   },
+  margin: {
+    margin: theme.spacing(1),
+  },
   drawerPaper: {
     position: 'relative',
     whiteSpace: 'nowrap',

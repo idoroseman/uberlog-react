@@ -13,8 +13,10 @@ import { compose } from 'recompose';
 import { AuthUserContext, withAuthorization } from '../Session';
 import { withFirebase } from '../Firebase';
 import { Unsubscribe } from '@material-ui/icons';
-import Adif from '../Adif';
-import { DXCC } from '../Helpers'
+import { DXCC, Adif} from '../Helpers'
+
+var fs = require("fs");
+
 const useStyles = makeStyles((theme) => ({
     formControl: {
       margin: theme.spacing(1),
@@ -28,10 +30,12 @@ const useStyles = makeStyles((theme) => ({
 const SettingsPage = (props) => {
     const classes = useStyles();
     const [fields, setFields] = React.useState({})
+    const [fileDownloadUrl, setFileDownloadUrl] = React.useState("")
+    const downloadRef = React.createRef();
 
     useEffect(()=>{
-      setFields(props.logbooks[props.logbookIndex])
-    }, [props.logbooks, props.logbookIndex])
+      setFields(props.logbooksMetadata[props.logbookIndex])
+    }, [props.logbooksMetadata, props.logbookIndex])
 
     const handleTextChange = (event) => {
       setFields({...fields, [event.target.id]: event.target.value})
@@ -52,23 +56,22 @@ const SettingsPage = (props) => {
     }
 
     const handleCheckDB = () => {
-/*
       console.log("fetching meta data")
       const dxcc = new DXCC();
-      firebase.logbook(selected).get().then((snapshot)=>{
+      props.firebase.logbook(props.logbookIndex).get().then((snapshot)=>{
         snapshot.forEach((doc)=>{
           const qso = doc.data()
           // fix missing calculated fields
           if (qso.COUNTRY === undefined)
-            firebase.logbook(selected).doc(doc.id).update({COUNTRY:dxcc.countryOf(qso.CALL).name})
+            props.firebase.logbook(props.logbookIndex).doc(doc.id).update({COUNTRY:dxcc.countryOf(qso.CALL).name})
           if (qso.DXCC === undefined)
-            firebase.logbook(selected).doc(doc.id).update({DXCC:dxcc.countryOf(qso.CALL).entity_code})
+            props.firebase.logbook(props.logbookIndex).doc(doc.id).update({DXCC:dxcc.countryOf(qso.CALL).entity_code})
           if (qso.CQZ === undefined)
-            firebase.logbook(selected).doc(doc.id).update({CQZ:dxcc.countryOf(qso.CALL).cq_zone})
+            props.firebase.logbook(props.logbookIndex).doc(doc.id).update({CQZ:dxcc.countryOf(qso.CALL).cq_zone})
           if (qso.ITUZ === undefined)
-            firebase.logbook(selected).doc(doc.id).update({ITUZ:dxcc.countryOf(qso.CALL).itu_zone})
+            props.firebase.logbook(props.logbookIndex).doc(doc.id).update({ITUZ:dxcc.countryOf(qso.CALL).itu_zone})
           if (qso.flag_ === undefined) 
-            firebase.logbook(selected).doc(doc.id).update({flag_:dxcc.countryOf(qso.CALL).flag})
+            props.firebase.logbook(props.logbookIndex).doc(doc.id).update({flag_:dxcc.countryOf(qso.CALL).flag})
 
           // fix bad formated grid
           if (qso.GRID){
@@ -79,31 +82,55 @@ const SettingsPage = (props) => {
               else
                 grid += qso.GRID.substr(i,4).toLowerCase()
             if (qso.GRID != grid)
-            firebase.logbook(selected).doc(doc.id).update({GRID:grid})
+              props.firebase.logbook(props.logbookIndex).doc(doc.id).update({GRID:grid})
             }
         })
       })
-      */
+      
     }
 
     const handleImportAdif = (e) => {
-      /*
+      
       var files = e.target.files;
       var filesArr = Array.prototype.slice.call(files);
       filesArr.forEach((file)=>{
         const reader = new FileReader();
         reader.addEventListener('load', (event) => {
           const qsos = Adif.parseAdifFile(event.target.result);
-          const db = firebase.logbook(selected)
+          const db = props.firebase.logbook(props.logbookIndex)
           qsos.forEach((qso=>db.add(qso)))
         });
         reader.readAsText(file);
       })
-      */
+      
     }
 
-    const lbs = Object.keys(props.logbooks)
-       .map((i)=><MenuItem key={i} value={i}>{props.logbooks[i].title}</MenuItem>)
+    const handleExportAdif = (event) => {
+      event.preventDefault();
+      console.log("prepare")
+      // create data
+      let output;
+      const adif = new Adif();
+      output += "UBerLog\n"
+      output += "<EOH>\n"
+      props.qsos.map((item)=>{
+        output += adif.objectToAdif(item)+"\n"
+      });
+
+      // save data
+      const blob = new Blob([output]);                   
+      const fileDownloadUrl = URL.createObjectURL(blob);
+      var link = document.createElement('a');
+      link.href = fileDownloadUrl;
+      link.download = props.logbooksMetadata[props.logbookIndex].callsign+".adif"
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      link = null;
+    }
+
+    const lbs = Object.keys(props.logbooksMetadata)
+       .map((i)=><MenuItem key={i} value={i}>{props.logbooksMetadata[i].title}</MenuItem>)
  
 
   return <AuthUserContext.Consumer>
@@ -152,9 +179,9 @@ const SettingsPage = (props) => {
           </Button>
         </label> 
         <hr/>
-        export
 
-        <Button variant="text" component="span" className={classes.button}>
+        export
+        <Button variant="text" component="span" className={classes.button} onClick={handleExportAdif}>
             ADIF
         </Button>
         <Button variant="text" component="span" className={classes.button}>
