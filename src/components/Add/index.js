@@ -44,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 const dxcc = new DXCC();
-const lookupService = new lookup_QRZ_COM("4x6ub","12345678")
 
 const AddPage = ( props ) => {
     const empty = { CALL:"", RST_SENT:"", RST_RCVD:"", NAME:"", QTH:"", GRID:"", COMMENT:"", QSO_DATE:"", TIME_ON:""};
@@ -141,7 +140,7 @@ const AddPage = ( props ) => {
               }
             // check qrz
             if (s.CALL.length > 2) {
-              lookupService.lookup(s.CALL).then(info=>setLookup(info))
+              props.lookupService.lookup(s.CALL).then(info=>{console.log(info); setLookup(info)})
             }
            
           // check previous log
@@ -203,6 +202,10 @@ const AddPage = ( props ) => {
         qso["MY_NAME"] = operator
       // OWNER_CALLSIGN	-  	the callsign of the owner of the station used to log the contact
       // STATION_CALLSIGN	- the logging station's callsign (the callsign used over the air)
+
+      // additional info
+      if (lookup.image)
+        qso["qrzcom_image_url_"] = lookup.image
 
       // submit
       console.log(qso)
@@ -281,7 +284,6 @@ const AddPage = ( props ) => {
       return d.slice(0,4) + "-" + d.slice(4,6) + "-" + d.slice(6,8) + "   " + t.slice(0,2) + ":" + t.slice(2,4);
     }
 
-    console.log(lookup)
     return (
       <Card className={classes.root} variant="outlined">
         <CardContent>

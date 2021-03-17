@@ -14,6 +14,7 @@ import { AuthUserContext, withAuthorization } from '../Session';
 import { withFirebase } from '../Firebase';
 import { Unsubscribe } from '@material-ui/icons';
 import { DXCC, Adif} from '../Helpers'
+import { lookup_QRZ_COM } from '../Information'
 
 var fs = require("fs");
 
@@ -79,23 +80,33 @@ const SettingsPage = (props) => {
         snapshot.forEach((doc)=>{
           const qso = doc.data()
           // fix missing calculated fields
-          if (qso.COUNTRY === undefined)
-            props.firebase.logbook(props.logbookIndex).doc(doc.id).update({COUNTRY:dxcc.countryOf(qso.CALL).name})
-          if (qso.DXCC === undefined)
-            props.firebase.logbook(props.logbookIndex).doc(doc.id).update({DXCC:dxcc.countryOf(qso.CALL).entity_code})
-          if (qso.CQZ === undefined)
-            props.firebase.logbook(props.logbookIndex).doc(doc.id).update({CQZ:dxcc.countryOf(qso.CALL).cq_zone})
-          if (qso.ITUZ === undefined)
-            props.firebase.logbook(props.logbookIndex).doc(doc.id).update({ITUZ:dxcc.countryOf(qso.CALL).itu_zone})
-          if (qso.flag_ === undefined) 
-            props.firebase.logbook(props.logbookIndex).doc(doc.id).update({flag_:dxcc.countryOf(qso.CALL).flag})
-
+          const dxccinfo = dxcc.countryOf(qso.CALL)
+          if (dxccinfo){
+            if (qso.COUNTRY === undefined)
+              props.firebase.logbook(props.logbookIndex).doc(doc.id).update({COUNTRY:dxccinfo.name})
+            if (qso.DXCC === undefined)
+              props.firebase.logbook(props.logbookIndex).doc(doc.id).update({DXCC:dxccinfo.entity_code})
+            if (qso.CQZ === undefined)
+              props.firebase.logbook(props.logbookIndex).doc(doc.id).update({CQZ:dxccinfo.cq_zone})
+            if (qso.ITUZ === undefined)
+              props.firebase.logbook(props.logbookIndex).doc(doc.id).update({ITUZ:dxccinfo.itu_zone})
+            if (qso.flag_ === undefined) 
+              props.firebase.logbook(props.logbookIndex).doc(doc.id).update({flag_:dxccinfo.flag})
+          }
           // fix bad formated grid
           if (qso.GRID){
             var grid = fixGridFormat(qso.GRID);
             if (qso.GRID != grid)
               props.firebase.logbook(props.logbookIndex).doc(doc.id).update({GRID:grid})
             }
+          
+          // check for qrz.com images
+          if (!qso.qrzcom_image_url_){
+            props.lookupService.lookup(qso.CALL).then(info=>{
+              if (info.image)
+                props.firebase.logbook(props.logbookIndex).doc(doc.id).update({qrzcom_image_url_:info.image})
+            })
+          }
         })
       })
       

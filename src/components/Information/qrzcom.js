@@ -1,3 +1,4 @@
+import Firenase from '../Firebase';
 
 class lookup_QRZ_COM {
     
@@ -5,9 +6,11 @@ class lookup_QRZ_COM {
         this.baseUrl = "https://xmldata.qrz.com"
         this.key = undefined 
         const url = this.baseUrl+"/xml/current/?username="+username+";password="+password+";agent=uberlog0.3"
+        const self=this
         fetch(url).then(response => response.text())
             .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
-            .then(data => this.key = data.getElementsByTagName("Key")[0].innerHTML )
+            .then(data => { self.key = data.getElementsByTagName("Key")[0].innerHTML } )
+            .catch((err)=>{console.log(err)})
     }
 
     xml2json(xml) {
@@ -70,7 +73,7 @@ class qsl_QRZ_COM {
             tquery: callsign,
             mode: "callsign"
         }
-        fetch(baseUrl+"/lookup",{
+        fetch("https://www.qrz.com/lookup",{
             method: 'POST', 
             body: JSON.stringify(data) 
         })

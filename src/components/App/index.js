@@ -51,6 +51,7 @@ import {useStyles} from '../layout'
 
 import moment from 'moment'
 import 'moment/locale/en-gb';
+import { lookup_QRZ_COM } from '../Information';
 
 
 //------------------------------------------------------------------------------
@@ -164,6 +165,7 @@ function App ({firebase}) {
   const [search, setSearch] = React.useState("");
   const [authUser, setAuthUser]= React.useState(null);
   const [user, setUser] = React.useState(null);
+  const [secrets, setSecrets] = React.useState({})
   const [logbookIndex, setLogbookIndex] = React.useState(localStorage.getItem('selectedLogbook') || 0)
   const [logbook, setLogbook] = React.useState({
     loading: true,
@@ -178,7 +180,7 @@ function App ({firebase}) {
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   
-  // update user status
+  // update user auth status
   useEffect(() => {
     return firebase.auth.onAuthStateChanged( user => { setAuthUser(user); } );
   })
@@ -193,9 +195,16 @@ function App ({firebase}) {
 
   // get current logbook
   useEffect(()=>{
+    return user ? firebase.user().collection("secrets").onSnapshot(snapshot => { 
+      snapshot.forEach((doc)=>{setSecrets({[doc.id]:doc.data()})})
+    }) : null;
+  }, [user]) // run only if user changed
+
+  // get current logbook
+  useEffect(()=>{
     setLogbook({loading:true, qsos:[]})
     return user ? firebase.logbook(logbookIndex).onSnapshot(snapshot => {
-      console.log("snapshot")
+      console.log("logbook snapshot")
       setLogbook({
         qsos: snapshot.docs.map((doc)=>Object.assign(doc.data(), {id_: doc.id})).sort(comapare),
         loading: false,
@@ -255,6 +264,7 @@ function App ({firebase}) {
               <AddPage {...props} 
                 qsos = { logbook.qsos }
                 logbookIndex = {logbookIndex}
+                lookupService = {new lookup_QRZ_COM(secrets["qrz.com"].username, secrets["qrz.com"].password)}
               />)}
             />
             <Route path={ROUTES.EDIT+"/:id" } component={EditPage} />
@@ -267,6 +277,7 @@ function App ({firebase}) {
                   logbooksMetadata = {user ? user.logbooks : [] }
                   logbookIndex = {logbookIndex}
                   qsos = { logbook.qsos }
+                  lookupService = {new lookup_QRZ_COM(secrets["qrz.com"].username, secrets["qrz.com"].password)}
 
                   onIndexChange = {(value)=>{
                     localStorage.setItem('selectedLogbook', value)

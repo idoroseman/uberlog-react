@@ -20,8 +20,6 @@ const useStyles = makeStyles((theme) => ({
 const AccountPage = ({firebase}) => {
   const isInvalid = false;
 
-  const qrz_username = '';
-  const qrz_password ='';
   const lotw_username = '';
   const lotw_password = '';
 
@@ -38,6 +36,8 @@ const AccountPage = ({firebase}) => {
   const handleTextChange = (e) => {
     const t = e.target.name.split("_")
     let s = Object.assign({},secrets);
+    if (!s[t[0]])
+      s[t[0]] = {}
     s[t[0]][t[1]] = e.target.value;
     setSecrets(s)
   }
@@ -53,7 +53,7 @@ const AccountPage = ({firebase}) => {
   }
 
   const classes = useStyles();
-  console.log(secrets)
+
   return  <AuthUserContext.Consumer>
     {authUser => (
       <div>
@@ -92,78 +92,67 @@ const AccountPage = ({firebase}) => {
         <hr/>
 
         qrz.com
-        <form onSubmit={handleSave}>
-          <input
-            name="qrz_username"
-            value={qrz_username}
-            type="text"
-            placeholder="username"
-            readOnly
-          />
-          <input
-            name="qrz_password"
-            value={qrz_password}
-            type="password"
-            placeholder="Password"
-            readOnly
-          />
-          <button disabled={isInvalid} type="submit">
-            Save
-          </button>
-        </form>
-        <Button variant="text" component="span" className={classes.button}>
-            Sync
-        </Button>
+        <br/>
+        <input
+          name="qrz.com_username"
+          value={'qrz.com' in secrets ? secrets['qrz.com'].username || '':''}
+          type="text"
+          placeholder="username"
+          onChange={handleTextChange}
+        />
+        <input
+          name="qrz.com_password"
+          value={'qrz.com' in secrets ? secrets['qrz.com'].password || '':''}
+          type="password"
+          placeholder="Password"
+          onChange={handleTextChange}
+        />
+        <button name="qrz.com" disabled={isInvalid} onClick={handleSave}>
+          Save
+        </button>
         <hr/>
 
         LoTW
-        <form onSubmit={handleSave}>
-          <input
-            name="lotw_username"
-            value={lotw_username}
-            type="text"
-            placeholder="username"
-            readOnly
-          />
-          <input
-            name="lotw_password"
-            value={lotw_password}
-            type="password"
-            placeholder="Password"
-            readOnly
-          />
-          <button disabled={isInvalid} type="submit">
-            Save
-          </button>
-        </form>
-        <Button variant="text" component="span" className={classes.button}>
-            Sync
-        </Button>
+        <br/>
+        <input
+          name="lotw_username"
+          value={'lotw' in secrets ? secrets['lotw'].username || '':''}
+          type="text"
+          placeholder="username"
+          onChange={handleTextChange}
+        />
+        <input
+          name="lotw_password"
+          value={'lotw' in secrets ? secrets['lotw'].password || '':''}
+          type="password"
+          placeholder="Password"
+          onChange={handleTextChange}
+        />
+        <button name="lotw" disabled={isInvalid} onClick={handleSave}>
+          Save
+        </button>
         <hr/>
 
         ClubLog
-        <form onSubmit={handleSave}>
-          <input
-            name="lotw_username"
-            value={lotw_username}
-            type="text"
-            placeholder="username"
-            readOnly
-          />
-          <input
-            name="lotw_password"
-            value={lotw_password}
-            type="password"
-            placeholder="Password"
-            readOnly
-          />
-          <button disabled={isInvalid} type="submit">
-            Save
-          </button>
-        </form>
-        <Button variant="text" component="span" className={classes.button}>
-            Sync
-        </Button>
+        <br/>
+        <input
+          name="clublog_username"
+          value={'clublog' in secrets ? secrets['clublog'].username || '':''}
+          type="text"
+          placeholder="username"
+          onChange={handleTextChange}
+        />
+        <input
+          name="clublog_password"
+          value={'clublog' in secrets ? secrets['clublog'].password || '':''}
+          type="password"
+          placeholder="Password"
+          onChange={handleTextChange}
+        />
+        <button name="clublog" disabled={isInvalid} onClick={handleSave}>
+          Save
+        </button>
+
       </div>
     )}
   </AuthUserContext.Consumer>

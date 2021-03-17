@@ -70,11 +70,18 @@ export default function QsoTile( props ) {
   const has_qrzcom_qsl = props.qso.APP_QRZLOG_STATUS == "C"
   const has_qsl_rcvd = has_picture_qsl || has_lotw_qsl || has_qrzcom_qsl
   const has_qsl_sent = props.qso.QSL_SENT=="Y"
+
+  let image_url = "http://via.placeholder.com/320x240";
+  if (props.qso.eqslcc_image_url_)
+    image_url=props.qso.eqslcc_image_url_;
+  else if (props.qso.qrzcom_image_url_)
+    image_url=props.qso.qrzcom_image_url_;
+
   return (
     <Card className={classes.card}>
       <CardMedia
         className={classes.cover}
-        image="http://via.placeholder.com/320x240"
+        image={image_url}
         title="qsl card"
       />
       <div className={classes.details}>
