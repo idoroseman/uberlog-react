@@ -1,6 +1,8 @@
 {
   "name": "uberlog-nx",
   "version": "0.1.0",
+  "main": "public/electron.js",
+  "homepage": "./",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.3",
@@ -9,6 +11,8 @@
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.7.1",
+    "electron-is-dev": "^2.0.0",
+    "electron-squirrel-startup": "^1.0.0",
     "firebase": "^8.2.7",
     "google-maps-react": "^2.0.6",
     "moment": "^2.29.1",
@@ -27,7 +31,13 @@
     "build": "react-scripts build",
     "build-dev": "REACT_APP_ENV=staging npm run build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "dev": "concurrently -k \"BROWSER=none npm start\" \"npm:electron\"",
+    "electron": "wait-on tcp:3000 && electron-forge start",
+    "electron-old": "wait-on tcp:3000 && electron .",
+    "package": "react-scripts build && electron-forge package",
+    "make": "react-scripts build && electron-forge make",
+    "icon-maker": "npx electron-icon-maker --input=/absolute/path/to/cra-electron-forge-demo/src/app-icon.png --output=src  "
   },
   "eslintConfig": {
     "extends": [
@@ -46,5 +56,46 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.54",
+    "@electron-forge/maker-deb": "^6.0.0-beta.54",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
+    "@electron-forge/maker-zip": "^6.0.0-beta.54",
+    "concurrently": "^5.2.0",
+    "electron": "^12.0.1",
+    "electron-devtools-installer": "^3.1.1",
+    "wait-on": "^5.1.0"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "icon": "src/icons/mac/icon.icns",
+        "name": "UberLog"
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "uberlog_nx"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
   }
 }
