@@ -17,6 +17,8 @@ import LocationOnIcon from '@material-ui/icons/LocationOn';
 import SatelliteIcon from '@material-ui/icons/Satellite';
 import EditIcon from '@material-ui/icons/Edit';
 
+import BackgroundImg from './bg_320x240.jpg';
+
 import Flag from 'react-world-flags'
 
 var moment = require('moment');
@@ -71,7 +73,7 @@ export default function QsoTile( props ) {
   const has_qsl_rcvd = has_picture_qsl || has_lotw_qsl || has_qrzcom_qsl
   const has_qsl_sent = props.qso.QSL_SENT=="Y"
 
-  let image_url = "http://via.placeholder.com/320x240";
+  let image_url = BackgroundImg;
   if (props.qso.eqslcc_image_url_)
     image_url=props.qso.eqslcc_image_url_;
   else if (props.qso.qrzcom_image_url_)
