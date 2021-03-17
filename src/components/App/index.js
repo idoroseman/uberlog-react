@@ -20,6 +20,8 @@ import List from '@material-ui/core/List';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Box from '@material-ui/core/Box';
 import Link from '@material-ui/core/Link';
+import Tooltip from '@material-ui/core/Tooltip';
+
 import InputBase from '@material-ui/core/InputBase';
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from "@material-ui/icons/Clear";
@@ -124,10 +126,14 @@ const MyAppBar = (props) => {
         <ListIcon />
       </Badge>
       <Badge color="secondary" className={classes.margin} onClick={()=>{console.log("sync")}}>
-        <SyncIcon />
+        <Tooltip title="Sync" placement="bottom">
+          <SyncIcon />
+        </Tooltip>
       </Badge>
       <Badge color="secondary" variant="dot" className={classes.margin}>
-        <SettingsEthernetIcon />
+        <Tooltip title="Connections\nwsj-x" placement="bottom">
+          <SettingsEthernetIcon />
+        </Tooltip>
       </Badge>
     </IconButton>
   </Toolbar>
@@ -193,7 +199,7 @@ function App ({firebase}) {
       return null      
     }, [authUser])
 
-  // get current logbook
+  // get current secrets
   useEffect(()=>{
     return user ? firebase.user().collection("secrets").onSnapshot(snapshot => { 
       snapshot.forEach((doc)=>{setSecrets({[doc.id]:doc.data()})})
