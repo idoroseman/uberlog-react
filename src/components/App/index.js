@@ -270,7 +270,7 @@ function App ({firebase}) {
               <AddPage {...props} 
                 qsos = { logbook.qsos }
                 logbookIndex = {logbookIndex}
-                lookupService = {new lookup_QRZ_COM(secrets["qrz.com"].username, secrets["qrz.com"].password)}
+                lookupService = {new lookup_QRZ_COM(secrets["qrz.com"])}
               />)}
             />
             <Route path={ROUTES.EDIT+"/:id" } component={EditPage} />
@@ -283,7 +283,7 @@ function App ({firebase}) {
                   logbooksMetadata = {user ? user.logbooks : [] }
                   logbookIndex = {logbookIndex}
                   qsos = { logbook.qsos }
-                  lookupService = {new lookup_QRZ_COM(secrets["qrz.com"].username, secrets["qrz.com"].password)}
+                  lookupService = {new lookup_QRZ_COM(secrets["qrz.com"])}
 
                   onIndexChange = {(value)=>{
                     localStorage.setItem('selectedLogbook', value)

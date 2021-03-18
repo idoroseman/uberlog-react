@@ -2,10 +2,13 @@ import Firenase from '../Firebase';
 
 class lookup_QRZ_COM {
     
-    constructor(username, password) {
+    constructor(credentials) {
         this.baseUrl = "https://xmldata.qrz.com"
         this.key = undefined 
-        const url = this.baseUrl+"/xml/current/?username="+username+";password="+password+";agent=uberlog0.3"
+        console.log("credentials",credentials)
+        if (!credentials)
+          return
+        const url = this.baseUrl+"/xml/current/?username="+credentials.username+";password="+credentials.password+";agent=uberlog0.3"
         const self=this
         fetch(url).then(response => response.text())
             .then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
