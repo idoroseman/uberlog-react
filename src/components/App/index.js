@@ -49,12 +49,22 @@ import { withAuthentication } from '../Session';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 
+import { withStyles } from '@material-ui/core/styles';
 import {useStyles} from '../layout'
 
 import moment from 'moment'
 import 'moment/locale/en-gb';
 import { lookup_QRZ_COM } from '../Information';
 
+const HtmlTooltip = withStyles((theme) => ({
+  tooltip: {
+    backgroundColor: '#f5f5f9',
+    color: 'rgba(0, 0, 0, 0.87)',
+    maxWidth: 220,
+    fontSize: theme.typography.pxToRem(12),
+    border: '1px solid #dadde9',
+  },
+}))(Tooltip);
 
 //------------------------------------------------------------------------------
 
@@ -123,18 +133,26 @@ const MyAppBar = (props) => {
     </div>
     <IconButton color="inherit">
     <Badge badgeContent={props.qsos_num} max={999} color="primary" className={classes.margin}>
+      <Tooltip title="QSO Count" placement="bottom">
         <ListIcon />
-      </Badge>
-      <Badge color="secondary" className={classes.margin} onClick={()=>{console.log("sync")}}>
-        <Tooltip title="Sync" placement="bottom">
-          <SyncIcon />
-        </Tooltip>
-      </Badge>
-      <Badge color="secondary" variant="dot" className={classes.margin}>
-        <Tooltip title="Connections\nwsj-x" placement="bottom">
-          <SettingsEthernetIcon />
-        </Tooltip>
-      </Badge>
+      </Tooltip>
+    </Badge>
+    <Badge color="secondary" className={classes.margin} onClick={()=>{console.log("sync")}}>
+      <Tooltip title="Sync" placement="bottom">
+        <SyncIcon />
+      </Tooltip>
+    </Badge>
+    <Badge color="secondary" variant="dot" className={classes.margin}>
+      <HtmlTooltip
+          title={
+            <React.Fragment>
+              Connections<br/><em>wsjt-x</em>
+            </React.Fragment>
+          }
+        >
+        <SettingsEthernetIcon />
+      </HtmlTooltip>
+    </Badge>
     </IconButton>
   </Toolbar>
 </AppBar>
