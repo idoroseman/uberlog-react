@@ -110,27 +110,7 @@ const MyAppBar = (props) => {
     <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
       {props.callsign?props.callsign.toUpperCase():"UberLog"} - {props.grid?props.grid:""} {currentDateTime}
     </Typography>
-    <div className={classes.search}>
-      <div className={classes.searchIcon}>
-        <SearchIcon />
-      </div>
-      <InputBase
-        clearable="true"
-        placeholder="Search…"
-        classes={{
-          root: classes.inputRoot,
-          input: classes.inputInput,
-        }}
-        inputProps={{ 
-          'aria-label': 'search' ,
-        }}
-        value={props.search}
-        onChange={props.onSearchChanged} 
-      />
-      <IconButton onClick={props.onClearSearch}> 
-              <ClearIcon />
-        </IconButton>
-    </div>
+
     <IconButton color="inherit">
     <Badge badgeContent={props.qsos_num} max={999} color="primary" className={classes.margin}>
       <Tooltip title="QSO Count" placement="bottom">
@@ -186,7 +166,6 @@ const MyDrawer = (props) => {
 function App ({firebase}) {
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const [search, setSearch] = React.useState("");
   const [authUser, setAuthUser]= React.useState(null);
   const [user, setUser] = React.useState(null);
   const [secrets, setSecrets] = React.useState({})
@@ -255,9 +234,6 @@ function App ({firebase}) {
             <MyAppBar open={drawerOpen} 
               onDrawerClose={handleDrawerClose} 
               onDrawerOpen={handleDrawerOpen}
-              search={search}
-              onSearchChanged={(e)=>{setSearch(e.target.value)}}
-              onClearSearch={() => setSearch('')}
               callsign = {currentCallsign}
               grid = {currentGrid}
               qsos_num = { logbook.qsos.length }
@@ -279,7 +255,6 @@ function App ({firebase}) {
 
             <Route path={ROUTES.LOGBOOK} render={(props)=>(
               <LogbookPage {...props} 
-                filterText={search} 
                 qsos={logbook.qsos}
                 loading={logbook.loading}
                 />)}
