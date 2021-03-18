@@ -98,7 +98,7 @@ const LogbookPage = (props) => {
   const filtered_list = props.qsos.filter((item) => {
     var isMatch = false;
 
-    ["CALL", "FREQ", "MODE", "NAME", "QTH", "GRID", "COMMENT", "MY_CITY"].forEach((fieldName) => {
+    ["CALL", "FREQ", "MODE", "NAME", "QTH", "GRID", "COMMENT", "MY_CITY", "COUNTRY"].forEach((fieldName) => {
       if ((item[fieldName]) && (item[fieldName].toString().toLowerCase().search(search.toLowerCase()) !== -1))
         isMatch = true;
     })
