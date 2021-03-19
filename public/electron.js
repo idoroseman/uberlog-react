@@ -2,11 +2,12 @@
 
 const path = require("path");
 
-const { app, BrowserWindow } = require("electron");
+const { app, ipcMain, BrowserWindow } = require("electron");
 const isDev = require("electron-is-dev");
 
 // Conditionally include the dev tools installer to load React Dev Tools
 let installExtension, REACT_DEVELOPER_TOOLS; 
+let mainWindow;
 
 if (isDev) {
   const devTools = require("electron-devtools-installer");
@@ -21,17 +22,20 @@ if (require("electron-squirrel-startup")) {
 
 function createWindow() {
   // Create the browser window.
-  const win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 800,
     height: 625,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      contextIsolation: false,
+      preload: `${__dirname}/preload.js`,
+      webSecurity: false 
     }
   });
 
   // and load the index.html of the app.
   // win.loadFile("index.html");
-  win.loadURL(
+  mainWindow.loadURL(
     isDev
       ? "http://localhost:3000"
       : `file://${path.join(__dirname, "../build/index.html")}`
@@ -39,7 +43,7 @@ function createWindow() {
 
   // Open the DevTools.
   if (isDev) {
-    win.webContents.openDevTools({ mode: "detach" });
+    mainWindow.webContents.openDevTools({ mode: "detach" });
   }
 }
 
@@ -72,6 +76,10 @@ app.on("activate", () => {
     createWindow();
   }
 });
+
+ipcMain.on('always-on-top', (event, arg) => {
+  mainWindow.setAlwaysOnTop(arg, "floating", 1);
+})
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

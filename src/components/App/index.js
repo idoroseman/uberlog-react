@@ -28,6 +28,7 @@ import ClearIcon from "@material-ui/icons/Clear";
 import SyncIcon from '@material-ui/icons/Sync';
 import SettingsEthernetIcon from '@material-ui/icons/SettingsEthernet';
 import ListIcon from '@material-ui/icons/List';
+import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
 
 import LandingPage from '../Landing';
 import SignUpPage from '../SignUp';
@@ -56,6 +57,9 @@ import {useStyles} from '../layout'
 import moment from 'moment'
 import 'moment/locale/en-gb';
 import { lookup_QRZ_COM } from '../Information';
+
+import isElectron from 'is-electron';
+// const {ipcRenderer} = window.electron
 
 const HtmlTooltip = withStyles((theme) => ({
   tooltip: {
@@ -134,6 +138,19 @@ const MyAppBar = (props) => {
         <SettingsEthernetIcon />
       </HtmlTooltip>
     </Badge>
+    { isElectron() ?
+      <Badge color="secondary" variant={props.isOnTop?"dot":""} className={classes.margin} onClick={props.onStayOnTop}>
+        <HtmlTooltip
+          title={
+            <React.Fragment>
+              Stay On Top
+            </React.Fragment>
+          }
+        >
+        <VerticalAlignTopIcon />
+      </HtmlTooltip>
+    </Badge> : ""
+    }
     </IconButton>
   </Toolbar>
 </AppBar>
@@ -175,6 +192,7 @@ function App ({firebase}) {
     loading: true,
     qsos: [],
   })
+  const [isOnTop, setIsOnTop] = React.useState(false);
 
   const handleDrawerOpen = () => {
     setDrawerOpen(true);
@@ -216,6 +234,12 @@ function App ({firebase}) {
     }) : null;
   }, [user, logbookIndex]) // run only if user changed
 
+  const handleStayOnTop = (event) =>{
+    window.ipcRenderer.send('always-on-top', !isOnTop)
+    localStorage.setItem('stayOnTop', !isOnTop)
+    setIsOnTop(!isOnTop)
+  }
+
   const comapare = (a,b) => {
     if (a.QSO_DATE+a.TIME_ON > b.QSO_DATE+b.TIME_ON) return -1;
     if (b.QSO_DATE+b.TIME_ON > a.QSO_DATE+b.TIME_ON) return 1;
@@ -238,6 +262,8 @@ function App ({firebase}) {
               callsign = {currentCallsign}
               grid = {currentGrid}
               qsos_num = { logbook.qsos.length }
+              isOnTop = {isOnTop}
+              onStayOnTop = {handleStayOnTop}
               />
             <MyDrawer open={drawerOpen} onDrawerClose={handleDrawerClose} />
             </> : <MyAppBar open={false} />

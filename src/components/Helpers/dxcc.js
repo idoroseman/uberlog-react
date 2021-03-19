@@ -47,7 +47,7 @@ class DXCC {
 
   countryOf(callsign)
   {
-    if (this.list===null)
+    if ((this.list===null) || (this.list===undefined))
       return null
     if (!(callsign))
       return null

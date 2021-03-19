@@ -121,7 +121,9 @@ const SettingsPage = (props) => {
         reader.addEventListener('load', (event) => {
           const qsos = Adif.parseAdifFile(event.target.result);
           const db = props.firebase.logbook(props.logbookIndex)
+          // todo: check for duplicated
           qsos.forEach((qso=>db.add(qso)))
+          handleCheckDB();
         });
         reader.readAsText(file);
       })
