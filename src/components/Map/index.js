@@ -21,7 +21,7 @@ const MapPage = ( props ) => {
                 color = "green";
                 if ((item["MODE"] == "FT8") || (item["MODE"] == "JT65"))
                 color = "blue"
-                if (item["MODE"] == "PSK")
+                if ((item["MODE"] == "PSK") || (item["MODE"] == "RTTY"))
                     color = "purple";
                 return <Marker
                     title={item.CALL}
@@ -37,13 +37,20 @@ const MapPage = ( props ) => {
 
         }
     })
-    return (
+    return (<>
+        <p> 
+        <img src="http://maps.google.com/mapfiles/ms/icons/green.png" height="16"/> Voice
+        <img src="http://maps.google.com/mapfiles/ms/icons/blue.png" height="16"/> WSJT
+        <img src="http://maps.google.com/mapfiles/ms/icons/purple.png" height="16"/> Digital
+        <img src="http://maps.google.com/mapfiles/ms/icons/red.png" height="16"/> Other
+        </p>
         <Map google={props.google} 
              zoom={4}
              initialCenter={{ lat: 32.397, lng: 34.644 }}
              >
         { markers }
         </Map>
+        </>
     )
 }
 
