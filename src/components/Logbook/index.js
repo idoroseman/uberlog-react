@@ -145,7 +145,8 @@ const LogbookPage = (props) => {
                 <ClearIcon />
           </IconButton>
       </div>
-
+      { props.qsos.length==0?"No QSOs to show. go make some":""}
+      { search && filtered_list.length==0?"No QSOs matching search":""}
       <div style={{ height: '80vh' }}>
         <AutoSizer>
           {({ height, width }) => (

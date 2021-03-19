@@ -44,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
 
 const SignInPage = () => (
   <div>
-    <h1>SignIn</h1>
     <SignInForm />
   </div>
 );
