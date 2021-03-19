@@ -40,6 +40,7 @@ import AddPage from '../Add';
 import MapPage from '../Map';
 import SettingsPage from "../Settings";
 import EditPage from "../Edit";
+import StatsPage from "../Stats";
 
 import * as ROUTES from '../constants/routes';
 import { withFirebase } from '../Firebase';
@@ -283,6 +284,12 @@ function App ({firebase}) {
                     setLogbookIndex(value);
                   }}
               />)}
+            />
+            <Route path={ROUTES.STATS} render={(props)=>(
+              <StatsPage {...props} 
+                qsos={logbook.qsos}
+                loading={logbook.loading}
+                />)}
             />
           <Box pt={4}>
             <Copyright />
