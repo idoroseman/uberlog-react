@@ -240,7 +240,7 @@ const StatsPage = (props) => {
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <DashCardTable title="QSLs"
-              data = {{ "eQSL.cc": 0,
+              data = {{ "eQSL.cc": props.loading?0:sum(counter["QSL_RCVD_VIA"]),
                         "qrz.com": (props.loading || (!counter["APP_QRZLOG_STATUS"])) ? 0: counter["APP_QRZLOG_STATUS"]["C"],
                         "LoTW": props.loading?0:sum(counter["APP_LOTW_MODEGROUP"]),
                         "clublog": 0,
