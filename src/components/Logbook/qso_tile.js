@@ -16,6 +16,8 @@ import PersonIcon from '@material-ui/icons/Person';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import SatelliteIcon from '@material-ui/icons/Satellite';
 import EditIcon from '@material-ui/icons/Edit';
+import MicIcon from '@material-ui/icons/Mic';
+import RoomOutlinedIcon from '@material-ui/icons/RoomOutlined';
 
 import BackgroundImg from './bg_320x240.jpg';
 
@@ -105,6 +107,8 @@ export default function QsoTile( props ) {
           <Grid container justify="space-between">            
             <Typography variant="body2" component="p">
               {props.qso.PROP_MODE=='SAT'?<SatelliteIcon/>:""}{" "}{props.qso.MODE}
+              {props.qso.MY_NAME ? <><MicIcon/>{props.qso.MY_NAME}</>:"" }
+              {props.qso.MY_CITY ? <><RoomOutlinedIcon/>{props.qso.MY_CITY}</>:"" }
             </Typography>
           
             <Typography variant="body2" component="p">
