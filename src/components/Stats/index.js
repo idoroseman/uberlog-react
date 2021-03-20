@@ -10,7 +10,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import { Doughnut, HorizontalBar } from "react-chartjs-2";
+import { Doughnut, Bar, HorizontalBar } from "react-chartjs-2";
 
 import BannerImg from './banner.png';
 
@@ -31,6 +31,8 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: 'white',
     }
 }))
+
+//------------------------------------------------------------------------------
 
 const DashCard = (props) => {
   const classes = useStyles();  
@@ -56,6 +58,8 @@ const DashCard = (props) => {
   </Card>
 }
 
+//------------------------------------------------------------------------------
+
 const DashCardTable = (props) => {
   return <DashCard title={props.title}>
     <table>
@@ -65,6 +69,8 @@ const DashCardTable = (props) => {
     </table>
   </DashCard>
 }
+
+//------------------------------------------------------------------------------
 
 const DashCardDoughnut = (props) => {
   const sortedKeys = Object.keys(props.data).sort(function(a,b){return props.data[b]-props.data[a]})
@@ -108,7 +114,9 @@ const DashCardDoughnut = (props) => {
   </DashCard>
 }
 
-const DashboardBar = (props) => {
+//------------------------------------------------------------------------------
+
+const DashCardBar = (props) => {
   const sortedKeys = Object.keys(props.data).sort(function(a,b){return props.data[b]-props.data[a]})
   const data = {
     labels: sortedKeys.slice(0,10),
@@ -144,7 +152,6 @@ const DashboardBar = (props) => {
       },
     ],
   }
-
   const options = {
     legend: {
       display: false,
@@ -157,6 +164,40 @@ const DashboardBar = (props) => {
       <HorizontalBar data={data} options={options}/>
   </DashCard>
 }
+
+//------------------------------------------------------------------------------
+
+const DashCardHistory = (props) => {
+  const d = new Date();
+  d.setMonth(d.getMonth() + 1);
+  const e = new Date();
+  e.setMonth(e.getMonth() + 1);
+  const data = {
+    labels: [...Array(12).keys()].map((i)=>{d.setMonth(d.getMonth() - 1); return d.toISOString().slice(0,7)}),
+    datasets: [
+      {
+        label: props.label,
+        data: [...Array(12).keys()].map((i)=>{e.setMonth(e.getMonth() - 1); return props.data[e.toISOString().replace("-","").slice(0,6)] || 0}),
+        borderWidth: 1,
+      },
+    ],
+  }
+  
+  const options = {
+    legend: {
+      display: false,
+      position: 'right',
+      onClick: null
+    }
+  }
+
+  return <DashCard title={props.title}>
+      <Bar data={data} options={options}/>
+  </DashCard>
+}
+
+//------------------------------------------------------------------------------
+
 const StatsPage = (props) => {
 
     const classes = useStyles();  
@@ -170,6 +211,8 @@ const StatsPage = (props) => {
           var val = qso[field]
           if (field=='FREQ')
             val = Math.floor(val)
+          if (field=="QSO_DATE")
+            val = val.slice(0,6)
           if (!(val in counter[field]))
             counter[field][val] = 1;
           else
@@ -205,11 +248,10 @@ const StatsPage = (props) => {
                       }}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <DashCard />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <DashCard />
+          <Grid item xs={12} sm={12} md={6}>
+            <DashCardHistory title="Activity"
+                  data = { props.loading?"":counter["QSO_DATE"]}
+            />
           </Grid>
         </Grid>
 
@@ -225,7 +267,7 @@ const StatsPage = (props) => {
             />
           </Grid>
           <Grid item xs={12} sm={12} md={4}>
-            <DashboardBar title="Countries"
+            <DashCardBar title="Countries"
               data = { props.loading?"":counter["COUNTRY"]}
             />
           </Grid>
