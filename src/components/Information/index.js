@@ -1,5 +1,8 @@
-import  {lookup_QRZ_COM, qsl_QRZ_COM} from './qrzcom'
+import  {QRZ_COM_lookup} from './qrzcom_lookup'
+import  {QRZ_COM_logbook} from './qrzcom_logbook'
+
 import {eqsl} from './eqsl'
+import {LoTW} from './lotw'
 import fetchCors from './fetchcors';
 
-export {fetchCors, lookup_QRZ_COM, qsl_QRZ_COM, eqsl}
+export {fetchCors, QRZ_COM_lookup, QRZ_COM_logbook, eqsl, LoTW}

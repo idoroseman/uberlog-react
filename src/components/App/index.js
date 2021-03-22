@@ -56,7 +56,7 @@ import {useStyles} from '../layout'
 
 import moment from 'moment'
 import 'moment/locale/en-gb';
-import { eqsl, lookup_QRZ_COM } from '../Information';
+import { QRZ_COM_lookup, QRZ_COM_logbook, eqsl, LoTW } from '../Information';
 import { DXCC, Adif } from '../Helpers'
 import {fetchCors} from '../Information'
 
@@ -257,18 +257,18 @@ function App ({firebase}) {
   //-----------------------------------------------------------------------------
   //                                    Q S L
   //-----------------------------------------------------------------------------
-  const mergeQsl = (index, qsl, eqsl_service) => {
+  const mergeQsl = (index, qsl, eqsl_service, filter="QSL") => {
     let was_changed = {}
     for (var field in qsl)
     {
       var f = field.replaceAll("SENT","RCVD")
       // only update fields relevant to QSLs
-      if ((field.includes("QSL")) && (logbook.qsos[index][f].trim() != qsl[field].trim())) {
+      if ((field.includes(filter)) && (logbook.qsos[index][f] != qsl[field])) {
         was_changed[f] = qsl[field]
       }
     }
     // check for eqsl images
-    if ((qsl.QSL_SENT_VIA=="E") && (logbook.qsos[index].eqslcc_image_url_===undefined)) {
+    if ( (eqsl_service) && (qsl.QSL_SENT_VIA=="E") && (logbook.qsos[index].eqslcc_image_url_===undefined)) {
       const storageName = authUser.uid + "/" + logbook.qsos[index].id_ + ".jpg"
       eqsl_service.fetchImageAlt(qsl).then((url)=>{
         fetchCors(url).then((res)=>{return res.blob()}).then((blob)=>{
@@ -276,7 +276,7 @@ function App ({firebase}) {
           firebase.storageRef().child(storageName).put(blob).then((snapshot) => {
             snapshot.ref.getDownloadURL().then((downloadURL) => {
               // this.eqsl.archive(qso);
-              // console.log("storage", url, "into", downloadURL)
+              console.log("got image for", qsl.QSO_DATE+"-"+qsl.TIME_ON+"-"+qsl.CALL)
               firebase.logbook(logbookIndex).doc(logbook.qsos[index].id_).update({eqslcc_image_url_ : downloadURL})
               })
           })
@@ -332,17 +332,26 @@ function App ({firebase}) {
   }
 
   const handleQslSync = () => {
+    const adif = new Adif()
     // eQSL 
     const eqsl_service = new eqsl(secrets['eqsl.cc']);
     eqsl_service.fetchQsls().then((text)=>{
-      const adif = new Adif()
       const qsls = adif.parseAdifFile(text)
       mergeQslList(qsls, eqsl_service)
     })
     // LoTW
-
+    const lotw_service = new LoTW(secrets["lotw"]);
+    lotw_service.fetchQsls().then((text)=>{
+      console.log(text)
+      const qsls = adif.parseAdifFile(text)
+      mergeQslList(qsls, null)
+    })
     // qrz.com
-
+    const qrzcom_service = new QRZ_COM_logbook(secrets['qrz.com'])
+    qrzcom_service.fetchQsls().then((text)=>{
+      const qsls = adif.parseAdifFile(text, false)
+      mergeQslList(qsls, null, "QRZLOG")
+    })
     // clublog
 
   }
@@ -396,7 +405,7 @@ function App ({firebase}) {
               <AddPage {...props} 
                 qsos = { logbook.qsos }
                 logbookIndex = {logbookIndex}
-                lookupService = {new lookup_QRZ_COM(secrets["qrz.com"])}
+                lookupService = {new QRZ_COM_lookup(secrets["qrz.com"])}
               />)}
             />
             <Route path={ROUTES.EDIT+"/:id" } component={EditPage} />
@@ -409,7 +418,7 @@ function App ({firebase}) {
                   logbooksMetadata = {user ? user.logbooks : [] }
                   logbookIndex = {logbookIndex}
                   qsos = { logbook.qsos }
-                  lookupService = {new lookup_QRZ_COM(secrets["qrz.com"])}
+                  lookupService = {new QRZ_COM_lookup(secrets["qrz.com"])}
 
                   onIndexChange = {(value)=>{
                     localStorage.setItem('selectedLogbook', value)

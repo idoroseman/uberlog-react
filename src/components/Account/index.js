@@ -91,7 +91,7 @@ const AccountPage = ({firebase}) => {
         </Button>
         <hr/>
 
-        qrz.com
+        qrz.com lookup
         <br/>
         <input
           name="qrz.com_username"
@@ -105,6 +105,20 @@ const AccountPage = ({firebase}) => {
           value={'qrz.com' in secrets ? secrets['qrz.com'].password || '':''}
           type="password"
           placeholder="Password"
+          onChange={handleTextChange}
+        />
+        <button name="qrz.com" disabled={isInvalid} onClick={handleSave}>
+          Save
+        </button>
+        <br/>
+
+        qrz.com logbook
+        <br/>
+        <input
+          name="qrz.com_key"
+          value={'qrz.com' in secrets ? secrets['qrz.com'].key || '':''}
+          type="text"
+          placeholder="key"
           onChange={handleTextChange}
         />
         <button name="qrz.com" disabled={isInvalid} onClick={handleSave}>

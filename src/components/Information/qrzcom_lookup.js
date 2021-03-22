@@ -1,6 +1,6 @@
 import Firenase from '../Firebase';
 
-class lookup_QRZ_COM {
+class QRZ_COM_lookup {
     
     constructor(credentials) {
         this.baseUrl = "https://xmldata.qrz.com"
@@ -66,21 +66,4 @@ class lookup_QRZ_COM {
 
 }
 
-class qsl_QRZ_COM {
-    constructor(key){
-        this.key = key;
-    }
-
-    getImage(callsign){
-        const data = {
-            tquery: callsign,
-            mode: "callsign"
-        }
-        fetch("https://www.qrz.com/lookup",{
-            method: 'POST', 
-            body: JSON.stringify(data) 
-        })
-    }
-}
-
-export {lookup_QRZ_COM, qsl_QRZ_COM}
+export {QRZ_COM_lookup}
