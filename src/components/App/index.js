@@ -56,9 +56,12 @@ import {useStyles} from '../layout'
 
 import moment from 'moment'
 import 'moment/locale/en-gb';
-import { lookup_QRZ_COM } from '../Information';
+import { eqsl, lookup_QRZ_COM } from '../Information';
+import { DXCC, Adif } from '../Helpers'
+import {fetchCors} from '../Information'
 
 import isElectron from 'is-electron';
+import { MergeType } from '@material-ui/icons';
 // const {ipcRenderer} = window.electron
 
 const HtmlTooltip = withStyles((theme) => ({
@@ -122,7 +125,7 @@ const MyAppBar = (props) => {
         <ListIcon />
       </Tooltip>
     </Badge>
-    <Badge color="secondary" className={classes.margin} onClick={()=>{console.log("sync")}}>
+    <Badge color="secondary" className={classes.margin} onClick={props.onSync}>
       <Tooltip title="Sync" placement="bottom">
         <SyncIcon />
       </Tooltip>
@@ -218,7 +221,9 @@ function App ({firebase}) {
   // get current secrets
   useEffect(()=>{
     return user ? firebase.user().collection("secrets").onSnapshot(snapshot => { 
-      snapshot.forEach((doc)=>{setSecrets({[doc.id]:doc.data()})})
+      let temp = {}
+      snapshot.forEach((doc)=>{ temp[doc.id] = doc.data() })
+      setSecrets(temp)
     }) : null;
   }, [user]) // run only if user changed
 
@@ -238,6 +243,91 @@ function App ({firebase}) {
     window.ipcRenderer.send('always-on-top', !isOnTop)
     localStorage.setItem('stayOnTop', !isOnTop)
     setIsOnTop(!isOnTop)
+  }
+
+  const mergeQsl = (index, qsl, eqsl_service) => {
+    let was_changed = {}
+    for (var field in qsl)
+    {
+      var f = field.replaceAll("SENT","RCVD")
+      // only update fields relevant to QSLs
+      if ((field.includes("QSL")) && (logbook.qsos[index][f].trim() != qsl[field].trim())) {
+        was_changed[f] = qsl[field]
+      }
+    }
+    // check for eqsl images
+    if ((qsl.QSL_SENT_VIA=="E") && (logbook.qsos[index].eqslcc_image_url_===undefined)) {
+      const storageName = authUser.uid + "/" + logbook.qsos[index].id_ + ".jpg"
+      eqsl_service.fetchImageAlt(qsl).then((url)=>{
+        fetchCors(url).then((res)=>{return res.blob()}).then((blob)=>{
+            //uploading blob to firebase storage
+          firebase.storageRef().child(storageName).put(blob).then((snapshot) => {
+            snapshot.ref.getDownloadURL().then((downloadURL) => {
+              // this.eqsl.archive(qso);
+              console.log("storage", url, "into", downloadURL)
+              firebase.logbook(logbookIndex).doc(logbook.qsos[index].id_).update({eqslcc_image_url_ : downloadURL})
+              })
+          })
+        }).catch(error => {
+          console.log("blob error", error);
+        });
+      }) .catch(error=>{console.log(error)})
+    }
+
+    if (Object.keys(was_changed).length==0)
+      return 0
+    console.log(logbook.qsos[index].id_, logbook.qsos[index].CALL, was_changed)
+    firebase.logbook(logbookIndex).doc(logbook.qsos[index].id_).update(was_changed)
+    return 1
+  }
+
+  const mergeQslList = (qsls, eqsl_service) => {
+    let j = logbook.qsos.length - 1;
+    let timestamp_a = moment.utc(logbook.qsos[j]["QSO_DATE"] + " " + logbook.qsos[j]["TIME_ON"], "YYYYMMDD HHmm");
+    let mismatchs = []
+    let ok_count = 0;
+    let err_count = 0;
+
+    for (var i in qsls){ 
+      const qso = qsls[i]
+      const timestamp_b = moment.utc(qso["QSO_DATE"] + " " + qso["TIME_ON"], "YYYYMMDD HHmm");
+      while((j>0) && (moment.duration(timestamp_b.diff(timestamp_a)).asMinutes() > 0)){
+        j--;
+        timestamp_a = moment.utc(logbook.qsos[j]["QSO_DATE"] + " " + logbook.qsos[j]["TIME_ON"], "YYYYMMDD HHmm");
+      }
+      if ((qso.CALL==logbook.qsos[j].CALL) && (qso.QSO_DATE==logbook.qsos[j].QSO_DATE))
+      ok_count += mergeQsl(j, qso, eqsl_service)
+      else
+        mismatchs.push(qso)
+    }
+    console.log(mismatchs.length, "mismatches")
+    for (let i in mismatchs){
+      for (let j in logbook.qsos)
+        if ((mismatchs[i].CALL==logbook.qsos[j].CALL) && (mismatchs[i].QSO_DATE==logbook.qsos[j].QSO_DATE)) {
+          const timestamp_a = moment.utc(logbook.qsos[j]["QSO_DATE"] + " " + logbook.qsos[j]["TIME_ON"], "YYYYMMDD HHmm");
+          const timestamp_b = moment.utc(mismatchs[i]["QSO_DATE"] + " " + mismatchs[i]["TIME_ON"], "YYYYMMDD HHmm");
+          var diff = Math.abs(moment.duration(timestamp_b.diff(timestamp_a)).asMinutes());
+          if ((diff<=15) || (Math.abs(diff-120)<=15) || (Math.abs(diff-180)<=15)) {
+            ok_count += mergeQsl(j, mismatchs[i], eqsl_service)
+            break;  
+          }
+        }
+      err_count++;
+      // console.log("No match", mismatchs[i])
+      }
+
+    console.log("count", qsls.length, "new", ok_count, "bad", err_count)
+  }
+
+  const handleQslSync = () => {
+    // eQSL 
+    const eqsl_service = new eqsl(secrets['eqsl.cc']);
+    eqsl_service.fetchQsls().then((text)=>{
+      const adif = new Adif()
+      const qsls = adif.parseAdifFile(text)
+      mergeQslList(qsls, eqsl_service)
+    })
+
   }
 
   const comapare = (a,b) => {
@@ -264,6 +354,7 @@ function App ({firebase}) {
               qsos_num = { logbook.qsos.length }
               isOnTop = {isOnTop}
               onStayOnTop = {handleStayOnTop}
+              onSync={handleQslSync}
               />
             <MyDrawer open={drawerOpen} onDrawerClose={handleDrawerClose} />
             </> : <MyAppBar open={false} />
