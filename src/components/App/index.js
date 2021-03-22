@@ -239,12 +239,24 @@ function App ({firebase}) {
     }) : null;
   }, [user, logbookIndex]) // run only if user changed
 
+  const comapare = (a,b) => {
+    if (a.QSO_DATE+a.TIME_ON > b.QSO_DATE+b.TIME_ON) return -1;
+    if (b.QSO_DATE+b.TIME_ON > a.QSO_DATE+b.TIME_ON) return 1;
+    return 0;
+  }
+
+  //-----------------------------------------------------------------------------
+  //                                    I P C
+  //-----------------------------------------------------------------------------
   const handleStayOnTop = (event) =>{
     window.ipcRenderer.send('always-on-top', !isOnTop)
     localStorage.setItem('stayOnTop', !isOnTop)
     setIsOnTop(!isOnTop)
   }
 
+  //-----------------------------------------------------------------------------
+  //                                    Q S L
+  //-----------------------------------------------------------------------------
   const mergeQsl = (index, qsl, eqsl_service) => {
     let was_changed = {}
     for (var field in qsl)
@@ -264,7 +276,7 @@ function App ({firebase}) {
           firebase.storageRef().child(storageName).put(blob).then((snapshot) => {
             snapshot.ref.getDownloadURL().then((downloadURL) => {
               // this.eqsl.archive(qso);
-              console.log("storage", url, "into", downloadURL)
+              // console.log("storage", url, "into", downloadURL)
               firebase.logbook(logbookIndex).doc(logbook.qsos[index].id_).update({eqslcc_image_url_ : downloadURL})
               })
           })
@@ -327,14 +339,17 @@ function App ({firebase}) {
       const qsls = adif.parseAdifFile(text)
       mergeQslList(qsls, eqsl_service)
     })
+    // LoTW
+
+    // qrz.com
+
+    // clublog
 
   }
 
-  const comapare = (a,b) => {
-    if (a.QSO_DATE+a.TIME_ON > b.QSO_DATE+b.TIME_ON) return -1;
-    if (b.QSO_DATE+b.TIME_ON > a.QSO_DATE+b.TIME_ON) return 1;
-    return 0;
-  }
+  //-----------------------------------------------------------------------------
+  //                                render
+  //-----------------------------------------------------------------------------
 
   const currentCallsign = user ? user.logbooks[logbookIndex].callsign : ""
   const currentGrid = user ? user.logbooks[logbookIndex].grid : ""
