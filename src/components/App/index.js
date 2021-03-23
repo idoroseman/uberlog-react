@@ -257,6 +257,10 @@ function App ({firebase}) {
   //-----------------------------------------------------------------------------
   //                                    Q S L
   //-----------------------------------------------------------------------------
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   const mergeQsl = (index, qsl, eqsl_service, filter="QSL") => {
     let was_changed = {}
     for (var field in qsl)
@@ -285,15 +289,14 @@ function App ({firebase}) {
         });
       }) .catch(error=>{console.log(error)})
     }
-
     if (Object.keys(was_changed).length==0)
       return 0
-    console.log(logbook.qsos[index].id_, logbook.qsos[index].CALL, was_changed)
+    console.log(logbook.qsos[index].id_, logbook.qsos[index].CALL, filter, was_changed)
     firebase.logbook(logbookIndex).doc(logbook.qsos[index].id_).update(was_changed)
     return 1
   }
 
-  const mergeQslList = (qsls, eqsl_service) => {
+  const mergeQslList = (qsls, eqsl_service, filter) => {
     let j = logbook.qsos.length - 1;
     let timestamp_a = moment.utc(logbook.qsos[j]["QSO_DATE"] + " " + logbook.qsos[j]["TIME_ON"], "YYYYMMDD HHmm");
     let mismatchs = []
@@ -308,7 +311,7 @@ function App ({firebase}) {
         timestamp_a = moment.utc(logbook.qsos[j]["QSO_DATE"] + " " + logbook.qsos[j]["TIME_ON"], "YYYYMMDD HHmm");
       }
       if ((qso.CALL==logbook.qsos[j].CALL) && (qso.QSO_DATE==logbook.qsos[j].QSO_DATE))
-      ok_count += mergeQsl(j, qso, eqsl_service)
+      ok_count += mergeQsl(j, qso, eqsl_service, filter)
       else
         mismatchs.push(qso)
     }
@@ -320,7 +323,7 @@ function App ({firebase}) {
           const timestamp_b = moment.utc(mismatchs[i]["QSO_DATE"] + " " + mismatchs[i]["TIME_ON"], "YYYYMMDD HHmm");
           var diff = Math.abs(moment.duration(timestamp_b.diff(timestamp_a)).asMinutes());
           if ((diff<=15) || (Math.abs(diff-120)<=15) || (Math.abs(diff-180)<=15)) {
-            ok_count += mergeQsl(j, mismatchs[i], eqsl_service)
+            ok_count += mergeQsl(j, mismatchs[i], eqsl_service, filter)
             break;  
           }
         }
@@ -362,7 +365,7 @@ function App ({firebase}) {
 
   const currentCallsign = user ? user.logbooks[logbookIndex].callsign : ""
   const currentGrid = user ? user.logbooks[logbookIndex].grid : ""
-
+  const qrzcom_lookup = new QRZ_COM_lookup(secrets["qrz.com"])
   return  <Router>
     <div className={classes.root}>
       <CssBaseline />
@@ -405,7 +408,7 @@ function App ({firebase}) {
               <AddPage {...props} 
                 qsos = { logbook.qsos }
                 logbookIndex = {logbookIndex}
-                lookupService = {new QRZ_COM_lookup(secrets["qrz.com"])}
+                lookupService = {qrzcom_lookup}
               />)}
             />
             <Route path={ROUTES.EDIT+"/:id" } component={EditPage} />
@@ -418,7 +421,7 @@ function App ({firebase}) {
                   logbooksMetadata = {user ? user.logbooks : [] }
                   logbookIndex = {logbookIndex}
                   qsos = { logbook.qsos }
-                  lookupService = {new QRZ_COM_lookup(secrets["qrz.com"])}
+                  lookupService = {qrzcom_lookup}
 
                   onIndexChange = {(value)=>{
                     localStorage.setItem('selectedLogbook', value)

@@ -116,10 +116,11 @@ const SettingsPage = (props) => {
       
       var files = e.target.files;
       var filesArr = Array.prototype.slice.call(files);
+      const adif = new Adif()
       filesArr.forEach((file)=>{
         const reader = new FileReader();
         reader.addEventListener('load', (event) => {
-          const qsos = Adif.parseAdifFile(event.target.result);
+          const qsos = adif.parseAdifFile(event.target.result);
           const db = props.firebase.logbook(props.logbookIndex)
           // todo: check for duplicated
           qsos.forEach((qso=>db.add(qso)))

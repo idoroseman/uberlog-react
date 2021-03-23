@@ -5,7 +5,7 @@ class QRZ_COM_lookup {
     constructor(credentials) {
         this.baseUrl = "https://xmldata.qrz.com"
         this.key = undefined 
-        console.log("credentials",credentials)
+
         if (!credentials)
           return
         const url = this.baseUrl+"/xml/current/?username="+credentials.username+";password="+credentials.password+";agent=uberlog0.3"
