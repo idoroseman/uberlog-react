@@ -125,12 +125,12 @@ const MyAppBar = (props) => {
         <ListIcon />
       </Tooltip>
     </Badge>
-    <Badge color="secondary" className={classes.margin} onClick={props.onSync}>
+    <Badge variant={props.qslServiceCount?"dot":""} color="secondary" className={classes.margin} onClick={props.onSync}>
       <Tooltip title="Sync" placement="bottom">
         <SyncIcon />
       </Tooltip>
     </Badge>
-    <Badge color="secondary" variant="dot" className={classes.margin}>
+    <Badge color="secondary" variant="" className={classes.margin}>
       <HtmlTooltip
           title={
             <React.Fragment>
@@ -257,6 +257,9 @@ function App ({firebase}) {
   //-----------------------------------------------------------------------------
   //                                    Q S L
   //-----------------------------------------------------------------------------
+
+  const [qslServiceCount, setQslServiceCount] = React.useState(0);
+
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -334,26 +337,40 @@ function App ({firebase}) {
     console.log("count", qsls.length, "new", ok_count, "bad", err_count)
   }
 
-  const handleQslSync = () => {
+  const handleQslSync = (event) => {
+    let count = 0;
+    console.log("shift", event.shiftKey)
     const adif = new Adif()
     // eQSL 
     const eqsl_service = new eqsl(secrets['eqsl.cc']);
+    count++
+    setQslServiceCount(count)
     eqsl_service.fetchQsls().then((text)=>{
       const qsls = adif.parseAdifFile(text)
       mergeQslList(qsls, eqsl_service)
+      count--
+      setQslServiceCount(count)
     })
     // LoTW
     const lotw_service = new LoTW(secrets["lotw"]);
+    count++
+    setQslServiceCount(count)
     lotw_service.fetchQsls().then((text)=>{
       console.log(text)
       const qsls = adif.parseAdifFile(text)
       mergeQslList(qsls, null)
+      count--
+      setQslServiceCount(count)
     })
     // qrz.com
     const qrzcom_service = new QRZ_COM_logbook(secrets['qrz.com'])
+    count++
+    setQslServiceCount(count)
     qrzcom_service.fetchQsls().then((text)=>{
       const qsls = adif.parseAdifFile(text, false)
       mergeQslList(qsls, null, "QRZLOG")
+      count--
+      setQslServiceCount(count)
     })
     // clublog
 
@@ -382,6 +399,7 @@ function App ({firebase}) {
               isOnTop = {isOnTop}
               onStayOnTop = {handleStayOnTop}
               onSync={handleQslSync}
+              qslServiceCount={qslServiceCount}
               />
             <MyDrawer open={drawerOpen} onDrawerClose={handleDrawerClose} />
             </> : <MyAppBar open={false} />
