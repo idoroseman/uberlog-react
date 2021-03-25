@@ -73,7 +73,7 @@ export default function QsoTile( props ) {
   const has_eqsl_qsl = (props.qso.QSL_RCVD=="Y") && (props.qso.QSL_RCVD_VIA=="E")
   const has_lotw_qsl = props.qso.APP_LOTW_MODEGROUP !== undefined
   const has_qrzcom_qsl = props.qso.APP_QRZLOG_STATUS == "C"
-  const has_clublog_qsl = false
+  const has_clublog_qsl = props.qso.APP_CLUBLOG_STATUS == "C"
   const has_qsl_rcvd = has_eqsl_qsl || has_lotw_qsl || has_qrzcom_qsl
   const has_qsl_sent = props.qso.QSL_SENT=="Y"
 

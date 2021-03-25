@@ -56,7 +56,7 @@ import {useStyles} from '../layout'
 
 import moment from 'moment'
 import 'moment/locale/en-gb';
-import { QRZ_COM_lookup, QRZ_COM_logbook, eqsl, LoTW } from '../Information';
+import { QRZ_COM_lookup, QRZ_COM_logbook, eqsl, LoTW, Clublog } from '../Information';
 import { DXCC, Adif } from '../Helpers'
 import {fetchCors} from '../Information'
 
@@ -270,7 +270,7 @@ function App ({firebase}) {
     {
       var f = field.replaceAll("SENT","RCVD")
       // only update fields relevant to QSLs
-      if ((field.includes(filter)) && (logbook.qsos[index][f] != qsl[field])) {
+      if ((field.includes(filter) || field.startsWith("APP_")) && (logbook.qsos[index][f] != qsl[field])) {
         was_changed[f] = qsl[field]
       }
     }
@@ -373,6 +373,14 @@ function App ({firebase}) {
       setQslServiceCount(count)
     })
     // clublog
+    const clublog_service = new Clublog(secrets['clublog'], currentCallsign)
+    count++
+    setQslServiceCount(count)
+    clublog_service.fetchQsls().then((qsls)=>{
+      mergeQslList(qsls.sort(comapare), null)
+      count--
+      setQslServiceCount(count)
+    })
 
   }
 
@@ -417,7 +425,15 @@ function App ({firebase}) {
             console.log("qrz.com", err)
           }
           // clublog
-
+          try{
+            const clublog_service = new Clublog(secrets['clublog'], currentCallsign)
+            const result = await clublog_service.sendEQsl(text)
+            console.log("clublog sent"); 
+            output.QSL_SENT = "Y" 
+          }
+          catch(err){
+            console.log("clublog", err)
+          }
           // update logbook
           console.log(output)
           if (Object.keys(output).length>0)
