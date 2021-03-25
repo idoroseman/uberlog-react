@@ -29,6 +29,10 @@ class LoTW extends EventEmitter {
         })
     })
   }
+
+  sendEQsl(adif){
+  }
+  
 }
 
 export { LoTW }

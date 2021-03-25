@@ -1,6 +1,6 @@
 import React, { Component, useRef} from 'react';
 import clsx from 'clsx';
-import { compose } from 'recompose';
+import { compose, mapProps } from 'recompose';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -109,16 +109,17 @@ const LogbookPage = (props) => {
     return isMatch;
   })
 
+  const onSendQsl = (id)=>{props.onSendQsl(id)}
+
   const renderRow = (props) => {
     const { index, style } = props;
 
     if (props.loading)
       return <Typography component="h2" variant="h6" color="primary" gutterBottom>Loading... </Typography>
     return <div key={index} style={style}>
-          <QsoTile key={index} style={style} qso={filtered_list[index]} />
+          <QsoTile key={index} style={style} qso={filtered_list[index]} onSendQsl={onSendQsl} />
         </div>        
   }
-
 
   return (
     <Paper className={clsx(classes.paper, classes.logbook)}>
@@ -145,7 +146,8 @@ const LogbookPage = (props) => {
                 <ClearIcon />
           </IconButton>
       </div>
-      { props.qsos.length==0?"No QSOs to show. go make some":""}
+      { props.loading ? "loading...":""}
+      { (props.qsos.length==0) && !props.loading ?"No QSOs to show. go make some":""}
       { search && filtered_list.length==0?"No QSOs matching search":""}
       <div style={{ height: '80vh' }}>
         <AutoSizer>

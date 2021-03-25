@@ -24,12 +24,19 @@ const AccountPage = ({firebase}) => {
   const lotw_password = '';
 
   const [secrets, setSecrets] = React.useState({});
+  const [qslmsg, setQslmsg] = React.useState("");
 
   useEffect(() => {
     return firebase.user().collection("secrets").onSnapshot(snapshot => { 
       var s = {}
       snapshot.docs.forEach((doc)=>{s[doc.id] = doc.data()})
       setSecrets(s)
+    })
+  }, []);
+
+  useEffect(() => {
+    return firebase.user().get().then(snapshot => { 
+      setQslmsg(snapshot.data().qslmsg || "")
     })
   }, []);
 
@@ -66,6 +73,23 @@ const AccountPage = ({firebase}) => {
         <PasswordChangeForm />
         <hr/>
 
+        qsl message
+        <br/>
+        <input
+          name="qslmsg"
+          value={qslmsg}
+          type="text"
+          placeholder="qsl message"
+          onChange={(e)=>{setQslmsg(e.target.value)}}
+        />
+        <br/>
+        <button name="eqsl.cc" onClick={(e)=>{
+          firebase.user().update({qslmsg})
+        }}>
+            Save
+        </button>
+        <hr/>
+
         eqsl.cc
         <br/>
           <input
@@ -82,13 +106,16 @@ const AccountPage = ({firebase}) => {
             placeholder="Password"
             onChange={handleTextChange}
           />
+          <br/>
           <button name="eqsl.cc" disabled={isInvalid} onClick={handleSave}>
             Save
           </button>
           <br/>
+          {/*
         <Button variant="text" component="span" className={classes.button} onClick={handleEqslSync}>
             Sync
         </Button>
+        */}
         <hr/>
 
         qrz.com lookup
@@ -107,6 +134,7 @@ const AccountPage = ({firebase}) => {
           placeholder="Password"
           onChange={handleTextChange}
         />
+        <br/>
         <button name="qrz.com" disabled={isInvalid} onClick={handleSave}>
           Save
         </button>
@@ -121,6 +149,7 @@ const AccountPage = ({firebase}) => {
           placeholder="key"
           onChange={handleTextChange}
         />
+        <br/>
         <button name="qrz.com" disabled={isInvalid} onClick={handleSave}>
           Save
         </button>
@@ -142,6 +171,7 @@ const AccountPage = ({firebase}) => {
           placeholder="Password"
           onChange={handleTextChange}
         />
+        <br/>
         <button name="lotw" disabled={isInvalid} onClick={handleSave}>
           Save
         </button>
@@ -163,6 +193,7 @@ const AccountPage = ({firebase}) => {
           placeholder="Password"
           onChange={handleTextChange}
         />
+        <br/>
         <button name="clublog" disabled={isInvalid} onClick={handleSave}>
           Save
         </button>

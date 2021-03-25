@@ -174,7 +174,7 @@ fetchImage(qso, downloaddir, filename){
     return new Promise((resolve, reject) => {
       console.log("sending...");
       this.emit('status', {"eQSL":"active"})
-      fetch(furl+escape(hdr+adif), {credentials: 'same-origin'})
+      fetchCors(furl+escape(hdr+adif), {credentials: 'same-origin'})
         .then((response)=>{return response.text();})
         .then((text)=>{
           console.log(text);

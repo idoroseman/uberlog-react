@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import PersonIcon from '@material-ui/icons/Person';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
@@ -69,11 +70,20 @@ export default function QsoTile( props ) {
   const hasLocation = props.qso.QTH || props.qso.GRID ;
   const locationText = props.qso.QTH==null || props.qso.QTH=="" ?props.qso.GRID:props.qso.QTH;
 
-  const has_picture_qsl = !((props.qso.QSL_RCVD==undefined) || ((props.qso.QSL_RCVD_VIA==undefined) && (props.qso.APP_LoTW_MODEGROUP!=undefined)))
-  const has_lotw_qsl = props.qso.APP_LoTW_MODEGROUP !== undefined
+  const has_eqsl_qsl = (props.qso.QSL_RCVD=="Y") && (props.qso.QSL_RCVD_VIA=="E")
+  const has_lotw_qsl = props.qso.APP_LOTW_MODEGROUP !== undefined
   const has_qrzcom_qsl = props.qso.APP_QRZLOG_STATUS == "C"
-  const has_qsl_rcvd = has_picture_qsl || has_lotw_qsl || has_qrzcom_qsl
+  const has_clublog_qsl = false
+  const has_qsl_rcvd = has_eqsl_qsl || has_lotw_qsl || has_qrzcom_qsl
   const has_qsl_sent = props.qso.QSL_SENT=="Y"
+
+  const bull = <span className={classes.bullet}>•</span>;
+  const tooltip = <React.Fragment>
+    { has_eqsl_qsl?"eqsl ":"" } 
+    { has_lotw_qsl?"LoTW ":"" } 
+    { has_qrzcom_qsl?"qrz ":"" } 
+    { has_clublog_qsl?"clublog ":"" }
+  </React.Fragment>
 
   let image_url = BackgroundImg;
   if (props.qso.eqslcc_image_url_)
@@ -112,25 +122,17 @@ export default function QsoTile( props ) {
             </Typography>
           
             <Typography variant="body2" component="p">
-              {has_qsl_sent ? "": <Button size="small" onClick={()=>{}}>Send</Button>}
+              {has_qsl_sent ? "": <Button size="small" onClick={()=>{props.onSendQsl(props.qso.id_)}}>Send</Button>}
               <FormControlLabel control={<Checkbox name="checkedC" checked={has_qsl_sent} />} label="S" />
-              <FormControlLabel control={<Checkbox name="checkedC" checked={has_qsl_rcvd} />} label="R" />
+              <Tooltip title={tooltip} placement="top">
+                <FormControlLabel control={<Checkbox name="checkedC" checked={has_qsl_rcvd} />} label="R" />
+              </Tooltip>
               <EditIcon onClick={()=>{history.push("/qso/"+props.qso.id_);}}/>
             </Typography>
           </Grid>
 
         </CardContent>
-        {/* <div className={classes.controls}>
-          <IconButton aria-label="previous">
-            {theme.direction === 'rtl' ? <SkipNextIcon /> : <SkipPreviousIcon />}
-          </IconButton>
-          <IconButton aria-label="play/pause">
-            <PlayArrowIcon className={classes.playIcon} />
-          </IconButton>
-          <IconButton aria-label="next">
-            {theme.direction === 'rtl' ? <SkipPreviousIcon /> : <SkipNextIcon />}
-          </IconButton>
-        </div> */}
+
       </div>
 
     </Card>

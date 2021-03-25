@@ -63,7 +63,7 @@ class QRZ_COM_logbook extends EventEmitter {
     })
   }
 
-  sendQsl(adif){
+  sendEQsl(adif){
     return new Promise((resolve, reject) => {
       console.log("sending to qrzcom...");
       this.emit('status', {"qrz.com":"active"})

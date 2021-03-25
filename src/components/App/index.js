@@ -377,6 +377,55 @@ function App ({firebase}) {
   }
 
   //-----------------------------------------------------------------------------
+  
+  const handleSendQsl = (id) => {
+        console.log(id)
+        let output = {}
+        firebase.logbook(logbookIndex).doc(id).get().then(async(snapshot)=>{
+          const qso = snapshot.data()
+          console.log(qso)
+          if (qso["MODE"].startsWith("PSK")) {
+            qso["SUBMODE"] = qso["MODE"];
+            qso["MODE"] = "PSK"
+          }
+          qso['QSLMSG'] = user.qslmsg;
+          if (qso.STATION_CALLSIGN)
+            qso["STATION_CALLSIGN"] = currentCallsign
+          const adif = new Adif()
+          const text = adif.objectToAdif(qso)
+          // eQSL 
+          try { 
+            const eqsl_service = new eqsl(secrets['eqsl.cc']);
+            const result = await eqsl_service.sendEQsl(text)
+            console.log("eqsl.cc sent"); 
+            output.QSL_SENT = "Y" 
+          }
+          catch(err) {
+            console.log("eqsl.cc", err)
+          }
+          // LoTW
+          // const lotw_service = new LoTW(secrets["lotw"]);
+          // lotw_service.sendEQsl(text).then(()=>{ output.QSL_SENT = "Y" })
+          // qrz.com
+          try{
+            const qrzcom_service = new QRZ_COM_logbook(secrets['qrz.com'])
+            const result = await qrzcom_service.sendEQsl(text)
+            console.log("qrz.com sent"); 
+            output.QSL_SENT = "Y" 
+          }
+          catch(err){
+            console.log("qrz.com", err)
+          }
+          // clublog
+
+          // update logbook
+          console.log(output)
+          if (Object.keys(output).length>0)
+             firebase.logbook(logbookIndex).doc(id).update(output)
+        })
+      }
+
+  //-----------------------------------------------------------------------------
   //                                render
   //-----------------------------------------------------------------------------
 
@@ -420,6 +469,7 @@ function App ({firebase}) {
               <LogbookPage {...props} 
                 qsos={logbook.qsos}
                 loading={logbook.loading}
+                onSendQsl={handleSendQsl}
                 />)}
             />
             <Route path={ROUTES.ADD} render={(props)=>(
