@@ -41,13 +41,12 @@ class Clublog extends EventEmitter {
 
   sendEQsl(adif){
     var url = "https://secure.clublog.org/realtime.php"
-    const data = {
-      email: this.username,
-      password: this.password,
-      callsign: this.callsign,
-      adif: adif,
-      api: this.apikey
-    }
+    const data = new URLSearchParams();
+    data.append('email', this.username)
+    data.append('password', this.password)
+    data.append('callsign', this.callsign)
+    data.append('adif', adif)
+    data.append('api', this.apikey)
 
     return new Promise((resolve, reject) => {
       console.log("sending to qrzcom...");
@@ -62,7 +61,7 @@ class Clublog extends EventEmitter {
         },
         redirect: 'follow', // manual, *follow, error
         referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
-        body: JSON.stringify(data) // body data type must match "Content-Type" header
+        body: data // body data type must match "Content-Type" header
       })
       .then((response)=>{
         if (response.status == 200) {
