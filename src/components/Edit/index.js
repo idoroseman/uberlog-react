@@ -64,6 +64,7 @@ const EditPage = (props) =>{
           </TableHead>
           <TableBody>
             {rows.map((row) => (
+              <>
               <TableRow key={row.key}>
                 <TableCell component="th" scope="row">
                   {row.key == editField ? <TextField id="key_input" label="key" value={editKey} onChange={(e)=>{setEditKey(e.target.value)}} />:row.key}
@@ -82,6 +83,8 @@ const EditPage = (props) =>{
                     <DeleteIcon id={row.key} onClick={()=>{handleDeleteField(row.key)}}/>
                 </TableCell>
               </TableRow>
+              { row.key.endsWith("_image_url_") ? <TableRow><TableCell></TableCell><TableCell><img style={{width:"100%"}} src={row.value}/></TableCell><TableCell></TableCell></TableRow> :"" }
+              </>
             ))}
           </TableBody>
         </Table>
