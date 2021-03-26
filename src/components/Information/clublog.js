@@ -40,7 +40,7 @@ class Clublog extends EventEmitter {
   }
 
   sendEQsl(adif){
-    var url = "https://secure.clublog.org/realtime.php"
+    var url = "https://clublog.org/realtime.php"
     const data = new URLSearchParams();
     data.append('email', this.username)
     data.append('password', this.password)

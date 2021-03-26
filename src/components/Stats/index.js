@@ -209,6 +209,7 @@ const StatsPage = (props) => {
           if (!(field in counter))
             counter[field] = {}
           var val = qso[field]
+          
           if (field=='FREQ')
             val = Math.floor(val)
           if (field=="QSO_DATE")
@@ -243,8 +244,8 @@ const StatsPage = (props) => {
               data = {{ "eQSL.cc": props.loading?0:sum(counter["QSL_RCVD_VIA"]),
                         "qrz.com": (props.loading || (!counter["APP_QRZLOG_STATUS"])) ? 0: counter["APP_QRZLOG_STATUS"]["C"],
                         "LoTW": props.loading?0:sum(counter["APP_LOTW_MODEGROUP"]),
-                        "clublog": 0,
-                        "bureau": ""
+                        "clublog": props.loading?0:sum(counter["APP_CLUBLOG_STATUS"]),
+//                        "bureau": ""
                       }}
             />
           </Grid>

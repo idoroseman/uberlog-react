@@ -125,7 +125,7 @@ const MyAppBar = (props) => {
         <ListIcon />
       </Tooltip>
     </Badge>
-    <Badge variant={props.qslServiceCount?"dot":""} color="secondary" className={classes.margin} onClick={props.onSync}>
+    <Badge variant={props.qslServiceCount?"dot":"standard"} color="secondary" className={classes.margin} onClick={props.onSync}>
       <Tooltip title="Sync" placement="bottom">
         <SyncIcon />
       </Tooltip>
@@ -142,7 +142,7 @@ const MyAppBar = (props) => {
       </HtmlTooltip>
     </Badge>
     { isElectron() ?
-      <Badge color="secondary" variant={props.isOnTop?"dot":""} className={classes.margin} onClick={props.onStayOnTop}>
+      <Badge color="secondary" variant={props.isOnTop?"dot":"standard"} className={classes.margin} onClick={props.onStayOnTop}>
         <HtmlTooltip
           title={
             <React.Fragment>
@@ -264,7 +264,9 @@ function App ({firebase}) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  const mergeQsl = (index, qsl, eqsl_service, filter="QSL") => {
+  const mergeQsl = (index, qsl, filter="QSL") => {
+    if (!index)
+      return
     let was_changed = {}
     for (var field in qsl)
     {
@@ -274,24 +276,6 @@ function App ({firebase}) {
         was_changed[f] = qsl[field]
       }
     }
-    // check for eqsl images
-    if ( (eqsl_service) && (qsl.QSL_SENT_VIA=="E") && (logbook.qsos[index].eqslcc_image_url_===undefined)) {
-      const storageName = authUser.uid + "/" + logbook.qsos[index].id_ + ".jpg"
-      eqsl_service.fetchImageAlt(qsl).then((url)=>{
-        fetchCors(url).then((res)=>{return res.blob()}).then((blob)=>{
-            //uploading blob to firebase storage
-          firebase.storageRef().child(storageName).put(blob).then((snapshot) => {
-            snapshot.ref.getDownloadURL().then((downloadURL) => {
-              // this.eqsl.archive(qso);
-              console.log("got image for", qsl.QSO_DATE+"-"+qsl.TIME_ON+"-"+qsl.CALL)
-              firebase.logbook(logbookIndex).doc(logbook.qsos[index].id_).update({eqslcc_image_url_ : downloadURL})
-              })
-          })
-        }).catch(error => {
-          console.log("blob error", error);
-        });
-      }) .catch(error=>{console.log(error)})
-    }
     if (Object.keys(was_changed).length==0)
       return 0
     console.log(logbook.qsos[index].id_, logbook.qsos[index].CALL, filter, was_changed)
@@ -299,7 +283,7 @@ function App ({firebase}) {
     return 1
   }
 
-  const mergeQslList = (qsls, eqsl_service, filter) => {
+  const mergeQslList = (qsls, filter) => {
     let j = logbook.qsos.length - 1;
     let timestamp_a = moment.utc(logbook.qsos[j]["QSO_DATE"] + " " + logbook.qsos[j]["TIME_ON"], "YYYYMMDD HHmm");
     let mismatchs = []
@@ -314,7 +298,7 @@ function App ({firebase}) {
         timestamp_a = moment.utc(logbook.qsos[j]["QSO_DATE"] + " " + logbook.qsos[j]["TIME_ON"], "YYYYMMDD HHmm");
       }
       if ((qso.CALL==logbook.qsos[j].CALL) && (qso.QSO_DATE==logbook.qsos[j].QSO_DATE))
-      ok_count += mergeQsl(j, qso, eqsl_service, filter)
+        ok_count += mergeQsl(j, qso, filter)
       else
         mismatchs.push(qso)
     }
@@ -326,7 +310,7 @@ function App ({firebase}) {
           const timestamp_b = moment.utc(mismatchs[i]["QSO_DATE"] + " " + mismatchs[i]["TIME_ON"], "YYYYMMDD HHmm");
           var diff = Math.abs(moment.duration(timestamp_b.diff(timestamp_a)).asMinutes());
           if ((diff<=15) || (Math.abs(diff-120)<=15) || (Math.abs(diff-180)<=15)) {
-            ok_count += mergeQsl(j, mismatchs[i], eqsl_service, filter)
+            ok_count += mergeQsl(j, mismatchs[i], filter)
             break;  
           }
         }
@@ -337,7 +321,47 @@ function App ({firebase}) {
     console.log("count", qsls.length, "new", ok_count, "bad", err_count)
   }
 
-  const handleQslSync = (event) => {
+  const findQsosId = (qsls) => {
+    let j = logbook.qsos.length - 1;
+    let timestamp_a = moment.utc(logbook.qsos[j]["QSO_DATE"] + " " + logbook.qsos[j]["TIME_ON"], "YYYYMMDD HHmm");
+    let mismatchs = []
+    let ok_count = 0;
+    let err_count = 0;
+
+    // quick match
+    for (var i in qsls){ 
+      const timestamp_b = moment.utc(qsls[i]["QSO_DATE"] + " " + qsls[i]["TIME_ON"], "YYYYMMDD HHmm");
+      while((j>0) && (moment.duration(timestamp_b.diff(timestamp_a)).asMinutes() > 0)){
+        j--;
+        timestamp_a = moment.utc(logbook.qsos[j]["QSO_DATE"] + " " + logbook.qsos[j]["TIME_ON"], "YYYYMMDD HHmm");
+      }
+      if ((qsls[i].CALL==logbook.qsos[j].CALL) && (qsls[i].QSO_DATE==logbook.qsos[j].QSO_DATE)){
+        qsls[i].j_ = j
+      }
+        
+    }
+
+    // slow match for the rest
+    for (let i in qsls){
+      if (qsls[i].id_)
+        continue;
+      for (let j in logbook.qsos)
+        if ((qsls[i].CALL==logbook.qsos[j].CALL) && (qsls[i].QSO_DATE==logbook.qsos[j].QSO_DATE)) {
+          const timestamp_a = moment.utc(logbook.qsos[j]["QSO_DATE"] + " " + logbook.qsos[j]["TIME_ON"], "YYYYMMDD HHmm");
+          const timestamp_b = moment.utc(qsls[i]["QSO_DATE"] + " " + qsls[i]["TIME_ON"], "YYYYMMDD HHmm");
+          var diff = Math.abs(moment.duration(timestamp_b.diff(timestamp_a)).asMinutes());
+          if ((diff<=15) || (Math.abs(diff-120)<=15) || (Math.abs(diff-180)<=15)) {
+            qsls[i].j_ = j
+            break;  
+          }
+        }
+      err_count++;
+      }
+
+      return qsls
+  }
+
+  const handleQslSync =  (event) => {
     let count = 0;
     console.log("shift", event.shiftKey)
     const adif = new Adif()
@@ -345,42 +369,66 @@ function App ({firebase}) {
     const eqsl_service = new eqsl(secrets['eqsl.cc']);
     count++
     setQslServiceCount(count)
-    eqsl_service.fetchQsls().then((text)=>{
+    eqsl_service.fetchQsls().then(async(text)=>{
       const qsls = adif.parseAdifFile(text)
-      mergeQslList(qsls, eqsl_service)
+      findQsosId(qsls)
+      qsls.forEach((q)=>{mergeQsl(q.j_, q)})
+
+      // check for eqsl images
+      for (let i in qsls) {
+        const qsl = qsls[i]
+        if ((!!qsl.j_) && (qsl.QSL_SENT_VIA=="E") && (logbook.qsos[qsl.j_].eqslcc_image_url_===undefined)) {
+          try {
+            const storageName = authUser.uid + "/" + logbook.qsos[qsl.j_].id_ + ".jpg"
+            const url = await eqsl_service.fetchImageAlt(qsl)
+            const res = await fetchCors(url)
+            const blob = await res.blob()
+            //uploading blob to firebase storage
+            const snapshot = await firebase.storageRef().child(storageName).put(blob)
+            const downloadURL = await snapshot.ref.getDownloadURL()
+            // this.eqsl.archive(qso);
+            console.log("got image for", qsl.QSO_DATE+"-"+qsl.TIME_ON+"-"+qsl.CALL)
+            firebase.logbook(logbookIndex).doc(logbook.qsos[qsl.j_].id_).update({eqslcc_image_url_ : downloadURL})
+            sleep(1000)
+          }    
+          catch (err){
+            console.log(err)
+          }
+        }
+      }
       count--
       setQslServiceCount(count)
     })
-    // LoTW
-    const lotw_service = new LoTW(secrets["lotw"]);
-    count++
-    setQslServiceCount(count)
-    lotw_service.fetchQsls().then((text)=>{
-      console.log(text)
-      const qsls = adif.parseAdifFile(text)
-      mergeQslList(qsls, null)
-      count--
-      setQslServiceCount(count)
-    })
-    // qrz.com
-    const qrzcom_service = new QRZ_COM_logbook(secrets['qrz.com'])
-    count++
-    setQslServiceCount(count)
-    qrzcom_service.fetchQsls().then((text)=>{
-      const qsls = adif.parseAdifFile(text, false)
-      mergeQslList(qsls, null, "QRZLOG")
-      count--
-      setQslServiceCount(count)
-    })
-    // clublog
-    const clublog_service = new Clublog(secrets['clublog'], currentCallsign)
-    count++
-    setQslServiceCount(count)
-    clublog_service.fetchQsls().then((qsls)=>{
-      mergeQslList(qsls.sort(comapare), null)
-      count--
-      setQslServiceCount(count)
-    })
+    // // LoTW
+    // const lotw_service = new LoTW(secrets["lotw"]);
+    // count++
+    // setQslServiceCount(count)
+    // lotw_service.fetchQsls().then((text)=>{
+    //   console.log(text)
+    //   const qsls = adif.parseAdifFile(text)
+    //   mergeQslList(qsls)
+    //   count--
+    //   setQslServiceCount(count)
+    // })
+    // // qrz.com
+    // const qrzcom_service = new QRZ_COM_logbook(secrets['qrz.com'])
+    // count++
+    // setQslServiceCount(count)
+    // qrzcom_service.fetchQsls().then((text)=>{
+    //   const qsls = adif.parseAdifFile(text, false)
+    //   mergeQslList(qsls, "QRZLOG")
+    //   count--
+    //   setQslServiceCount(count)
+    // })
+    // // clublog
+    // const clublog_service = new Clublog(secrets['clublog'], currentCallsign)
+    // count++
+    // setQslServiceCount(count)
+    // clublog_service.fetchQsls().then((qsls)=>{
+    //   mergeQslList(qsls.sort(comapare))
+    //   count--
+    //   setQslServiceCount(count)
+    // })
 
   }
 
