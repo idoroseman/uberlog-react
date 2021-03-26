@@ -61,6 +61,14 @@ function DateTimeFormat(d,t) {
   return d.slice(0,4) + "-" + d.slice(4,6) + "-" + d.slice(6,8) + "   " + t.slice(0,2) + ":" + t.slice(2,4);
 }
 
+function humanFreq(freq)
+{
+  let f = Math.floor(freq)
+  if (f>1000)
+    return (f/1000).toFixed(2).replace(/\.?0*$/,'')+"G";
+  return f+"M"
+}
+
 export default function QsoTile( props ) {
   const classes = useStyles();
   const theme = useTheme();
@@ -116,7 +124,8 @@ export default function QsoTile( props ) {
           </Grid>
           <Grid container justify="space-between">            
             <Typography variant="body2" component="p">
-              {props.qso.PROP_MODE=='SAT'?<SatelliteIcon/>:""}{" "}{props.qso.MODE}
+              {props.qso.PROP_MODE=='SAT'?<SatelliteIcon/>:""}{" "}
+              {props.qso.MODE}{" "}{humanFreq(props.qso.FREQ)}{props.qso.FREQ_RX?"/"+humanFreq(props.qso.FREQ_RX):""}
               {props.qso.MY_NAME ? <><MicIcon/>{props.qso.MY_NAME}</>:"" }
               {props.qso.MY_CITY ? <><RoomOutlinedIcon/>{props.qso.MY_CITY}</>:"" }
             </Typography>

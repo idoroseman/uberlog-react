@@ -110,7 +110,7 @@ const LogbookPage = (props) => {
   })
 
   const onSendQsl = (id)=>{props.onSendQsl(id)}
-
+  
   const renderRow = (props) => {
     const { index, style } = props;
 
