@@ -140,7 +140,7 @@ fetchImage(qso, downloaddir, filename){
             //  console.log(qso);
             //  console.log(text);
              this.emit('status', {"eQSL":"error"})
-             reject("no qsl image found for "+qso["QSO_DATE"]+"-"+qso["TIME_ON"]+"-"+qso["CALL"])
+             reject(text.trim().replace("<!--","")+qso["QSO_DATE"]+"-"+qso["TIME_ON"]+"-"+qso["CALL"])
            }
          });
        });

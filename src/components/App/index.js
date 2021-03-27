@@ -262,6 +262,7 @@ function App ({firebase}) {
 
   function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+
   }
 
   const mergeQsl = (index, qsl, filter="QSL") => {
@@ -365,6 +366,7 @@ function App ({firebase}) {
     let count = 0;
     console.log("shift", event.shiftKey)
     const adif = new Adif()
+    
     // eQSL 
     const eqsl_service = new eqsl(secrets['eqsl.cc']);
     count++
@@ -373,7 +375,6 @@ function App ({firebase}) {
       const qsls = adif.parseAdifFile(text)
       findQsosId(qsls)
       qsls.forEach((q)=>{mergeQsl(q.j_, q)})
-
       // check for eqsl images
       for (let i in qsls) {
         const qsl = qsls[i]
@@ -389,46 +390,50 @@ function App ({firebase}) {
             // this.eqsl.archive(qso);
             console.log("got image for", qsl.QSO_DATE+"-"+qsl.TIME_ON+"-"+qsl.CALL)
             firebase.logbook(logbookIndex).doc(logbook.qsos[qsl.j_].id_).update({eqslcc_image_url_ : downloadURL})
-            sleep(1000)
+            await sleep(10500) // eqsl Throttle request to every 10 seconds
           }    
           catch (err){
             console.log(err)
+            await sleep(10500) // eqsl Throttle request to every 10 seconds
           }
         }
       }
       count--
       setQslServiceCount(count)
     })
-    // // LoTW
-    // const lotw_service = new LoTW(secrets["lotw"]);
-    // count++
-    // setQslServiceCount(count)
-    // lotw_service.fetchQsls().then((text)=>{
-    //   console.log(text)
-    //   const qsls = adif.parseAdifFile(text)
-    //   mergeQslList(qsls)
-    //   count--
-    //   setQslServiceCount(count)
-    // })
-    // // qrz.com
-    // const qrzcom_service = new QRZ_COM_logbook(secrets['qrz.com'])
-    // count++
-    // setQslServiceCount(count)
-    // qrzcom_service.fetchQsls().then((text)=>{
-    //   const qsls = adif.parseAdifFile(text, false)
-    //   mergeQslList(qsls, "QRZLOG")
-    //   count--
-    //   setQslServiceCount(count)
-    // })
-    // // clublog
-    // const clublog_service = new Clublog(secrets['clublog'], currentCallsign)
-    // count++
-    // setQslServiceCount(count)
-    // clublog_service.fetchQsls().then((qsls)=>{
-    //   mergeQslList(qsls.sort(comapare))
-    //   count--
-    //   setQslServiceCount(count)
-    // })
+
+    // LoTW
+    const lotw_service = new LoTW(secrets["lotw"]);
+    count++
+    setQslServiceCount(count)
+    lotw_service.fetchQsls().then((text)=>{
+      console.log(text)
+      const qsls = adif.parseAdifFile(text)
+      mergeQslList(qsls)
+      count--
+      setQslServiceCount(count)
+    })
+    
+    // qrz.com
+    const qrzcom_service = new QRZ_COM_logbook(secrets['qrz.com'])
+    count++
+    setQslServiceCount(count)
+    qrzcom_service.fetchQsls().then((text)=>{
+      const qsls = adif.parseAdifFile(text, false)
+      mergeQslList(qsls, "QRZLOG")
+      count--
+      setQslServiceCount(count)
+    })
+    
+    // clublog
+    const clublog_service = new Clublog(secrets['clublog'], currentCallsign)
+    count++
+    setQslServiceCount(count)
+    clublog_service.fetchQsls().then((qsls)=>{
+      mergeQslList(qsls.sort(comapare))
+      count--
+      setQslServiceCount(count)
+    })
 
   }
 
