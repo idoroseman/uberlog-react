@@ -42,6 +42,7 @@ import MapPage from '../Map';
 import SettingsPage from "../Settings";
 import EditPage from "../Edit";
 import StatsPage from "../Stats";
+import PSKReporterPage from "../PSKReporter"
 
 import * as ROUTES from '../constants/routes';
 import { withFirebase } from '../Firebase';
@@ -549,6 +550,9 @@ function App ({firebase}) {
               />)}
             />
             <Route path={ROUTES.EDIT+"/:id" } component={EditPage} />
+            <Route path={ROUTES.REPORTER}>
+              <PSKReporterPage callsign={currentCallsign} />
+            </Route>
             <Route path={ROUTES.MAP}>
               <MapPage qsos = { logbook.qsos }/>
             </Route>
