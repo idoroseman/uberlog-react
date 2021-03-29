@@ -63,7 +63,7 @@ import {fetchCors} from '../Information'
 
 import isElectron from 'is-electron';
 import { MergeType } from '@material-ui/icons';
-// const {ipcRenderer} = window.electron
+const {ipcRenderer} = window.electron
 
 const HtmlTooltip = withStyles((theme) => ({
   tooltip: {
@@ -494,6 +494,44 @@ function App ({firebase}) {
              firebase.logbook(logbookIndex).doc(id).update(output)
         })
       }
+
+  //-----------------------------------------------------------------------------
+  //                               Connections
+  //-----------------------------------------------------------------------------
+  const dxcc = new DXCC();
+
+  const handleWsjtxQso = (event, qso)=>{
+    const info = dxcc.countryOf(qso.CALL.toUpperCase())
+    console.log(info)
+    if(info){
+      qso.COUNTRY = info.name 
+      qso.DXCC = info.entity_code 
+      qso.CQZ = info.cq_zone
+      qso.ITUZ = info.itu_zone
+      qso.flag_ = info.flag
+      }
+    console.log(qso)
+    firebase.logbook(logbookIndex).add(qso)
+      .then(()=>{
+        console.log("submited")
+      })
+      .catch((err)=>{console.log(err)})
+  }
+
+  const handleWsjtxHeartbear = (event) => {
+    console.log("ping")
+  }
+
+  useEffect(()=>{
+    ipcRenderer.on('qso', handleWsjtxQso)
+    return ()=>{ipcRenderer.removeEventListener('qso', handleWsjtxQso)}
+  }, [])
+  
+  useEffect(()=>{
+    ipcRenderer.on('heartbeat', handleWsjtxHeartbear)
+    return ()=>{ipcRenderer.removeEventListener('heartbeat', handleWsjtxHeartbear)}
+  }, [])
+
 
   //-----------------------------------------------------------------------------
   //                                render

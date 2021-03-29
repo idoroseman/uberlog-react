@@ -1,7 +1,7 @@
 // from https://dev.to/mandiwise/electron-apps-made-easy-with-create-react-app-and-electron-forge-560e
+const wsjtx = require('./components/Connections/wsjtx')
 
 const path = require("path");
-
 const { app, ipcMain, BrowserWindow } = require("electron");
 const isDev = require("electron-is-dev");
 
@@ -45,6 +45,12 @@ function createWindow() {
   if (isDev) {
     mainWindow.webContents.openDevTools({ mode: "detach" });
   }
+
+  const wsjtx_client = new wsjtx();
+  wsjtx_client.on('qso', (qso)=>{mainWindow.webContents.send('qso', qso)})
+  wsjtx_client.on('heartbeat', ()=>{mainWindow.webContents.send('heartbeat')})
+  // wsjtx_client.on('status', (obj) => { this.setState({pluginStat: Object.assign({}, this.state.pluginStat, obj)}) })
+
 }
 
 // This method will be called when Electron has finished
