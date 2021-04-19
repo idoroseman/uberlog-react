@@ -63,7 +63,6 @@ import {fetchCors} from '../Information'
 
 import isElectron from 'is-electron';
 import { MergeType } from '@material-ui/icons';
-const {ipcRenderer} = window.electron
 
 const HtmlTooltip = withStyles((theme) => ({
   tooltip: {
@@ -131,17 +130,18 @@ const MyAppBar = (props) => {
         <SyncIcon />
       </Tooltip>
     </Badge>
-    <Badge color="secondary" variant="" className={classes.margin}>
-      <HtmlTooltip
-          title={
-            <React.Fragment>
-              Connections<br/><em>wsjt-x</em>
-            </React.Fragment>
-          }
-        >
-        <SettingsEthernetIcon />
-      </HtmlTooltip>
-    </Badge>
+    { isElectron() ?
+      <Badge color="secondary" variant="" className={classes.margin}>
+        <HtmlTooltip
+            title={
+              <React.Fragment>
+                Connections<br/><em>wsjt-x</em>
+              </React.Fragment>
+            }
+          >
+          <SettingsEthernetIcon />
+        </HtmlTooltip>
+      </Badge> : "" }
     { isElectron() ?
       <Badge color="secondary" variant={props.isOnTop?"dot":"standard"} className={classes.margin} onClick={props.onStayOnTop}>
         <HtmlTooltip
@@ -523,13 +523,17 @@ function App ({firebase}) {
   }
 
   useEffect(()=>{
-    ipcRenderer.on('qso', handleWsjtxQso)
-    return ()=>{ipcRenderer.removeEventListener('qso', handleWsjtxQso)}
+    if (window.ipcRenderer){
+      window.ipcRenderer.on('qso', handleWsjtxQso)
+      return ()=>{window.ipcRenderer.removeEventListener('qso', handleWsjtxQso)}
+    }
   }, [])
   
   useEffect(()=>{
-    ipcRenderer.on('heartbeat', handleWsjtxHeartbear)
-    return ()=>{ipcRenderer.removeEventListener('heartbeat', handleWsjtxHeartbear)}
+    if (window.ipcRenderer){
+      window.ipcRenderer.on('heartbeat', handleWsjtxHeartbear)
+      return ()=>{window.ipcRenderer.removeEventListener('heartbeat', handleWsjtxHeartbear)}
+    }
   }, [])
 
 

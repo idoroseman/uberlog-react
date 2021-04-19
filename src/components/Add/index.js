@@ -287,8 +287,8 @@ const AddPage = ( props ) => {
     return (
       <Card className={classes.root} variant="outlined">
         <CardContent>
-          <input type="text" id="location" name="location" placeholder="location" onChange={handleLocationChanged}/>
-          <input type="text" id="operator" name="operator" placeholder="operator" onChange={handleOperatorChanged}/>
+          <input type="text" id="location" name="location" size="18" placeholder="location" onChange={handleLocationChanged}/>
+          <input type="text" id="operator" name="operator" size="18" placeholder="operator" onChange={handleOperatorChanged}/>
           <br/> 
           <select name="band" id="band" value={freqSelected} onChange={handleFreqChanged} disabled={satSelected!=""}>
             <option value="1.8"     key="1.8">1.8 MHz / 160m</option>
@@ -350,7 +350,7 @@ const AddPage = ( props ) => {
           <br/>
           <br/>
           <Typography variant="h5" component="h2">
-            {state.CALL=="" ? "Callsign" : state.CALL }
+            {state.CALL=="" ? "Callsign" : state.CALL.replace("0","Ø") }
           </Typography>
           <Typography className={classes.pos} color="textSecondary">
             {state.flag_?<Flag code={state.flag_} height="16"/>:<span>&#x1f3f3;</span>}
@@ -365,7 +365,7 @@ const AddPage = ( props ) => {
           <Typography variant="body2" component="p">
             QTH {state.QTH ? state.QTH : (lookup.addr2?<span style={{"color":"Gray"}}>{lookup.state?lookup.addr2+" "+lookup.state:lookup.addr2}</span>:"...")} 
             {state.GRID ? " Grid "+state.GRID: ""}
-            { lookup.grid?<span> Grid <span style={{color:"Gray"}}>{lookup.grid}</span></span>:"" }
+            { (!state.GRID  && lookup.grid)?<span> Grid <span style={{color:"Gray"}}>{lookup.grid}</span></span>:"" }
           </Typography>
           <Typography variant="body2" component="p">
             {state.QSO_DATE ? "Date "+state.QSO_DATE:""}

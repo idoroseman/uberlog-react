@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
     flex: '1 0 auto',
   },
   cover: {
-    width: 180,
+    width: 199,
     maxHeight: "120px"
   },
   controls: {
@@ -109,7 +109,7 @@ export default function QsoTile( props ) {
       <div className={classes.details}>
         <CardContent className={classes.content}>
           <Grid container justify="space-between">  
-              <Typography inline="true" variant="h5" align="left">{props.qso.CALL}</Typography>
+              <Typography inline="true" variant="h5" align="left">{props.qso.CALL.replace("0","Ø")}</Typography>
               <Typography inline="true" variant="h5" align="right">{DateTimeFormat(props.qso.QSO_DATE, props.qso.TIME_ON)} </Typography>
           </Grid>
 
