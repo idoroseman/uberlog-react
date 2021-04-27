@@ -29,7 +29,7 @@ var moment = require('moment');
 const useStyles = makeStyles(theme => ({
   card: {
     display: 'flex',
-		width: 530,
+		width: 550,
     maxHeight: "120px"
 
   },
