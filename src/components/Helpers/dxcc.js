@@ -19,10 +19,15 @@ class DXCC {
 
   async downloadFromServer(){
     const firebase = new Firebase()
-    const url = await firebase.storageRef().child('public/dxcclist.csv').getDownloadURL()
-    const response = await fetch(url);
-    const doc = await response.text();
-    localStorage.setItem('dxcclist', doc);
+    try {
+      const url = await firebase.storageRef().child('public/dxcclist.csv').getDownloadURL()
+      console.log(url)
+      const response = await fetch(url);
+      const doc = await response.text();
+      localStorage.setItem('dxcclist', doc);
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   parseDxccCsv(doc) {

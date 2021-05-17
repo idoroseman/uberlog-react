@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -42,15 +43,15 @@ function ProductHero(props) {
         UberLog
       </Typography>
       <Typography color="inherit" align="center" variant="h5" className={classes.h5}>
-        a ham radio logbook that doesn't look it was made in the 70's
+        a ham radio logbook that actually looks good
       </Typography>
       <Button
         color="secondary"
         variant="contained"
         size="large"
         className={classes.button}
-        component="a"
-        href={ROUTES.SIGN_UP}
+        component={Link}
+        to={ROUTES.SIGN_UP}
       >
         Register
       </Button>
@@ -59,8 +60,8 @@ function ProductHero(props) {
         variant="contained"
         size="large"
         className={classes.button}
-        component="a"
-        href={ROUTES.SIGN_IN}
+        component={Link}
+        to={ROUTES.SIGN_IN}
       >
         Log in
       </Button>

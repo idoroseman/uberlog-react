@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router , Redirect, Route, } from 'react-router-dom';
+import { HashRouter as Router , Redirect, Route, useLocation} from 'react-router-dom';
 import { compose } from 'recompose';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -90,6 +90,19 @@ const Copyright = () => {
 };
 
 //------------------------------------------------------------------------------
+const NoMatch = () => {
+  const location = useLocation();
+  console.log(location.pathname);
+  return ( <>           
+  <Typography variant="h4">404</Typography>
+  <Typography variant="subtitle1">
+   Page not found!
+  </Typography>
+  <pre>{location.pathname}</pre>
+   </>)
+}
+
+//------------------------------------------------------------------------------
 
 const MyAppBar = (props) => {
   const classes = useStyles();
@@ -131,7 +144,7 @@ const MyAppBar = (props) => {
       </Tooltip>
     </Badge>
     { isElectron() ?
-      <Badge color="secondary" variant="" className={classes.margin}>
+      <Badge color="secondary" variant="standard" className={classes.margin}>
         <HtmlTooltip
             title={
               <React.Fragment>
@@ -618,6 +631,9 @@ function App ({firebase}) {
                 loading={logbook.loading}
                 />)}
             />
+{
+//            <Route component={NoMatch} /> 
+}
           <Box pt={4}>
             <Copyright />
           </Box>

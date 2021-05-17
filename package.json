@@ -1,35 +1,11 @@
 {
   "name": "uberlog",
   "version": "0.1.0",
+  "author": "ido roseman 4x6ub",
+  "description": "ham radio log program that looks good",
   "main": "src/electron.js",
   "homepage": "./",
   "private": true,
-  "dependencies": {
-    "@material-ui/core": "^4.11.3",
-    "@material-ui/icons": "^4.11.2",
-    "@material-ui/lab": "^4.0.0-alpha.57",
-    "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/react": "^11.2.5",
-    "@testing-library/user-event": "^12.7.1",
-    "chart.js": "^2.9.4",
-    "electron-is-dev": "^2.0.0",
-    "electron-squirrel-startup": "^1.0.0",
-    "firebase": "^8.2.7",
-    "google-maps-react": "^2.0.6",
-    "is-electron": "^2.2.0",
-    "julian-date": "^1.0.1",
-    "moment": "^2.29.1",
-    "react": "^17.0.1",
-    "react-chartjs-2": "^2.11.1",
-    "react-dom": "^17.0.1",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.2",
-    "react-virtualized-auto-sizer": "^1.0.5",
-    "react-window": "^1.8.6",
-    "react-world-flags": "^1.4.0",
-    "recompose": "^0.30.0",
-    "web-vitals": "^1.1.0"
-  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -42,6 +18,10 @@
     "package": "react-scripts build && electron-forge package",
     "make": "react-scripts build && electron-forge make",
     "icon-maker": "npx electron-icon-maker --input=/absolute/path/to/cra-electron-forge-demo/src/app-icon.png --output=src  "
+  },
+  "build": {
+    "appId": "com.idoroseman.uberlog",
+    "extends": null
   },
   "eslintConfig": {
     "extends": [
@@ -61,16 +41,42 @@
       "last 1 safari version"
     ]
   },
+  "dependencies": {
+    "@material-ui/core": "^4.11.4",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.58",
+    "@testing-library/jest-dom": "^5.12.0",
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/user-event": "^12.8.3",
+    "chart.js": "^2.9.4",
+    "electron-is-dev": "^2.0.0",
+    "electron-squirrel-startup": "^1.0.0",
+    "firebase": "^8.6.1",
+    "google-maps-react": "^2.0.6",
+    "is-electron": "^2.2.0",
+    "julian-date": "^1.0.1",
+    "moment": "^2.29.1",
+    "react": "^17.0.2",
+    "react-chartjs-2": "^2.11.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.2",
+    "react-virtualized-auto-sizer": "^1.0.5",
+    "react-window": "^1.8.6",
+    "react-world-flags": "^1.4.0",
+    "recompose": "^0.30.0",
+    "web-vitals": "^1.1.2"
+  },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.54",
     "@electron-forge/maker-deb": "^6.0.0-beta.54",
     "@electron-forge/maker-rpm": "^6.0.0-beta.54",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
     "@electron-forge/maker-zip": "^6.0.0-beta.54",
-    "concurrently": "^5.2.0",
-    "electron": "^12.0.1",
-    "electron-devtools-installer": "^3.1.1",
-    "wait-on": "^5.1.0"
+    "concurrently": "^5.3.0",
+    "electron": "^12.0.7",
+    "electron-devtools-installer": "^3.2.0",
+    "wait-on": "^5.3.0"
   },
   "config": {
     "forge": {
