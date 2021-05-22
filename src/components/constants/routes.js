@@ -10,3 +10,5 @@ export const PASSWORD_FORGET = '/pw-forget';
 export const MAP = '/map';
 export const STATS = '/stats';
 export const REPORTER = '/pskreporter';
+export const DOWNLOAD = '#download';
+

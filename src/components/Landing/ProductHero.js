@@ -46,6 +46,16 @@ function ProductHero(props) {
         a ham radio logbook that actually looks good
       </Typography>
       <Button
+        color="primary"
+        variant="contained"
+        size="large"
+        className={classes.button}
+        component={Link}
+        to={ROUTES.SIGN_IN}
+      >
+        Log in
+      </Button>
+      <Button
         color="secondary"
         variant="contained"
         size="large"
@@ -56,14 +66,13 @@ function ProductHero(props) {
         Register
       </Button>
       <Button
-        color="primary"
+        color="default"
         variant="contained"
         size="large"
         className={classes.button}
-        component={Link}
-        to={ROUTES.SIGN_IN}
+        onClick={props.onDownloadClick}
       >
-        Log in
+        Download
       </Button>
       <Typography variant="body2" color="inherit" className={classes.more}>
         Discover the experience

@@ -81,7 +81,8 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "src/icons/mac/icon.icns",
+        "icon-mac": "src/icons/mac/icon.icns",
+		"icon": "src/icons/win/icon.ico",
         "name": "UberLog"
       },
       "makers": [
