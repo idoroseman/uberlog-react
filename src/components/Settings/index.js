@@ -60,6 +60,13 @@ const SettingsPage = (props) => {
     }
 
     const handleSelectChange = (event) => {
+      console.log(event.target.value, props.logbooksMetadata.length)
+        if (event.target.value==Object.keys(props.logbooksMetadata).length){
+          console.log("adding new db")
+          const tmp = props.logbooksMetadata
+          tmp[event.target.value]={title:"New logbook", callsign:"N0CALL", grid:""}
+          props.firebase.user().update({logbooks:tmp})
+        }
         props.onIndexChange(event.target.value)
         if (event.target.value in props.logbooksMetadata)
           setFields(props.logbooksMetadata[event.target.value]);

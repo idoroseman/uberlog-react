@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import { withFirebase } from '../Firebase';
-import { compose } from 'recompose';
+import { compose, mapProps } from 'recompose';
 
 import { PasswordForgetForm } from '../PasswordForget';
 import PasswordChangeForm from '../PasswordChange';
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const AccountPage = ({firebase}) => {
+const AccountPage = (props) => {
   const isInvalid = false;
 
   const lotw_username = '';
@@ -27,15 +27,15 @@ const AccountPage = ({firebase}) => {
   const [qslmsg, setQslmsg] = React.useState("");
 
   useEffect(() => {
-    return firebase.user().collection("secrets").onSnapshot(snapshot => { 
+    return props.firebase.user().collection("secrets_"+props.logbookIndex.toString()).onSnapshot(snapshot => { 
       var s = {}
       snapshot.docs.forEach((doc)=>{s[doc.id] = doc.data()})
       setSecrets(s)
     })
-  }, []);
+  }, [props.logbookIndex]);
 
   useEffect(() => {
-    return firebase.user().get().then(snapshot => { 
+    return props.firebase.user().get().then(snapshot => { 
       setQslmsg(snapshot.data().qslmsg || "")
     })
   }, []);
@@ -50,7 +50,7 @@ const AccountPage = ({firebase}) => {
   }
 
   const handleSave = (event) => {
-    firebase.user().collection("secrets").doc(event.target.name).set(secrets[event.target.name])
+    props.firebase.user().collection("secrets_"+props.logbookIndex.toString()).doc(event.target.name).set(secrets[event.target.name])
   };
 
   const handleEqslSync = () => {
@@ -84,7 +84,7 @@ const AccountPage = ({firebase}) => {
         />
         <br/>
         <button name="eqsl.cc" onClick={(e)=>{
-          firebase.user().update({qslmsg})
+          props.firebase.user().update({qslmsg})
         }}>
             Save
         </button>

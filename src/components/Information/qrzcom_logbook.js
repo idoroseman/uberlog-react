@@ -5,7 +5,12 @@ class QRZ_COM_logbook extends EventEmitter {
 
   constructor(credentials){
     super();
-    this.key = credentials.key;
+    try {
+          this.key = credentials.key;
+    }
+    catch {
+      this.key = ""
+    }
     console.log("welcome to qrz.com logbook");
   }
 

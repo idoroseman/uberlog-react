@@ -234,12 +234,12 @@ function App ({firebase}) {
 
   // get current secrets
   useEffect(()=>{
-    return user ? firebase.user().collection("secrets").onSnapshot(snapshot => { 
+    return user ? firebase.user().collection("secrets_"+logbookIndex.toString()).onSnapshot(snapshot => { 
       let temp = {}
       snapshot.forEach((doc)=>{ temp[doc.id] = doc.data() })
       setSecrets(temp)
     }) : null;
-  }, [user]) // run only if user changed
+  }, [user, logbookIndex]) // run only if user changed
 
   // get current logbook
   useEffect(()=>{
@@ -611,7 +611,12 @@ function App ({firebase}) {
             <Route path={ROUTES.MAP}>
               <MapPage qsos = { logbook.qsos }/>
             </Route>
-            <Route path={ROUTES.ACCOUNT} component={AccountPage} />
+            <Route path={ROUTES.ACCOUNT} render={(props)=>(
+              <AccountPage {...props} 
+                logbookIndex = {logbookIndex}
+              />
+              )}
+            />
             <Route path={ROUTES.SETTINGS} render={(props)=>(
               <SettingsPage {...props} 
                   logbooksMetadata = {user ? user.logbooks : [] }
