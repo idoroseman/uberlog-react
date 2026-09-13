@@ -117,12 +117,16 @@ const MyAppBar = (props) => {
         <ListIcon />
       </Tooltip>
     </Badge>
-    <Badge variant={props.qslServiceCount?"dot":"standard"} color="secondary" className={classes.margin} onClick={props.onSync}>
+    </IconButton>
+    <IconButton color="inherit" onClick={props.onSync}>
+    <Badge variant={props.qslServiceCount?"dot":"standard"} color="secondary" className={classes.margin}>
       <Tooltip title="Sync" placement="bottom">
         <SyncIcon />
       </Tooltip>
     </Badge>
+    </IconButton>
     { isElectron() ?
+      <IconButton color="inherit">
       <Badge color="secondary" variant="standard" className={classes.margin}>
         <HtmlTooltip
             title={
@@ -133,9 +137,11 @@ const MyAppBar = (props) => {
           >
           <SettingsEthernetIcon />
         </HtmlTooltip>
-      </Badge> : "" }
+      </Badge>
+      </IconButton> : "" }
     { isElectron() ?
-      <Badge color="secondary" variant={props.isOnTop?"dot":"standard"} className={classes.margin} onClick={props.onStayOnTop}>
+      <IconButton color="inherit" onClick={props.onStayOnTop}>
+      <Badge color="secondary" variant={props.isOnTop?"dot":"standard"} className={classes.margin}>
         <HtmlTooltip
           title={
             <React.Fragment>
@@ -145,9 +151,9 @@ const MyAppBar = (props) => {
         >
         <VerticalAlignTopIcon />
       </HtmlTooltip>
-    </Badge> : ""
+    </Badge>
+    </IconButton> : ""
     }
-    </IconButton>
   </Toolbar>
 </AppBar>
 }
@@ -399,6 +405,11 @@ function App ({firebase}) {
         count--
         setQslServiceCount(count)
       })
+      .catch((err)=>{
+        console.log("eqsl.cc sync failed", err)
+        count--
+        setQslServiceCount(count)
+      })
     } else {
       console.debug("eQSL sync is only available in the desktop app")
     }
@@ -414,6 +425,11 @@ function App ({firebase}) {
       count--
       setQslServiceCount(count)
     })
+    .catch((err)=>{
+      console.log("lotw sync failed", err)
+      count--
+      setQslServiceCount(count)
+    })
 
     // qrz.com
     const qrzcom_service = new QRZ_COM_logbook(secrets['qrz.com'])
@@ -425,13 +441,23 @@ function App ({firebase}) {
       count--
       setQslServiceCount(count)
     })
-    
+    .catch((err)=>{
+      console.log("qrz.com sync failed", err)
+      count--
+      setQslServiceCount(count)
+    })
+
     // clublog
     const clublog_service = new Clublog(secrets['clublog'], currentCallsign)
     count++
     setQslServiceCount(count)
     clublog_service.fetchQsls().then((qsls)=>{
       mergeQslList(qsls.sort(comapare))
+      count--
+      setQslServiceCount(count)
+    })
+    .catch((err)=>{
+      console.log("clublog sync failed", err)
       count--
       setQslServiceCount(count)
     })

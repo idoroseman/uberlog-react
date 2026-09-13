@@ -51,6 +51,7 @@ class QRZ_COM_logbook extends EventEmitter {
         .catch((err)=>{
           this.emit('status', {"qrz.com":"error"})
           console.log("something went wrong",err);
+          reject(err)
         })
     })
   }

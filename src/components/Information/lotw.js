@@ -26,6 +26,7 @@ class LoTW extends EventEmitter {
         .catch((err)=>{
           this.emit('status', {"LoTW":"error"})
           console.log("something went wrong",err);
+          reject(err)
         })
     })
   }

@@ -34,7 +34,7 @@ class Clublog extends EventEmitter {
         .catch((err)=> {
           console.log("clublog",err)
             this.emit('status', {"clublog":"error"})
-            reject()
+            reject(err)
           })
         })
   }

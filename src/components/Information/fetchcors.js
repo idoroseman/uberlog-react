@@ -3,7 +3,8 @@ import isElectron from 'is-electron';
 export default function fetchCors(url, options={}){
     options.headers = {
       'Origin': 'https://uberlog.idoroseman.com',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest'
     }
     if (isElectron())
       return fetch(url, options); 
