@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
-import Button from '@material-ui/core//Button';
-import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@mui/styles';
+import Grid from '@mui/material/Grid';
+import Container from '@mui/material/Container';
+import Button from '@mui/material//Button';
+import Typography from '@mui/material/Typography';
 import productCurvyLines from './productCurvyLines.png';
 import WindowsIcon from './WindowsIcon.svg';
 import AppleIcon from './AppleIcon.svg';

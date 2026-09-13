@@ -2,19 +2,19 @@ import React, { Component } from 'react';
 import clsx from 'clsx';
 import { compose } from 'recompose';
 
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import { Doughnut, Bar, HorizontalBar } from "react-chartjs-2";
+import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
+import CardActionArea from '@mui/material/CardActionArea';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import { Doughnut, Bar } from "react-chartjs-2";
 
 import BannerImg from './banner.png';
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { withAuthorization } from '../Session';
 
 const useStyles = makeStyles((theme) => ({
@@ -153,6 +153,7 @@ const DashCardBar = (props) => {
     ],
   }
   const options = {
+    indexAxis: 'y',
     legend: {
       display: false,
       position: 'right',
@@ -161,7 +162,7 @@ const DashCardBar = (props) => {
   }
 
   return <DashCard title={props.title}>
-      <HorizontalBar data={data} options={options}/>
+      <Bar data={data} options={options}/>
   </DashCard>
 }
 
@@ -241,7 +242,9 @@ const StatsPage = (props) => {
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
             <DashCardTable title="QSLs"
-              data = {{ "eQSL.cc": props.loading?0:sum(counter["QSL_RCVD_VIA"]),
+              data = {{ 
+                        "printed": props.loading?0:sum(counter["APP_UBERLOG_RECV_PRINTED"]),
+                        "eQSL.cc": props.loading?0:sum(counter["QSL_RCVD_VIA"]),
                         "qrz.com": (props.loading || (!counter["APP_QRZLOG_STATUS"])) ? 0: counter["APP_QRZLOG_STATUS"]["C"],
                         "LoTW": props.loading?0:sum(counter["APP_LOTW_MODEGROUP"]),
                         "clublog": props.loading?0:sum(counter["APP_CLUBLOG_STATUS"]),

@@ -1,8 +1,7 @@
-import app from 'firebase/app';
-import 'firebase/auth';
-import "firebase/firestore";
-import 'firebase/storage';
-
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
+import 'firebase/compat/storage';
 
 const config = {
     apiKey: process.env.REACT_APP_API_KEY,
@@ -13,16 +12,16 @@ const config = {
     messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
 };
 
+let appInstance = null;
+
 class Firebase {
   constructor() {
-    if (!app.apps.length) {
-      app.initializeApp(config);
-    }else {
-      app.app(); // if already initialized, use that one
+    if (!appInstance) {
+      appInstance = firebase.initializeApp(config);
     }
-    this.auth = app.auth();
-    this.db = app.firestore();
-    this.storage = app.storage();
+    this.auth = firebase.auth();
+    this.db = firebase.firestore();
+    this.storage = firebase.storage();
   }
 
   // *** Auth API ***
@@ -48,7 +47,7 @@ class Firebase {
 
   logbook = (index) => this.db.collection('hams').doc(this.auth.currentUser.uid).collection('log_'+index.toString())
 
-  deleteField = () => app.firestore.FieldValue.delete()
+  deleteField = () => firebase.firestore.FieldValue.serverTimestamp()
   
   // *** Storage API ***
 

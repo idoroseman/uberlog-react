@@ -1,23 +1,24 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { compose } from 'recompose';
 import { useParams } from "react-router-dom";
 import { withFirebase } from '../Firebase';
 import { withAuthorization } from '../Session';
 
-import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import TextField from '@material-ui/core/TextField';
+import { makeStyles } from '@mui/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
 
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
-import CheckIcon from '@material-ui/icons/Check';
-import CancelIcon from '@material-ui/icons/Cancel';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import CheckIcon from '@mui/icons-material/Check';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const useStyles = makeStyles({
     table: {
@@ -33,13 +34,23 @@ const EditPage = (props) =>{
     const [editField, setEditField] = React.useState("");
     const [editKey, setEditKey] = React.useState("");
     const [editVal, setEditVal] = React.useState("");
-    
+
+    const has_printed_qsl = (qso.APP_UBERLOG_RECV_PRINTED=="Y")// || (props.qso.QSL_RCVD_VIA=="B") || (props.qso.QSL_RCVD_VIA=="D")
+
     useEffect(() => {
         return props.firebase.logbook(logbookIndex).doc(id).onSnapshot((snapshot=>{
             console.log("snap")
             setQso(snapshot.data());
         }))
     }, [])
+
+    const [file, setFile] = useState("");
+    const [percent, setPercent] = useState(0);
+    function handleChange(event) {
+        setFile(event.target.files[0]);
+    }
+
+    const handleUpload = () => {}
 
     const handleUpdateField = (event) => { 
       var obj = {};
@@ -88,6 +99,12 @@ const EditPage = (props) =>{
             ))}
           </TableBody>
         </Table>
+        {has_printed_qsl ? "": <Button size="small" onClick={()=>{props.onRecvPrintedQsl(props.qso.id_)}}>Add Recieved Printed QSL</Button>}
+        <div>
+            <input type="file" onChange={handleChange} accept="/image/*" />
+            <button onClick={handleUpload}>Upload to Firebase</button>
+            {percent} "% done"
+        </div>
       </TableContainer>
     )
 }

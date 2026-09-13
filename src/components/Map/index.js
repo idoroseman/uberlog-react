@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { compose } from 'recompose';
 import { withAuthorization } from '../Session';
-import { withStyles } from '@material-ui/styles';
+import { withStyles } from '@mui/styles';
 import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
 import {gridSquareToLatLon} from './HamGridSquare'
 

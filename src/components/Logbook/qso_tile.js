@@ -1,24 +1,25 @@
 import React from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/Styles';
+import { makeStyles } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
 import { useHistory } from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Tooltip from '@material-ui/core/Tooltip';
+import Grid from '@mui/material/Grid';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Tooltip from '@mui/material/Tooltip';
 
-import PersonIcon from '@material-ui/icons/Person';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-import SatelliteIcon from '@material-ui/icons/Satellite';
-import EditIcon from '@material-ui/icons/Edit';
-import MicIcon from '@material-ui/icons/Mic';
-import RoomOutlinedIcon from '@material-ui/icons/RoomOutlined';
+import PersonIcon from '@mui/icons-material/Person';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import SatelliteIcon from '@mui/icons-material/Satellite';
+import EditIcon from '@mui/icons-material/Edit';
+import MicIcon from '@mui/icons-material/Mic';
+import RoomOutlinedIcon from '@mui/icons-material/RoomOutlined';
 
 import BackgroundImg from './bg_320x240.jpg';
 
@@ -78,15 +79,17 @@ export default function QsoTile( props ) {
   const hasLocation = props.qso.QTH || props.qso.GRID ;
   const locationText = props.qso.QTH==null || props.qso.QTH=="" ?props.qso.GRID:props.qso.QTH;
 
+  const has_printed_qsl = (props.qso.APP_UBERLOG_RECV_PRINTED=="Y")// || (props.qso.QSL_RCVD_VIA=="B") || (props.qso.QSL_RCVD_VIA=="D")
   const has_eqsl_qsl = (props.qso.QSL_RCVD=="Y") && (props.qso.QSL_RCVD_VIA=="E")
   const has_lotw_qsl = props.qso.APP_LOTW_MODEGROUP !== undefined
   const has_qrzcom_qsl = props.qso.APP_QRZLOG_STATUS == "C"
   const has_clublog_qsl = props.qso.APP_CLUBLOG_STATUS == "C"
-  const has_qsl_rcvd = has_eqsl_qsl || has_lotw_qsl || has_qrzcom_qsl
+  const has_qsl_rcvd = has_printed_qsl || has_eqsl_qsl || has_lotw_qsl || has_qrzcom_qsl
   const has_qsl_sent = props.qso.QSL_SENT=="Y"
 
   const bull = <span className={classes.bullet}>•</span>;
   const tooltip = <React.Fragment>
+    { has_printed_qsl?"printed ":"" } 
     { has_eqsl_qsl?"eqsl ":"" } 
     { has_lotw_qsl?"LoTW ":"" } 
     { has_qrzcom_qsl?"qrz ":"" } 

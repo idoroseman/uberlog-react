@@ -1,16 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { withStyles } from '@material-ui/core/styles';
-import Link from '@material-ui/core/Link';
-import AppBar from '../components/AppBar';
-import Toolbar, { styles as toolbarStyles } from '../components/Toolbar';
+import { withStyles } from '@mui/styles';
+import Link from '@mui/material/Link';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
 
 const styles = (theme) => ({
   title: {
     fontSize: 24,
   },
-  placeholder: toolbarStyles(theme).root,
+  placeholder: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   toolbar: {
     justifyContent: 'space-between',
   },

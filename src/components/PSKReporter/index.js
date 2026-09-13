@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { compose } from 'recompose';
 import { withAuthorization } from '../Session';
-import { withStyles } from '@material-ui/styles';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
+import { makeStyles } from '@mui/styles';
 
 import { PSKReporter } from '../Information';
 

@@ -33,8 +33,10 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <script>
-        window.electron = require('electron');
-        window.ipcRenderer = require('electron').ipcRenderer;
+        if (typeof window !== 'undefined' && window.process && window.process.versions && window.process.versions.electron) {
+          window.electron = require('electron');
+          window.ipcRenderer = require('electron').ipcRenderer;
+        }
     </script>
     <div id="root"></div>
     <!--

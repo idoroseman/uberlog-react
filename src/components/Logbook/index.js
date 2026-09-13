@@ -2,23 +2,24 @@ import React, { Component, useRef} from 'react';
 import clsx from 'clsx';
 import { compose, mapProps } from 'recompose';
 
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import List from '@material-ui/core/List';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import List from '@mui/material/List';
 import { FixedSizeList, VariableSizeList } from 'react-window';
 import AutoSizer from "react-virtualized-auto-sizer";
 
 import { withAuthorization } from '../Session';
-import { withStyles } from '@material-ui/styles';
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
+import { alpha } from '@mui/material/styles';
+import { makeStyles } from '@mui/styles';
 
-import InputBase from '@material-ui/core/InputBase';
-import SearchIcon from '@material-ui/icons/Search';
-import ClearIcon from "@material-ui/icons/Clear";
-import IconButton from '@material-ui/core/IconButton';
+import InputBase from '@mui/material/InputBase';
+import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from "@mui/icons-material/Clear";
+import IconButton from '@mui/material/IconButton';
 
 import QsoTile from './qso_tile'
 
@@ -41,9 +42,9 @@ const useStyles = makeStyles((theme) => ({
   search: {
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
+    backgroundColor: alpha(theme.palette.common.white, 0.15),
     '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
+      backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
     marginLeft: 0,
     width: '100%',
@@ -63,7 +64,7 @@ const useStyles = makeStyles((theme) => ({
   },
   inputRoot: {
     color: 'inherit',
-    background: fade(theme.palette.primary.main, 0.15),
+    background: alpha(theme.palette.primary.main, 0.15),
   },
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
@@ -110,6 +111,7 @@ const LogbookPage = (props) => {
   })
 
   const onSendQsl = (id)=>{props.onSendQsl(id)}
+  const onRecvPrintedQsl = (id)=>{props.onRecvPrintedQsl(id)}
   
   const renderRow = (props) => {
     const { index, style } = props;
@@ -117,7 +119,7 @@ const LogbookPage = (props) => {
     if (props.loading)
       return <Typography component="h2" variant="h6" color="primary" gutterBottom>Loading... </Typography>
     return <div key={index} style={style}>
-          <QsoTile key={index} style={style} qso={filtered_list[index]} onSendQsl={onSendQsl} />
+          <QsoTile key={index} style={style} qso={filtered_list[index]} onSendQsl={onSendQsl} onRecvPrintedQsl={onRecvPrintedQsl}/>
         </div>        
   }
 

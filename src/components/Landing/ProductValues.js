@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core//Typography';
+import { withStyles } from '@mui/styles';
+import Grid from '@mui/material/Grid';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material//Typography';
 
 import searchIcon from './search-black-18dp.svg'
 import noteIcon from './note_add-24px.svg'

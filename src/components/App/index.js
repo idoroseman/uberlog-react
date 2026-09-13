@@ -2,33 +2,33 @@ import React, { useEffect } from 'react';
 import { HashRouter as Router , Redirect, Route, useLocation} from 'react-router-dom';
 import { compose } from 'recompose';
 
-import { makeStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import { makeStyles } from '@mui/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 import clsx from 'clsx';
 import { mainListItems, secondaryListItems } from './menuListItems';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import MenuIcon from '@material-ui/icons/Menu';
-import Badge from '@material-ui/core/Badge';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import Drawer from '@material-ui/core/Drawer';
-import Divider from '@material-ui/core/Divider';
-import List from '@material-ui/core/List';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import Box from '@material-ui/core/Box';
-import Link from '@material-ui/core/Link';
-import Tooltip from '@material-ui/core/Tooltip';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import MenuIcon from '@mui/icons-material/Menu';
+import Badge from '@mui/material/Badge';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import Drawer from '@mui/material/Drawer';
+import Divider from '@mui/material/Divider';
+import List from '@mui/material/List';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import Box from '@mui/material/Box';
+import Link from '@mui/material/Link';
+import Tooltip from '@mui/material/Tooltip';
 
-import InputBase from '@material-ui/core/InputBase';
-import SearchIcon from '@material-ui/icons/Search';
-import ClearIcon from "@material-ui/icons/Clear";
-import SyncIcon from '@material-ui/icons/Sync';
-import SettingsEthernetIcon from '@material-ui/icons/SettingsEthernet';
-import ListIcon from '@material-ui/icons/List';
-import VerticalAlignTopIcon from '@material-ui/icons/VerticalAlignTop';
+import InputBase from '@mui/material/InputBase';
+import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from "@mui/icons-material/Clear";
+import SyncIcon from '@mui/icons-material/Sync';
+import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet';
+import ListIcon from '@mui/icons-material/List';
+import VerticalAlignTopIcon from '@mui/icons-material/VerticalAlignTop';
 
 import LandingPage from '../Landing';
 import SignUpPage from '../SignUp';
@@ -49,10 +49,10 @@ import { withFirebase } from '../Firebase';
 import { AuthUserContext } from '../Session';
 import { withAuthentication } from '../Session';
 
-import Container from '@material-ui/core/Container';
-import Grid from '@material-ui/core/Grid';
+import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@mui/styles';
 import {useStyles} from '../layout'
 
 import moment from 'moment'
@@ -62,7 +62,7 @@ import { DXCC, Adif } from '../Helpers'
 import {fetchCors} from '../Information'
 
 import isElectron from 'is-electron';
-import { MergeType } from '@material-ui/icons';
+import { MergeType } from '@mui/icons-material';
 
 const HtmlTooltip = withStyles((theme) => ({
   tooltip: {
@@ -221,37 +221,44 @@ function App ({firebase}) {
   
   // update user auth status
   useEffect(() => {
-    return firebase.auth.onAuthStateChanged( user => { setAuthUser(user); } );
-  })
+    if (!firebase || !firebase.auth) return undefined;
+    return firebase.auth.onAuthStateChanged((user) => {
+      setAuthUser(user);
+    });
+  }, [firebase]);
 
   // update user details
   useEffect(() => {
-    if (authUser)
-      return firebase.user().onSnapshot(querySnapshot => { setUser(querySnapshot.data()) })
-    else
-      return null      
-    }, [authUser])
+    if (!authUser || !firebase || !firebase.user) return undefined;
+    return firebase.user().onSnapshot((querySnapshot) => {
+      setUser(querySnapshot.data());
+    });
+  }, [authUser, firebase]);
 
   // get current secrets
-  useEffect(()=>{
-    return user ? firebase.user().collection("secrets_"+logbookIndex.toString()).onSnapshot(snapshot => { 
-      let temp = {}
-      snapshot.forEach((doc)=>{ temp[doc.id] = doc.data() })
-      setSecrets(temp)
-    }) : null;
-  }, [user, logbookIndex]) // run only if user changed
+  useEffect(() => {
+    if (!user || !firebase || !firebase.user) return undefined;
+    return firebase.user().collection(`secrets_${logbookIndex.toString()}`).onSnapshot((snapshot) => {
+      const temp = {};
+      snapshot.forEach((doc) => {
+        temp[doc.id] = doc.data();
+      });
+      setSecrets(temp);
+    });
+  }, [user, logbookIndex, firebase]);
 
   // get current logbook
-  useEffect(()=>{
-    setLogbook({loading:true, qsos:[]})
-    return user ? firebase.logbook(logbookIndex).onSnapshot(snapshot => {
-      console.log("logbook snapshot")
+  useEffect(() => {
+    setLogbook({ loading: true, qsos: [] });
+    if (!user || !firebase || !firebase.logbook) return undefined;
+    return firebase.logbook(logbookIndex).onSnapshot((snapshot) => {
+      console.log('logbook snapshot');
       setLogbook({
-        qsos: snapshot.docs.map((doc)=>Object.assign(doc.data(), {id_: doc.id})).sort(comapare),
+        qsos: snapshot.docs.map((doc) => Object.assign(doc.data(), { id_: doc.id })).sort(comapare),
         loading: false,
       });
-    }) : null;
-  }, [user, logbookIndex]) // run only if user changed
+    });
+  }, [user, logbookIndex, firebase]);
 
   const comapare = (a,b) => {
     if (a.QSO_DATE+a.TIME_ON > b.QSO_DATE+b.TIME_ON) return -1;
@@ -452,7 +459,19 @@ function App ({firebase}) {
   }
 
   //-----------------------------------------------------------------------------
-  
+  const handleRecvPrintedQsl = (id) => {
+    firebase.logbook(logbookIndex).doc(id).get().then(async(snapshot)=>{
+      let output = {}
+      const qso = snapshot.data()
+      output["QSL_RCVD"] = "Y"
+      output["APP_UBERLOG_RECV_PRINTED"] = "Y"
+      if ("eqslcc_image_url_" in qso)
+        output["QSL_RCVD_VIA"] = "E"
+      if (Object.keys(output).length>0)
+        firebase.logbook(logbookIndex).doc(id).update(output)
+    })
+  }
+
   const handleSendQsl = (id) => {
         console.log(id)
         let output = {}
@@ -595,6 +614,7 @@ function App ({firebase}) {
                 qsos={logbook.qsos}
                 loading={logbook.loading}
                 onSendQsl={handleSendQsl}
+                onRecvPrintedQsl={handleRecvPrintedQsl}
                 />)}
             />
             <Route path={ROUTES.ADD} render={(props)=>(
@@ -604,7 +624,11 @@ function App ({firebase}) {
                 lookupService = {qrzcom_lookup}
               />)}
             />
-            <Route path={ROUTES.EDIT+"/:id" } component={EditPage} />
+            <Route path={ROUTES.EDIT+"/:id" } render={(props)=>(
+              <EditPage {...props} 
+              onRecvPrintedQsl={handleRecvPrintedQsl}
+              />)}
+            />
             <Route path={ROUTES.REPORTER}>
               <PSKReporterPage callsign={currentCallsign} />
             </Route>

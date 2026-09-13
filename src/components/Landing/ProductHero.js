@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@mui/styles';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 import ProductHeroLayout from './ProductHeroLayout';
 
 import * as ROUTES from '../constants/routes';
@@ -66,7 +66,7 @@ function ProductHero(props) {
         Register
       </Button>
       <Button
-        color="default"
+        color="primary"
         variant="contained"
         size="large"
         className={classes.button}
