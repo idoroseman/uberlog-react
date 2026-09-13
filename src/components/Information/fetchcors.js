@@ -8,5 +8,5 @@ export default function fetchCors(url, options={}){
     if (isElectron())
       return fetch(url, options); 
     else
-      return fetch("https://uberlog-cors.herokuapp.com/"+url, options);
+      return fetch("https://uberlog-cors-970e79a47f28.herokuapp.com/"+url, options);
   }
