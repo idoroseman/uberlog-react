@@ -11,3 +11,5 @@ export default function fetchCors(url, options={}){
     else
       return fetch("https://uberlog-cors-970e79a47f28.herokuapp.com/"+url, options);
   }
+
+  // todo: replace dedicated server with a firebase funcion

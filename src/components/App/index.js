@@ -562,14 +562,14 @@ function App ({firebase}) {
   useEffect(()=>{
     if (window.ipcRenderer){
       window.ipcRenderer.on('qso', handleWsjtxQso)
-      return ()=>{window.ipcRenderer.removeEventListener('qso', handleWsjtxQso)}
+      return ()=>{window.ipcRenderer.removeListener('qso', handleWsjtxQso)}
     }
   }, [handleWsjtxQso])
   
   useEffect(()=>{
     if (window.ipcRenderer){
       window.ipcRenderer.on('heartbeat', handleWsjtxHeartbear)
-      return ()=>{window.ipcRenderer.removeEventListener('heartbeat', handleWsjtxHeartbear)}
+      return ()=>{window.ipcRenderer.removeListener('heartbeat', handleWsjtxHeartbear)}
     }
   }, [])
 

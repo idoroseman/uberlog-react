@@ -84,7 +84,7 @@ function ProductDownload(props) {
                     variant="contained"
                     className={classes.button}
                     component="a"
-                    href={"https://firebasestorage.googleapis.com/v0/b/uberlog-1555107254876.appspot.com/o/public%2FUberLog-win32-x64.zip?alt=media"}
+                    href={"https://firebasestorage.googleapis.com/v0/b/uberlog-1555107254876.appspot.com/o/public/UberLog-win32-x64.zip?alt=media"}
                     >
                     Download
                 </Button>
@@ -100,9 +100,19 @@ function ProductDownload(props) {
                     variant="contained"
                     className={classes.button}
                     component="a"
-                    href="https://firebasestorage.googleapis.com/v0/b/uberlog-1555107254876.appspot.com/o/public%2FUberLog-darwin-x64.zip?alt=media"
+                    href="https://firebasestorage.googleapis.com/v0/b/uberlog-1555107254876.appspot.com/o/public/UberLog-darwin-arm64.zip?alt=media"
                     >
-                    Download
+                    Download (Apple Silicon)
+                </Button>
+                <Button
+                    color="secondary"
+                    size="small"
+                    variant="text"
+                    className={classes.button}
+                    component="a"
+                    href="https://firebasestorage.googleapis.com/v0/b/uberlog-1555107254876.appspot.com/o/public/UberLog-darwin-x64.zip?alt=media"
+                    >
+                    Download (Intel)
                 </Button>
               </div>
             </Grid>

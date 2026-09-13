@@ -17,6 +17,10 @@
     "electron-old": "wait-on tcp:3000 && electron .",
     "package": "react-scripts build && electron-forge package",
     "make": "react-scripts build && electron-forge make",
+    "make-mac-arm64": "react-scripts build && electron-forge make --platform=darwin --arch=arm64",
+    "make-mac-x64": "react-scripts build && electron-forge make --platform=darwin --arch=x64",
+    "make-mac-all": "npm run make-mac-x64 && npm run make-mac-arm64",
+    "make-win": "react-scripts build && electron-forge make --platform=win32 --arch=x64",
     "icon-maker": "npx electron-icon-maker --input=/absolute/path/to/cra-electron-forge-demo/src/app-icon.png --output=src  "
   },
   "build": {
