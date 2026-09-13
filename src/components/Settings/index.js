@@ -8,7 +8,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { compose } from 'recompose';
+import { compose } from '../../utils/compose';
 
 import { AuthUserContext, withAuthorization } from '../Session';
 import { withFirebase } from '../Firebase';
@@ -38,9 +38,9 @@ const SettingsPage = (props) => {
 
     const handleTextChange = (event) => {
       var val = event.target.value;
-      if (event.target.id == "callsign")
+      if (event.target.id === "callsign")
         val = val.toUpperCase()
-      else if (event.target.id == "grid")
+      else if (event.target.id === "grid")
         val = fixGridFormat(val)
 
         setFields({...fields, [event.target.id]: val})
@@ -49,7 +49,7 @@ const SettingsPage = (props) => {
     const fixGridFormat = (ingrid) => {
       var outgrid = "";
       for (var i = 0; i < ingrid.length; i += 4)
-        if (i == 0)
+        if (i === 0)
           outgrid += ingrid.substr(i, 4).toUpperCase();
     
         else
@@ -59,7 +59,7 @@ const SettingsPage = (props) => {
 
     const handleSelectChange = (event) => {
       console.log(event.target.value, props.logbooksMetadata.length)
-        if (event.target.value==Object.keys(props.logbooksMetadata).length){
+        if (event.target.value===Object.keys(props.logbooksMetadata).length){
           console.log("adding new db")
           const tmp = props.logbooksMetadata
           tmp[event.target.value]={title:"New logbook", callsign:"N0CALL", grid:""}
@@ -101,7 +101,7 @@ const SettingsPage = (props) => {
           // fix bad formated grid
           if (qso.GRID){
             var grid = fixGridFormat(qso.GRID);
-            if (qso.GRID != grid)
+            if (qso.GRID !== grid)
               props.firebase.logbook(props.logbookIndex).doc(doc.id).update({GRID:grid})
             }
           

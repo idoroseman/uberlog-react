@@ -1,6 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { compose } from 'recompose';
+import { compose } from '../../utils/compose';
 
 import AuthUserContext from './context';
 import { withFirebase } from '../Firebase';

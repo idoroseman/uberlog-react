@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import clsx from 'clsx';
-import { compose } from 'recompose';
+import { compose } from '../../utils/compose';
 
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
@@ -211,9 +211,9 @@ const StatsPage = (props) => {
             counter[field] = {}
           var val = qso[field]
           
-          if (field=='FREQ')
+          if (field==='FREQ')
             val = Math.floor(val)
-          if (field=="QSO_DATE")
+          if (field==="QSO_DATE")
             val = val.slice(0,6)
           if (!(val in counter[field]))
             counter[field][val] = 1;

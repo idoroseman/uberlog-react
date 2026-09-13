@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@mui/styles';
-import { compose } from 'recompose';
+import { compose } from '../../utils/compose';
 import { withAuthorization } from '../Session';
 import { withStyles } from '@mui/styles';
-import { Map, GoogleApiWrapper, Marker } from "google-maps-react";
+import { APIProvider, Map, Marker } from "@vis.gl/react-google-maps";
 import {gridSquareToLatLon} from './HamGridSquare'
 
 const useStyles = makeStyles(theme => ({
@@ -44,12 +44,15 @@ const MapPage = ( props ) => {
         <img src="http://maps.google.com/mapfiles/ms/icons/purple.png" height="16"/> Digital
         <img src="http://maps.google.com/mapfiles/ms/icons/red.png" height="16"/> Other
         </p>
-        <Map google={props.google} 
-             zoom={4}
-             initialCenter={{ lat: 32.397, lng: 34.644 }}
+        <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
+        <Map
+             style={{ width: '100%', height: '600px' }}
+             defaultZoom={4}
+             defaultCenter={{ lat: 32.397, lng: 34.644 }}
              >
         { markers }
         </Map>
+        </APIProvider>
         </>
     )
 }
@@ -59,6 +62,5 @@ const condition = authUser => !!authUser;
 export default compose(
     withAuthorization(condition),
     withStyles(useStyles),
-    GoogleApiWrapper({ apiKey: "", }),
   )(MapPage);
     

@@ -1,6 +1,6 @@
 import React, { Component, useRef} from 'react';
 import clsx from 'clsx';
-import { compose, mapProps } from 'recompose';
+import { compose } from '../../utils/compose';
 
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';

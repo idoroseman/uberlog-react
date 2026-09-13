@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { HashRouter as Router , Redirect, Route, useLocation} from 'react-router-dom';
-import { compose } from 'recompose';
+import { compose } from '../../utils/compose';
 
 import { makeStyles } from '@mui/styles';
 import CssBaseline from '@mui/material/CssBaseline';

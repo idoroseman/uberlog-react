@@ -44,19 +44,19 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@mui/material": "^5.14.16",
     "@mui/icons-material": "^5.14.16",
     "@mui/lab": "^5.0.0-alpha.16",
+    "@mui/material": "^5.14.16",
     "@mui/styles": "^5.14.16",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
     "@testing-library/user-event": "^14.5.1",
+    "@vis.gl/react-google-maps": "^1.10.0",
     "ajv": "^8.12.0",
     "chart.js": "^4.4.1",
     "electron-is-dev": "^2.0.0",
     "electron-squirrel-startup": "^1.0.0",
     "firebase": "^10.7.0",
-    "google-maps-react": "^2.0.6",
     "is-electron": "^2.2.2",
     "julian-date": "^1.0.1",
     "moment": "^2.29.4",
@@ -68,7 +68,6 @@
     "react-virtualized-auto-sizer": "^1.0.7",
     "react-window": "^1.8.10",
     "react-world-flags": "^1.4.0",
-    "recompose": "^0.30.0",
     "web-vitals": "^3.3.2"
   },
   "devDependencies": {
@@ -82,17 +81,11 @@
     "electron-devtools-installer": "^3.2.0",
     "wait-on": "^7.2.0"
   },
-  "overrides": {
-    "google-maps-react": {
-      "react": "18.3.1",
-      "react-dom": "18.3.1"
-    }
-  },
   "config": {
     "forge": {
       "packagerConfig": {
         "icon-mac": "src/icons/mac/icon.icns",
-		    "icon": "src/icons/win/icon.ico",
+        "icon": "src/icons/win/icon.ico",
         "name": "UberLog"
       },
       "makers": [

@@ -4,7 +4,7 @@ import { makeStyles } from '@mui/styles';
 import Button from '@mui/material/Button';
 import { withStyles } from '@mui/styles';
 import { withFirebase } from '../Firebase';
-import { compose, mapProps } from 'recompose';
+import { compose } from '../../utils/compose';
 
 import { PasswordForgetForm } from '../PasswordForget';
 import PasswordChangeForm from '../PasswordChange';

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { compose } from 'recompose';
+import { compose } from '../../utils/compose';
 import { withAuthorization } from '../Session';
 import { withStyles } from '@mui/styles';
 import { makeStyles } from '@mui/styles';
