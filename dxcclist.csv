@@ -17,6 +17,9 @@ XV, Viet Nam, AS, 26, 49, 293, VN
 4K, Azerbaijan, AS, 21, 29, 018, AZ
 4L, Georgia, AS, 21, 29, 075, GE
 4O, Montenegro, EU, 15, 28, 514, ME
+4P, Sri Lanka, AS, 22, 41, 315, LK
+4Q, Sri Lanka, AS, 22, 41, 315, LK
+4R, Sri Lanka, AS, 22, 41, 315, LK
 4S, Sri Lanka, AS, 22, 41, 315, LK
 4U_ITU, ITU HQ, EU, 14, 28, 117, UN
 4U_UN, United Nations HQ, NA, 05, 08, 289, UN
@@ -44,6 +47,7 @@ P3, Cyprus, AS, 20, 39, 215, CY
 7O, Yemen, AS, 21, 39, 492, YE
 7P, Lesotho, AF, 38, 57, 432, LS
 7Q, Malawi, AF, 37, 53, 440, MW
+7R, Algeria, AF, 33, 37, 400, DZ
 7T, Algeria, AF, 33, 37, 400, DZ
 7U, Algeria, AF, 33, 37, 400, DZ
 7V, Algeria, AF, 33, 37, 400, DZ
@@ -65,16 +69,19 @@ P3, Cyprus, AS, 20, 39, 215, CY
 9M6, East Malaysia, OC, 28, 54, 046, MY
 9M8, East Malaysia, OC, 28, 54, 046, MY
 9N, Nepal, AS, 22, 42, 369, NP
-9Q, Democratic Rep. of the Congo, AF, 36, 52, 414, CD
-9R, Democratic Rep. of the Congo, AF, 36, 52, 414, CD
-9S, Democratic Rep. of the Congo, AF, 36, 52, 414, CD
-9T, Democratic Rep. of the Congo, AF, 36, 52, 414, CD
+9O, Congo, AF, 36, 52, 414, CD
+9P, Congo, AF, 36, 52, 414, CD
+9Q, Congo, AF, 36, 52, 414, CD
+9R, Congo, AF, 36, 52, 414, CD
+9S, Congo, AF, 36, 52, 414, CD
+9T, Congo, AF, 36, 52, 414, CD
 9U, Burundi, AF, 36, 52, 404, BI
 9V, Singapore, AS, 28, 54, 381, SG
 9X, Rwanda, AF, 36, 52, 454, RW
 9Y, Trinidad & Tobago, SA, 09, 11, 090, TT
 9Z, Trinidad & Tobago, SA, 09, 11, 090, TT
 A2, Botswana, AF, 38, 57, 402, BW
+8O, Botswana, AF, 38, 57, 402, BW
 A3, Tonga, OC, 32, 62, 160, TO
 A4, Oman, AS, 21, 39, 370, OM
 A5, Bhutan, AS, 22, 41, 306, BT
@@ -82,6 +89,9 @@ A6, United Arab Emirates, AS, 21, 39, 391, AE
 A7, Qatar, AS, 21, 39, 376, QA
 A9, Bahrain, AS, 21, 39, 304, BH
 AP, Pakistan, AS, 21, 41, 372, PK
+AQ, Pakistan, AS, 21, 41, 372, PK
+AR, Pakistan, AS, 21, 41, 372, PK
+AS, Pakistan, AS, 21, 41, 372, PK
 B, China, AS, 23,24, (A), 318, CN
 BS7, Scarborough Reef, AS, 27, 50, 506, CN
 BU, Taiwan, AS, 24, 44, 386, TW
@@ -91,7 +101,7 @@ BX, Taiwan, AS, 24, 44, 386, TW
 BV9P, Pratas I., AS, 24, 44, 505, TW
 C2, Nauru, OC, 31, 65, 157, NR
 C3, Andorra, EU, 14, 27, 203, AD
-C5, The Gambia, AF, 35, 46, 422, GM
+C5, Gambia, AF, 35, 46, 422, GM
 C6, Bahamas, NA, 08, 11, 060, BS
 C8, Mozambique, AF, 37, 53, 181, MZ
 C9, Mozambique, AF, 37, 53, 181, MZ
@@ -102,13 +112,22 @@ CD, Chile, SA, 12, 14,16, 112, CL
 CE, Chile, SA, 12, 14,16, 112, CL
 CE0, San Felix & San Ambrosio, SA, 12, 14, 217, CL
 CE9/KC4^, Antarctica, AN, (C), (B), 013, AQ
+CL, Cuba, NA, 08, 11, 070, CU
 CM, Cuba, NA, 08, 11, 070, CU
 CO, Cuba, NA, 08, 11, 070, CU
 CN, Morocco, AF, 33, 37, 446, MA
+5C, Morocco, AF, 33, 37, 446, MA
+5D, Morocco, AF, 33, 37, 446, MA
+5E, Morocco, AF, 33, 37, 446, MA
+5F, Morocco, AF, 33, 37, 446, MA
+5G, Morocco, AF, 33, 37, 446, MA
 CP, Bolivia, SA, 10, 12,14, 104, BO
+CQ, Portugal, EU, 14, 37, 272, PT
+CR, Portugal, EU, 14, 37, 272, PT
+CS, Portugal, EU, 14, 37, 272, PT
 CT, Portugal, EU, 14, 37, 272, PT
-CT3, Madeira Is., AF, 33, 36, 256, PT
 CU, Azores, EU, 14, 36, 149, PT
+CT3, Madeira Is., AF, 33, 36, 256, PT
 CV, Uruguay, SA, 13, 14, 144, UY
 CW, Uruguay, SA, 13, 14, 144, UY
 CX, Uruguay, SA, 13, 14, 144, UY
@@ -116,26 +135,26 @@ CY0, Sable I., NA, 05, 09, 211, CA
 CY9, St. Paul I., NA, 05, 09, 252, US
 D2, Angola, AF, 36, 52, 401, AO
 D3, Angola, AF, 36, 52, 401, AO
-D4, Cape Verde, AF, 35, 46, 409, PT
+D4, Cabo Verde, AF, 35, 46, 409, CV
 D6, Comoros, AF, 39, 53, 411, KM
-DA, F.R.Germany, EU, 14, 28, 230, DE
-DB, F.R.Germany, EU, 14, 28, 230, DE
-DC, F.R.Germany, EU, 14, 28, 230, DE
-DD, F.R.Germany, EU, 14, 28, 230, DE
-DE, F.R.Germany, EU, 14, 28, 230, DE
-DF, F.R.Germany, EU, 14, 28, 230, DE
-DG, F.R.Germany, EU, 14, 28, 230, DE
-DH, F.R.Germany, EU, 14, 28, 230, DE
-DI, F.R.Germany, EU, 14, 28, 230, DE
-DJ, F.R.Germany, EU, 14, 28, 230, DE
-DK, F.R.Germany, EU, 14, 28, 230, DE
-DL, F.R.Germany, EU, 14, 28, 230, DE
-DM, F.R.Germany, EU, 14, 28, 230, DE
-DN, F.R.Germany, EU, 14, 28, 230, DE
-DO, F.R.Germany, EU, 14, 28, 230, DE
-DP, F.R.Germany, EU, 14, 28, 230, DE
-DQ, F.R.Germany, EU, 14, 28, 230, DE
-DR, F.R.Germany, EU, 14, 28, 230, DE
+DA, Germany, EU, 14, 28, 230, DE
+DB, Germany, EU, 14, 28, 230, DE
+DC, Germany, EU, 14, 28, 230, DE
+DD, Germany, EU, 14, 28, 230, DE
+DE, Germany, EU, 14, 28, 230, DE
+DF, Germany, EU, 14, 28, 230, DE
+DG, Germany, EU, 14, 28, 230, DE
+DH, Germany, EU, 14, 28, 230, DE
+DI, Germany, EU, 14, 28, 230, DE
+DJ, Germany, EU, 14, 28, 230, DE
+DK, Germany, EU, 14, 28, 230, DE
+DL, Germany, EU, 14, 28, 230, DE
+DM, Germany, EU, 14, 28, 230, DE
+DN, Germany, EU, 14, 28, 230, DE
+DO, Germany, EU, 14, 28, 230, DE
+DP, Germany, EU, 14, 28, 230, DE
+DQ, Germany, EU, 14, 28, 230, DE
+DR, Germany, EU, 14, 28, 230, DE
 DU, Philippines, OC, 27, 50, 375, PH
 DV, Philippines, OC, 27, 50, 375, PH
 DW, Philippines, OC, 27, 50, 375, PH
@@ -197,7 +216,7 @@ ET, Ethiopia, AF, 37, 48, 053, ET
 EU, Belarus, EU, 16, 29, 027, BY
 EV, Belarus, EU, 16, 29, 027, BY
 EW, Belarus, EU, 16, 29, 027, BY
-EX, Kyrgyzstan, AS, 17, 30,31, 135, KG
+EX, Kyrgyz Rep., AS, 17, 30,31, 135, KG
 EY, Tajikistan, AS, 17, 30, 262, TJ
 EZ, Turkmenistan, AS, 17, 30, 280, TM
 F, France, EU, 14, 27, 227, FR
@@ -221,9 +240,7 @@ FT/X, Kerguelen Is., AF, 39, 68, 131, FR
 FT/Z, Amsterdam & St. Paul Is., AF, 39, 68, 010, FR
 FW, Wallis & Futuna Is., OC, 32, 62, 298, FR
 FY, French Guiana, SA, 09, 12, 063, GF
-G, England, EU, 14, 27, 223, GB
-GX, England, EU, 14, 27, 223, GB
-M, England, EU, 14, 27, 223, GB
+G, United Kingdom, EU, 14, 27, 223, GB
 GD, Isle of Man, EU, 14, 27, 114, IM
 GT, Isle of Man, EU, 14, 27, 114, IM
 GI, Northern Ireland, EU, 14, 27, 265, GB
@@ -253,18 +270,18 @@ HK, Colombia, SA, 09, 12, 116, CO
 5J, Colombia, SA, 09, 12, 116, CO
 5K, Colombia, SA, 09, 12, 116, CO
 HK0, San Andres & Providencia, NA, 07, 11, 216, CO
-HL, Rep. of Korea, AS, 25, 44, 137, KR
-6K, Rep. of Korea, AS, 25, 44, 137, KR
-6L, Rep. of Korea, AS, 25, 44, 137, KR
-6M, Rep. of Korea, AS, 25, 44, 137, KR
-6N, Rep. of Korea, AS, 25, 44, 137, KR
+HL, Korea, AS, 25, 44, 137, KR
+6K, Korea, AS, 25, 44, 137, KR
+6L, Korea, AS, 25, 44, 137, KR
+6M, Korea, AS, 25, 44, 137, KR
+6N, Korea, AS, 25, 44, 137, KR
 HO, Panama, NA, 07, 11, 088, PA
 HP, Panama, NA, 07, 11, 088, PA
 HQ, Honduras, NA, 07, 11, 080, HN
 HR, Honduras, NA, 07, 11, 080, HN
 HS, Thailand, AS, 26, 49, 387, TH
 E2, Thailand, AS, 26, 49, 387, TH
-HV, Vatican, EU, 15, 28, 295, --
+HV, Vatican, EU, 15, 28, 295, VA
 HZ, Saudi Arabia, AS, 21, 39, 378, SA
 I, Italy, EU, 15,33, 28, 248, IT
 IS0, Sardinia, EU, 15, 28, 225, IT
@@ -361,7 +378,7 @@ LQ, Argentina, SA, 13, 14,16, 100, AR
 LR, Argentina, SA, 13, 14,16, 100, AR
 LS, Argentina, SA, 13, 14,16, 100, AR
 LT, Argentina, SA, 13, 14,16, 100, AR
-LU, South Shetland Is., SA, 13, 73, 241, GB
+LU, Argentina, SA, 13, 14,16, 100, AR
 LV, Argentina, SA, 13, 14,16, 100, AR
 LW, Argentina, SA, 13, 14,16, 100, AR
 LX, Luxembourg, EU, 14, 27, 254, LU
@@ -376,6 +393,7 @@ OF, Finland, EU, 15, 18, 224, FI
 OG, Finland, EU, 15, 18, 224, FI
 OH, Finland, EU, 15, 18, 224, FI
 OI, Finland, EU, 15, 18, 224, FI
+OJ, Finland, EU, 15, 18, 224, FI
 OH0, Aland Is., EU, 15, 18, 005, FI
 OJ0, Market Reef, EU, 15, 18, 167, SE
 OK, Czech Rep., EU, 15, 28, 503, CZ
@@ -391,12 +409,12 @@ OT, Belgium, EU, 14, 27, 209, BE
 OU, Denmark, EU, 14, 18, 221, DK
 OV, Denmark, EU, 14, 18, 221, DK
 OW, Denmark, EU, 14, 18, 221, DK
-OZ, Denmark, EU, 14, 18, 221, DK
 OX, Greenland, NA, 40, 05,75, 237, GL
 OY, Faroe Is., EU, 14, 18, 222, FO
+OZ, Denmark, EU, 14, 18, 221, DK
 P2, Papua New Guinea, OC, 28, 51, 163, PG
 P4, Aruba, SA, 09, 11, 091, AW
-P5, Democratic People's Rep. of Korea, AS, 25, 44, 344, KP
+P5, North Korea, AS, 25, 44, 344, KP
 PA, Netherlands, EU, 14, 27, 263, NL
 PB, Netherlands, EU, 14, 27, 263, NL
 PC, Netherlands, EU, 14, 27, 263, NL
@@ -497,17 +515,17 @@ J45, Dodecanese, EU, 20, 28, 045, GR
 SV9, Crete, EU, 20, 28, 040, GR
 J49, Crete, EU, 20, 28, 040, GR
 T2, Tuvalu, OC, 31, 65, 282, TV
-T30, W. Kiribati (Gilbert Is. ), OC, 31, 65, 301, KI
-T31, C. Kiribati (British Phoenix Is.), OC, 31, 62, 031, KI
-T32, E. Kiribati (Line Is.), OC, 31, 61,63, 048, KI
-T33, Banaba I. (Ocean I.), OC, 31, 65, 490, KI
+T30, W. Kiribati, OC, 31, 65, 301, KI
+T31, C. Kiribati, OC, 31, 62, 031, KI
+T32, E. Kiribati, OC, 31, 61,63, 048, KI
+T33, Banaba I., OC, 31, 65, 490, KI
 T5, Somalia, AF, 37, 48, 232, SO
 6O, Somalia, AF, 37, 48, 232, SO
 T7, San Marino, EU, 15, 28, 278, SM
 T8, Palau, OC, 27, 64, 022, PW
-TA, Turkey, EU,AS, 20, 39, 390, TR
-TB, Turkey, EU,AS, 20, 39, 390, TR
-TC, Turkey, EU,AS, 20, 39, 390, TR
+TA, Turkiye, EU,AS, 20, 39, 390, TR
+TB, Turkiye, EU,AS, 20, 39, 390, TR
+TC, Turkiye, EU,AS, 20, 39, 390, TR
 TF, Iceland, EU, 40, 17, 242, IS
 TG, Guatemala, NA, 07, 12, 076, GT
 TD, Guatemala, NA, 07, 12, 076, GT
@@ -517,7 +535,7 @@ TI9, Cocos I., NA, 07, 12, 037, CR
 TJ, Cameroon, AF, 36, 47, 406, CM
 TK, Corsica, EU, 15, 28, 214, FR
 TL, Central Africa, AF, 36, 47, 408, CF
-TN, Rep. of the Congo, AF, 36, 52, 412, CG
+TN, the Congo, AF, 36, 52, 412, CG
 TR, Gabon, AF, 36, 52, 420, GA
 TT, Chad, AF, 36, 47, 410, TD
 TU, Cote d'Ivoire, AF, 35, 46, 428, CI
@@ -676,24 +694,16 @@ VF, Canada, NA, 01-05, (H), 001, CA
 VG, Canada, NA, 01-05, (H), 001, CA
 VO, Canada, NA, 01-05, (H), 001, CA
 VY, Canada, NA, 01-05, (H), 001, CA
-VK, Australia, OC, 29,30, (I), 150, AU
-AX, Australia, OC, 29,30, (I), 150, AU
-VK0, Macquarie I., OC, 30, 60, 153, NZ
-VK9C, Cocos (Keeling) Is., OC, 29, 54, 038, CC
-VK9L, Lord Howe I., OC, 30, 60, 147, AU
-VK9M, Mellish Reef, OC, 30, 56, 171, AU
-VK9N, Norfolk I., OC, 32, 60, 189, NF
-VK9W, Willis I., OC, 30, 55, 303, AU
-VK9X, Christmas I., OC, 29, 54, 035, CX
+VK, Lord Howe I., OC, 30, 60, 147, AU
+VK7, Macquarie I., OC, 30, 60, 153, NZ
+VK9, Christmas I., OC, 29, 54, 035, CX
 VP2E, Anguilla, NA, 08, 11, 012, AI
 VP2M, Montserrat, NA, 08, 11, 096, MS
 VP2V, British Virgin Is., NA, 08, 11, 065, VG
 VP5, Turks & Caicos Is., NA, 08, 11, 089, TC
 VP6, Ducie I., OC, 32, 63, 513, PN
-VP8, South Shetland Is., SA, 13, 73, 241, GB
-CE9, South Shetland Is., SA, 13, 73, 241, GB
-HF0, South Shetland Is., SA, 13, 73, 241, GB
-4K1, South Shetland Is., SA, 13, 73, 241, GB
+VP8, Falkland Is., SA, 13, 16, 141, FK
+VP0, South Shetland Is., SA, 13, 73, 241, GB
 VP9, Bermuda, NA, 05, 11, 064, BM
 VQ9, Chagos Is., AF, 39, 41, 033, GB
 VR, Hong Kong, AS, 24, 44, 321, HK
@@ -720,7 +730,7 @@ XH4, Revillagigedo, NA, 06, 10, 204, MX
 XI4, Revillagigedo, NA, 06, 10, 204, MX
 XT, Burkina Faso, AF, 35, 46, 480, BF
 XU, Cambodia, AS, 26, 49, 312, KH
-XW, Laos, AS, 26, 49, 143, LA
+XW, Lao , AS, 26, 49, 143, 
 XX9, Macao, AS, 24, 44, 152, MO
 XY, Myanmar, AS, 26, 49, 309, MM
 XZ, Myanmar, AS, 26, 49, 309, MM
@@ -735,7 +745,7 @@ YG, Indonesia, OC, 28, 51,54, 327, ID
 YH, Indonesia, OC, 28, 51,54, 327, ID
 YI, Iraq, AS, 21, 39, 333, IQ
 YJ, Vanuatu, OC, 32, 56, 158, VU
-YK, Syria, AS, 20, 39, 384, SY
+YK, Syrian Arab Rep., AS, 20, 39, 384, SY
 YL, Latvia, EU, 15, 29, 145, LV
 YN, Nicaragua, NA, 07, 11, 086, NI
 H6, Nicaragua, NA, 07, 11, 086, NI
@@ -756,9 +766,9 @@ YY, Venezuela, SA, 09, 12, 148, VE
 4M, Venezuela, SA, 09, 12, 148, VE
 YV0, Aves I., NA, 08, 11, 017, VE
 Z2, Zimbabwe, AF, 38, 53, 452, ZW
-Z3, North Macedonia (Rep. of), EU, 15, 28, 502, MK
-Z6, Rep. of Kosovo, EU, 15, 28, 522, XK
-Z8, South Sudan (Rep. of), AF, 34, 48, 521, SS
+Z3, North Macedonia, EU, 15, 28, 502, MK
+Z6, Kosovo, EU, 15, 28, 522, XK
+Z8, South Sudan, AF, 34, 48, 521, SS
 ZA, Albania, EU, 15, 28, 007, AL
 ZB2, Gibraltar, EU, 14, 37, 233, GI
 ZC4, UK Sovereign Base Areas on Cyprus, AS, 20, 39, 283, GB
@@ -767,6 +777,7 @@ ZD8, Ascension I., AF, 36, 66, 205, SH
 ZD9, Tristan da Cunha & Gough I., AF, 38, 66, 274, SH
 ZF, Cayman Is., NA, 08, 11, 069, KY
 ZK3, Tokelau Is., OC, 31, 62, 270, TK
+ZK, New Zealand, OC, 32, 60, 170, NZ
 ZL, New Zealand, OC, 32, 60, 170, NZ
 ZM, New Zealand, OC, 32, 60, 170, NZ
 ZL7, Chatham Is., OC, 32, 60, 034, NZ

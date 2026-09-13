@@ -1,7 +1,8 @@
+import re
 import requests
 from bs4 import BeautifulSoup
 arrl_url = "http://www.arrl.org/country-lists-prefixes"
-dxcc_url = "https://www.arrl.org/files/file/DXCC/2020%20Current_Deleted.txt"
+dxcc_url = "https://www.arrl.org/files/file/DXCC/Current_Deleted.txt"
 iban_url = "https://www.iban.com/country-codes"
 
 def differAtIndex(a,b):
@@ -20,7 +21,7 @@ rows = iban_soup.find_all('tr')
 iban_dict = {}
 for row in rows[1:]:
     items = [x.string for x in row.find_all('td')]
-    iban_dict[items[0].replace(" (the)","").replace(", United Republic of","").replace(", State of","")] = items[1:]
+    iban_dict[items[0].replace(" (the)","").replace(", United Republic of","").replace(", State of","").replace(" (the Republic of)","").replace(" (Federated States of)","")] = items[1:]
 
 # adaptations
 iban_dict["Spratly Islands"] = ['--','---','000']
@@ -45,7 +46,6 @@ iban_dict["The Gambia"] = iban_dict['Gambia']
 iban_dict["Easter Island"] = iban_dict['Chile']
 iban_dict["Juan Fernandez Islands"] = iban_dict['Chile']
 iban_dict["San Felix and San Ambrosio"] = iban_dict['Chile']
-iban_dict["Bolivia"] = iban_dict['Bolivia (Plurinational State of)']
 iban_dict["Madeira Islands"] = iban_dict['Portugal']
 iban_dict["Azores"] = iban_dict['Portugal']
 iban_dict["Sable Island"] = iban_dict['Canada']
@@ -58,8 +58,6 @@ iban_dict["Bosnia-Herzegovina"] = iban_dict['Bosnia and Herzegovina']
 iban_dict["Balearic Islands"] = iban_dict['Spain']
 iban_dict["Canary Islands"] = iban_dict['Spain']
 iban_dict["Ceuta and Melilla"] = iban_dict['Spain']
-iban_dict["Iran"] = iban_dict['Iran (Islamic Republic of)']
-iban_dict["Moldova"] = iban_dict['Moldova (the Republic of)']
 iban_dict["Saint Barthelemy"] = iban_dict['France']
 iban_dict["Chesterfield Islands"] = iban_dict['France']
 iban_dict["Austral Island"] = iban_dict['France']
@@ -70,6 +68,7 @@ iban_dict["Reunion Island"] = iban_dict['France']
 iban_dict["Glorioso Islands"] = iban_dict['France']
 iban_dict["Juan de Nova, Europa"] = iban_dict['France']
 iban_dict["Saint Martin"] = iban_dict['France']
+iban_dict["Sint Maarten"] = iban_dict["Sint Maarten (Dutch part)"]
 iban_dict["Crozet Island"] = iban_dict['France']
 iban_dict["Kerguelen Islands"] = iban_dict['France']
 iban_dict["Amsterdam and Saint Paul Islands"] = iban_dict['France']
@@ -83,7 +82,7 @@ iban_dict["Temotu Province"] = iban_dict['Solomon Islands']
 iban_dict["Galapagos Islands"] = iban_dict['Ecuador']
 iban_dict["Malpelo Island"] = iban_dict['Colombia']
 iban_dict["San Andres and Providencia"] = iban_dict['Colombia']
-iban_dict["Republic of Korea"] = iban_dict['Korea (the Republic of)']
+iban_dict["Republic of Korea"] = iban_dict['Korea']
 iban_dict["Vatican"] = ['VA','---','000']
 iban_dict["Sardinia"] = iban_dict['Italy']
 iban_dict["Saint Vincent"] = iban_dict['Saint Vincent and the Grenadines']
@@ -114,7 +113,6 @@ iban_dict["Democratic People's Rep. of Korea"] = iban_dict["Korea (the Democrati
 iban_dict["Curacao"] = ["CW","CUW", 531]
 iban_dict["Bonaire"] = iban_dict['Bonaire, Sint Eustatius and Saba']
 iban_dict["Saba and Saint Eustatius"] = iban_dict['Bonaire, Sint Eustatius and Saba']
-iban_dict["Sint Maarten"] = iban_dict['Sint Maarten (Dutch part)']
 iban_dict["Fernando de Noronha"] = iban_dict['Brazil']
 iban_dict["Saint Peter and Saint Paul Rocks"] = iban_dict['Brazil']
 iban_dict["Trindade and Martim Vaz Islands"] = iban_dict['Brazil']
@@ -134,7 +132,6 @@ iban_dict["Cote d'Ivoire"] = iban_dict["Côte d'Ivoire"]
 iban_dict["European Russia"] = iban_dict['Russian Federation']
 iban_dict["Kaliningrad"] = iban_dict['Russian Federation']
 iban_dict["Asiatic Russia"] = iban_dict['Russian Federation']
-iban_dict["Micronesia"] = iban_dict['Micronesia (Federated States of)']
 iban_dict["Heard Island"] = iban_dict['Heard Island and McDonald Islands']
 iban_dict["Macquarie Island"] = iban_dict['New Zealand']
 iban_dict["Lord Howe Island"] = iban_dict['Australia']
@@ -155,10 +152,11 @@ iban_dict["Revillagigedo"] = iban_dict['Mexico']
 iban_dict["Laos"] = iban_dict["Lao People's Democratic Republic"]
 iban_dict["Syria"] = iban_dict['Syrian Arab Republic']
 iban_dict["Venezuela"] = iban_dict['Venezuela (Bolivarian Republic of)']
-iban_dict["Aves Island"] = iban_dict['Venezuela']
-iban_dict["North Macedonia (Republic of)"] = iban_dict["Republic of North Macedonia"]
+iban_dict["Aves Island"] = iban_dict['Venezuela (Bolivarian Republic of)']
+iban_dict["Bolivia"] = iban_dict["Bolivia (Plurinational State of)"]
+iban_dict["North Macedonia"] = iban_dict["North Macedonia"]
 iban_dict["Republic of Kosovo"] = ['XK','---','000']
-iban_dict["South Sudan (Republic of)"] = iban_dict["South Sudan"]
+iban_dict["South Sudan"] = iban_dict["South Sudan"]
 iban_dict["UK Sovereign Base Areas on Cyprus"] = iban_dict['United Kingdom of Great Britain and Northern Ireland']
 iban_dict["Saint Helena"] = iban_dict['Saint Helena, Ascension and Tristan da Cunha']
 iban_dict["Ascension Island"] = iban_dict['Saint Helena, Ascension and Tristan da Cunha']
@@ -169,7 +167,10 @@ iban_dict["Kermadec Islands"] = iban_dict["New Zealand"]
 iban_dict["New Zealand Subantarctic Islands"] = iban_dict["New Zealand"]
 iban_dict["Prince Edward and Marion Islands"] = iban_dict["South Africa"]
 iban_dict['Tromelin Island'] = iban_dict['France']
-
+iban_dict['Iran'] = iban_dict['Iran (Islamic Republic of)']
+iban_dict['Kyrgyz Republic'] = iban_dict['Kyrgyzstan']
+iban_dict['Lao'] = iban_dict["Lao People's Democratic Republic"]
+iban_dict['Turkiye'] = iban_dict['Türkiye']
 # dxcc list
 list = {}
 
@@ -185,17 +186,36 @@ index+=1
 # scan lines
 while lines[index].strip() != '':
     tokens = lines[index].split()
+    # long entity names wrap onto a continuation line in ARRL's fixed-width export;
+    # a real data line always ends with a numeric entity code, so any line that doesn't
+    # is pure overflow name text that belongs after the first line's name, not its metadata
+    extra_name_tokens = []
+    while index+1 < len(lines) and lines[index+1].strip() != '' and not lines[index+1].split()[-1].isdigit():
+        index += 1
+        extra_name_tokens += lines[index].split()
     prefix = tokens[0].replace("*", "").replace("#", "").strip()
     entity_code = tokens[-1]
     cq_zone = tokens[-2]
     itu_zone = tokens[-3]
     continent = tokens[-4]
-    name = ' '.join(tokens[1:-4])
-    abbr_name= name.replace("Asiatic","As.").replace("European","Eu.").replace("Federal Republic of ","F.R.").replace("United States of America","USA").replace("Republic","Rep.")
+    name = ' '.join(tokens[1:-4] + extra_name_tokens)
+    abbr_name = re.sub(r'\s*\([^)]*\)', '', name)
+    abbr_name= abbr_name.replace("Democratic Republic of the ","")
+    abbr_name = abbr_name.replace("Republic of ","")  
+    abbr_name = abbr_name.replace("People's Democratic Rep","")
+    abbr_name = abbr_name.replace("Asiatic","As.")
+    abbr_name = abbr_name.replace("European","Eu.")
+    abbr_name = abbr_name.replace("Federal Republic of ","F.R.")
+    abbr_name = abbr_name.replace("United States of America","USA")
+    abbr_name = abbr_name.replace("United Kingdom of Great Britain and Northern Ireland","United Kingdom")
+    abbr_name = abbr_name.replace("Democratic People's Rep. of Korea","North Korea")
+    abbr_name = abbr_name.replace("Republic","Rep.")
     iban_name = name.replace("&","and").replace("Is.","Islands").replace("I.","Island").replace("St.","Saint")
     flag = iban_dict[iban_name][0] if iban_name in iban_dict else ""
     if flag=="":
-        print('no iban for', iban_name)
+        flag = iban_dict[abbr_name][0] if abbr_name in iban_dict else ""
+    if flag=="":
+        print('no iban for', iban_name, "|", abbr_name)
     entity = { 'name':abbr_name, 'continent':continent, 'cq_zone':cq_zone, 'itu_zone':itu_zone, 'entity_code':entity_code, 'flag':flag}
     if prefix.endswith(')'):
         prefix = prefix[:prefix.index('(')].strip()
