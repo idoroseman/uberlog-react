@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
   details: {
     display: 'flex',
     flexDirection: 'column',
-    width: 360,
+    width: 430,
   },
   content: {
     flex: '1 0 auto',
