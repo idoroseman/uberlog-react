@@ -104,12 +104,12 @@ export default function QsoTile( props ) {
       />
       <div className={classes.details}>
         <CardContent className={classes.content}>
-          <Grid container justify="space-between">  
+          <Grid container justifyContent="space-between">  
               <Typography inline="true" variant="h5" align="left">{props.qso.CALL.replace("0","Ø")}</Typography>
               <Typography inline="true" variant="h5" align="right">{DateTimeFormat(props.qso.QSO_DATE, props.qso.TIME_ON)} </Typography>
           </Grid>
 
-          <Grid container justify="space-between">            
+          <Grid container justifyContent="space-between">            
             <Typography variant="subtitle1" color="textSecondary">
              {props.qso.flag_?<Flag code={props.qso.flag_} height="16"/>:<span>&#x1f3f3;</span>}{" "}{props.qso.COUNTRY}
             {hasLocation? <><LocationOnIcon/>{locationText}</>:""}
@@ -118,7 +118,7 @@ export default function QsoTile( props ) {
                 {((props.qso.NAME != null) && (props.qso.NAME !== "")) ? <><PersonIcon/>{props.qso.NAME}</>:""}
             </Typography>
           </Grid>
-          <Grid container justify="space-between">            
+          <Grid container justifyContent="space-between">            
             <Typography variant="body2" component="p">
               {props.qso.PROP_MODE==='SAT'?<SatelliteIcon/>:""}{" "}
               {props.qso.MODE}{" "}{humanFreq(props.qso.FREQ)}{props.qso.FREQ_RX?"/"+humanFreq(props.qso.FREQ_RX):""}
