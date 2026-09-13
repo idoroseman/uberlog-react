@@ -12,17 +12,27 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const PSKReporterPage = ( props ) => {
-    useEffect(()=>{
-        pskreporter.setActive(!!props.callsign)
-        return (()=>{pskreporter.setActive(false)})
-    }, [])
     const [countdown, setCountdown] =  React.useState(0)
     const [reports, setReports] = React.useState([])
     const now = moment();
-    const pskreporter = new PSKReporter(props.callsign);
-    pskreporter.on('tick', (counter) => { setCountdown(counter) })
-    // pskreporter.on('status', (obj) => { this.setState({pluginStat: Object.assign({}, this.state.pluginStat, obj)}) })
-    pskreporter.on('reports', (list) => { setReports(list) })
+    // PSKReporter is an Electron-only native module (see ../Information); null in a plain browser
+    const pskreporter = PSKReporter ? new PSKReporter(props.callsign) : null;
+
+    useEffect(()=>{
+        if (!pskreporter) return
+        pskreporter.setActive(!!props.callsign)
+        return (()=>{pskreporter.setActive(false)})
+    }, [])
+
+    if (pskreporter) {
+        pskreporter.on('tick', (counter) => { setCountdown(counter) })
+        // pskreporter.on('status', (obj) => { this.setState({pluginStat: Object.assign({}, this.state.pluginStat, obj)}) })
+        pskreporter.on('reports', (list) => { setReports(list) })
+    }
+
+    if (!pskreporter) {
+        return <div id="pskreporter">PSK Reporter is only available in the desktop app.</div>
+    }
 
     const sortedReports = reports == undefined? [] : Object.keys(reports).sort((a,b)=>{return reports[b].lastHeared - reports[a].lastHeared})
     var tab = sortedReports.slice(-10).map((key, index) => {

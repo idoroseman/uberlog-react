@@ -35,7 +35,7 @@ const AccountPage = (props) => {
   }, [props.logbookIndex]);
 
   useEffect(() => {
-    return props.firebase.user().get().then(snapshot => { 
+    props.firebase.user().get().then(snapshot => {
       setQslmsg(snapshot.data().qslmsg || "")
     })
   }, []);

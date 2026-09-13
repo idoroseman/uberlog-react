@@ -388,53 +388,61 @@ function App ({firebase}) {
     console.log("shift", event.shiftKey)
     const adif = new Adif()
     
-    // eQSL 
-    const eqsl_service = new eqsl(secrets['eqsl.cc']);
-    count++
-    setQslServiceCount(count)
-    eqsl_service.fetchQsls().then(async(text)=>{
-      const qsls = adif.parseAdifFile(text)
-      findQsosId(qsls)
-      qsls.forEach((q)=>{mergeQsl(q.j_, q)})
-      // check for eqsl images
-      for (let i in qsls) {
-        const qsl = qsls[i]
-        if ((!!qsl.j_) && (qsl.QSL_SENT_VIA=="E") && (logbook.qsos[qsl.j_].eqslcc_image_url_===undefined)) {
-          try {
-            const storageName = authUser.uid + "/" + logbook.qsos[qsl.j_].id_ + ".jpg"
-            const url = await eqsl_service.fetchImageAlt(qsl)
-            const res = await fetchCors(url)
-            const blob = await res.blob()
-            //uploading blob to firebase storage
-            const snapshot = await firebase.storageRef().child(storageName).put(blob)
-            const downloadURL = await snapshot.ref.getDownloadURL()
-            // this.eqsl.archive(qso);
-            console.log("got image for", qsl.QSO_DATE+"-"+qsl.TIME_ON+"-"+qsl.CALL)
-            firebase.logbook(logbookIndex).doc(logbook.qsos[qsl.j_].id_).update({eqslcc_image_url_ : downloadURL})
-            await sleep(10500) // eqsl Throttle request to every 10 seconds
-          }    
-          catch (err){
-            console.log(err)
-            await sleep(10500) // eqsl Throttle request to every 10 seconds
+    // eQSL (Electron-only: native module, unavailable in a plain browser)
+    if (eqsl) {
+      const eqsl_service = new eqsl(secrets['eqsl.cc']);
+      count++
+      setQslServiceCount(count)
+      eqsl_service.fetchQsls().then(async(text)=>{
+        const qsls = adif.parseAdifFile(text)
+        findQsosId(qsls)
+        qsls.forEach((q)=>{mergeQsl(q.j_, q)})
+        // check for eqsl images
+        for (let i in qsls) {
+          const qsl = qsls[i]
+          if ((!!qsl.j_) && (qsl.QSL_SENT_VIA=="E") && (logbook.qsos[qsl.j_].eqslcc_image_url_===undefined)) {
+            try {
+              const storageName = authUser.uid + "/" + logbook.qsos[qsl.j_].id_ + ".jpg"
+              const url = await eqsl_service.fetchImageAlt(qsl)
+              const res = await fetchCors(url)
+              const blob = await res.blob()
+              //uploading blob to firebase storage
+              const snapshot = await firebase.storageRef().child(storageName).put(blob)
+              const downloadURL = await snapshot.ref.getDownloadURL()
+              // this.eqsl.archive(qso);
+              console.log("got image for", qsl.QSO_DATE+"-"+qsl.TIME_ON+"-"+qsl.CALL)
+              firebase.logbook(logbookIndex).doc(logbook.qsos[qsl.j_].id_).update({eqslcc_image_url_ : downloadURL})
+              await sleep(10500) // eqsl Throttle request to every 10 seconds
+            }
+            catch (err){
+              console.log(err)
+              await sleep(10500) // eqsl Throttle request to every 10 seconds
+            }
           }
         }
-      }
-      count--
-      setQslServiceCount(count)
-    })
+        count--
+        setQslServiceCount(count)
+      })
+    } else {
+      console.debug("eQSL sync is only available in the desktop app")
+    }
 
-    // LoTW
-    const lotw_service = new LoTW(secrets["lotw"]);
-    count++
-    setQslServiceCount(count)
-    lotw_service.fetchQsls().then((text)=>{
-      console.log(text)
-      const qsls = adif.parseAdifFile(text)
-      mergeQslList(qsls)
-      count--
+    // LoTW (Electron-only: native module, unavailable in a plain browser)
+    if (LoTW) {
+      const lotw_service = new LoTW(secrets["lotw"]);
+      count++
       setQslServiceCount(count)
-    })
-    
+      lotw_service.fetchQsls().then((text)=>{
+        console.log(text)
+        const qsls = adif.parseAdifFile(text)
+        mergeQslList(qsls)
+        count--
+        setQslServiceCount(count)
+      })
+    } else {
+      console.debug("LoTW sync is only available in the desktop app")
+    }
+
     // qrz.com
     const qrzcom_service = new QRZ_COM_logbook(secrets['qrz.com'])
     count++
@@ -446,15 +454,19 @@ function App ({firebase}) {
       setQslServiceCount(count)
     })
     
-    // clublog
-    const clublog_service = new Clublog(secrets['clublog'], currentCallsign)
-    count++
-    setQslServiceCount(count)
-    clublog_service.fetchQsls().then((qsls)=>{
-      mergeQslList(qsls.sort(comapare))
-      count--
+    // clublog (Electron-only: native module, unavailable in a plain browser)
+    if (Clublog) {
+      const clublog_service = new Clublog(secrets['clublog'], currentCallsign)
+      count++
       setQslServiceCount(count)
-    })
+      clublog_service.fetchQsls().then((qsls)=>{
+        mergeQslList(qsls.sort(comapare))
+        count--
+        setQslServiceCount(count)
+      })
+    } else {
+      console.debug("Clublog sync is only available in the desktop app")
+    }
 
   }
 
