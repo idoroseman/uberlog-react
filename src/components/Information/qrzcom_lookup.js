@@ -1,5 +1,3 @@
-import Firenase from '../Firebase';
-
 class QRZ_COM_lookup {
     
     constructor(credentials) {

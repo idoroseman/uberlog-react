@@ -35,17 +35,17 @@ const EditPage = (props) =>{
     const [editKey, setEditKey] = React.useState("");
     const [editVal, setEditVal] = React.useState("");
 
-    const has_printed_qsl = (qso.APP_UBERLOG_RECV_PRINTED=="Y")// || (props.qso.QSL_RCVD_VIA=="B") || (props.qso.QSL_RCVD_VIA=="D")
+    const has_printed_qsl = (qso.APP_UBERLOG_RECV_PRINTED==="Y")// || (props.qso.QSL_RCVD_VIA=="B") || (props.qso.QSL_RCVD_VIA=="D")
 
     useEffect(() => {
         return props.firebase.logbook(logbookIndex).doc(id).onSnapshot((snapshot=>{
             console.log("snap")
             setQso(snapshot.data());
         }))
-    }, [])
+    }, [id, logbookIndex, props.firebase])
 
-    const [file, setFile] = useState("");
-    const [percent, setPercent] = useState(0);
+    const [, setFile] = useState("");
+    const [percent] = useState(0);
     function handleChange(event) {
         setFile(event.target.files[0]);
     }
@@ -78,15 +78,15 @@ const EditPage = (props) =>{
               <>
               <TableRow key={row.key}>
                 <TableCell component="th" scope="row">
-                  {row.key == editField ? <TextField id="key_input" label="key" value={editKey} onChange={(e)=>{setEditKey(e.target.value)}} />:row.key}
+                  {row.key === editField ? <TextField id="key_input" label="key" value={editKey} onChange={(e)=>{setEditKey(e.target.value)}} />:row.key}
                 </TableCell>
                 <TableCell align="left">
-                {row.key == editField ? <TextField id="value_input" label="value" value={editVal} onChange={(e)=>{setEditVal(e.target.value)}} />:row.value}
+                {row.key === editField ? <TextField id="value_input" label="value" value={editVal} onChange={(e)=>{setEditVal(e.target.value)}} />:row.value}
                 </TableCell>
                 <TableCell align="right">
-                    {row.key == editField ? <CheckIcon onClick={handleUpdateField} /> :""}
-                    {row.key == editField ? <CancelIcon onClick={()=>{setEditField("")}}/> :""}
-                    {row.key == editField ? "":<EditIcon onClick={()=>{
+                    {row.key === editField ? <CheckIcon onClick={handleUpdateField} /> :""}
+                    {row.key === editField ? <CancelIcon onClick={()=>{setEditField("")}}/> :""}
+                    {row.key === editField ? "":<EditIcon onClick={()=>{
                       setEditField(row.key)
                       setEditKey(row.key)
                       setEditVal(row.value)
@@ -94,7 +94,7 @@ const EditPage = (props) =>{
                     <DeleteIcon id={row.key} onClick={()=>{handleDeleteField(row.key)}}/>
                 </TableCell>
               </TableRow>
-              { row.key.endsWith("_image_url_") ? <TableRow><TableCell></TableCell><TableCell><img style={{width:"100%"}} src={row.value}/></TableCell><TableCell></TableCell></TableRow> :"" }
+              { row.key.endsWith("_image_url_") ? <TableRow><TableCell></TableCell><TableCell><img style={{width:"100%"}} src={row.value} alt={row.key}/></TableCell><TableCell></TableCell></TableRow> :"" }
               </>
             ))}
           </TableBody>

@@ -13,7 +13,6 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/lab/Alert';
 import { withFirebase } from '../Firebase';
 import { DXCC } from '../Helpers'
-import { lookup_QRZ_COM } from '../Information'
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -61,23 +60,23 @@ const AddPage = ( props ) => {
     const specialCallsign = null
 
     const handleKeyPress = (event) => {
-        if ((event.metaKey) && (event.keyCode == 8)){
+        if ((event.metaKey) && (event.keyCode === 8)){
             setState(empty);
             //this.handleInput(event);
           }
-          else if (event.keyCode == 9) {
+          else if (event.keyCode === 9) {
             var size = Object.keys(lookup).length;
             if (size > 0) {
               var pos = event.target.selectionEnd;
-              if (text[pos-1] == " ")
+              if (text[pos-1] === " ")
                 pos--;
-              if (text[pos-2] == "\n") {
+              if (text[pos-2] === "\n") {
                 event.preventDefault();
-                if (text[pos-1] == "n")
+                if (text[pos-1] === "n")
                    setText(text.substr(0,pos)+" "+lookup.fname);
-                else if (text[pos-1] == "q")
+                else if (text[pos-1] === "q")
                   setText(text.substr(0,pos)+" "+(lookup.state ? lookup.addr2+" "+lookup.state:lookup.addr2));
-                else if (text[pos-1] == "g")
+                else if (text[pos-1] === "g")
                   setText(text.substr(0,pos)+" "+lookup.grid);
               }
             }
@@ -103,7 +102,7 @@ const AddPage = ( props ) => {
           else if (isGrid(line))
             s.GRID = line.substr(0,2).toUpperCase() + line.substr(2).toLowerCase();
           else if (isDate(line) || isTime(line)) {
-              line.split(" ").map((token)=>{
+              line.split(" ").forEach((token)=>{
               if (isDate(token))
                 s.QSO_DATE = extractDate(token);
               if (isTime(token))
@@ -122,12 +121,12 @@ const AddPage = ( props ) => {
             s.QTH = line.substr(1);
           else if (line.toLowerCase().startsWith("g ")) // explisit qth
             s.GRID = line.substr(1).trim().substr(0,2).toUpperCase() + line.substr(1).trim().substr(2).toLowerCase();
-          else if (line != "")
+          else if (line !== "")
             s.COMMENT += line
           })
 
         // change of callsign
-        if(s.CALL != state.callsign)
+        if(s.CALL !== state.callsign)
         {
             // dxcc info
             const info = dxcc.countryOf(s.CALL)
@@ -144,7 +143,7 @@ const AddPage = ( props ) => {
             }
            
           // check previous log
-           const prev = props.qsos.filter((item)=>{return item.CALL == s.CALL });
+           const prev = props.qsos.filter((item)=>{return item.CALL === s.CALL });
            let seen = { QSO_DATE:"00000000", TIME_ON:"0000"}
            prev.forEach((doc) => {
                 if (doc.QSO_DATE+doc.TIME_ON > seen.QSO_DATE+seen.TIME_ON)
@@ -171,9 +170,9 @@ const AddPage = ( props ) => {
     const handleSubmit = () => {
       var qso = state;
       // add time and date
-      if (qso.QSO_DATE=="")
+      if (qso.QSO_DATE==="")
         qso.QSO_DATE = moment().utc().format("YYYYMMDD");
-      if (qso.TIME_ON=="")
+      if (qso.TIME_ON==="")
         qso.TIME_ON = moment().utc().format("HHmm");
       // add freq / mode/ sat
       if (!qso.FREQ)
@@ -181,7 +180,7 @@ const AddPage = ( props ) => {
       var m = (modeSelected+"|").split("|",2)
       if (!qso.MODE) {
         qso.MODE = m[0];
-        if (m[1]!='')
+        if (m[1]!=='')
           qso.SUBMODE = m[1];
       }
       if (satSelected)
@@ -194,11 +193,11 @@ const AddPage = ( props ) => {
           qso["FREQ_RX"] = FreqLUT[s[1][1]]
         }
       // location / op / special call sign
-      if (location!="")
+      if (location!=="")
         qso["MY_CITY"] = location;
       if (specialCallsign)
         qso["STATION_CALLSIGN"] = specialCallsign
-      if (operator!="")
+      if (operator!=="")
         qso["MY_NAME"] = operator
       // OWNER_CALLSIGN	-  	the callsign of the owner of the station used to log the contact
       // STATION_CALLSIGN	- the logging station's callsign (the callsign used over the air)
@@ -227,7 +226,7 @@ const AddPage = ( props ) => {
 
     const isSignalReport = (text) => {
         var pattern1 = /^\s*[1-5][1-9][1-9]?(\+\d0)?$/g
-        var pattern2 = /^\s*[\-\+]\d{1,2}$/g
+        var pattern2 = /^\s*[-+]\d{1,2}$/g
         return ((pattern1.exec(text) !== null) || (pattern2.exec(text) !== null))
     }
 
@@ -240,7 +239,7 @@ const AddPage = ( props ) => {
     }
 
     const isTime= (text) => {
-        return /\d{1,2}\:\d\d/g.exec(text) !== null;
+        return /\d{1,2}:\d\d/g.exec(text) !== null;
     }
 
     const isFreq = (text)=>{
@@ -290,7 +289,7 @@ const AddPage = ( props ) => {
           <input type="text" id="location" name="location" size="18" placeholder="location" onChange={handleLocationChanged}/>
           <input type="text" id="operator" name="operator" size="18" placeholder="operator" onChange={handleOperatorChanged}/>
           <br/> 
-          <select name="band" id="band" value={freqSelected} onChange={handleFreqChanged} disabled={satSelected!=""}>
+          <select name="band" id="band" value={freqSelected} onChange={handleFreqChanged} disabled={satSelected!==""}>
             <option value="1.8"     key="1.8">1.8 MHz / 160m</option>
             <option value="3.5"     key="3.5">3.5 MHz / 80m</option>
             <option value="7"       key="7">7 MHz / 40m</option>
@@ -350,14 +349,14 @@ const AddPage = ( props ) => {
           <br/>
           <br/>
           <Typography variant="h5" component="h2">
-            {state.CALL=="" ? "Callsign" : state.CALL.replace("0","Ø") }
+            {state.CALL==="" ? "Callsign" : state.CALL.replace("0","Ø") }
           </Typography>
           <Typography className={classes.pos} color="textSecondary">
             {state.flag_?<Flag code={state.flag_} height="16"/>:<span>&#x1f3f3;</span>}
             {" "}{ state.COUNTRY || "..." }
           </Typography>
           <Typography variant="body2" component="p">
-            Report His {state.RST_SENT==""?"...":state.RST_SENT} Mine {state.RST_RCVD==""?"...":state.RST_RCVD}
+            Report His {state.RST_SENT===""?"...":state.RST_SENT} Mine {state.RST_RCVD===""?"...":state.RST_RCVD}
           </Typography>
           <Typography variant="body2" component="p">
             Name {state.NAME?state.NAME:(lookup.fname?<span style={{"color":"Gray"}}>{lookup.fname}</span>:"...")}

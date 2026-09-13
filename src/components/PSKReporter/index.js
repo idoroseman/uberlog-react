@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { compose } from '../../utils/compose';
 import { withAuthorization } from '../Session';
 import { withStyles } from '@mui/styles';
@@ -15,26 +15,18 @@ const PSKReporterPage = ( props ) => {
     const [countdown, setCountdown] =  React.useState(0)
     const [reports, setReports] = React.useState([])
     const now = moment();
-    // PSKReporter is an Electron-only native module (see ../Information); null in a plain browser
-    const pskreporter = PSKReporter ? new PSKReporter(props.callsign) : null;
+    const pskreporter = useMemo(() => new PSKReporter(props.callsign), [props.callsign]);
 
     useEffect(()=>{
-        if (!pskreporter) return
         pskreporter.setActive(!!props.callsign)
         return (()=>{pskreporter.setActive(false)})
-    }, [])
+    }, [props.callsign, pskreporter])
 
-    if (pskreporter) {
-        pskreporter.on('tick', (counter) => { setCountdown(counter) })
-        // pskreporter.on('status', (obj) => { this.setState({pluginStat: Object.assign({}, this.state.pluginStat, obj)}) })
-        pskreporter.on('reports', (list) => { setReports(list) })
-    }
+    pskreporter.on('tick', (counter) => { setCountdown(counter) })
+    // pskreporter.on('status', (obj) => { this.setState({pluginStat: Object.assign({}, this.state.pluginStat, obj)}) })
+    pskreporter.on('reports', (list) => { setReports(list) })
 
-    if (!pskreporter) {
-        return <div id="pskreporter">PSK Reporter is only available in the desktop app.</div>
-    }
-
-    const sortedReports = reports == undefined? [] : Object.keys(reports).sort((a,b)=>{return reports[b].lastHeared - reports[a].lastHeared})
+    const sortedReports = reports === undefined? [] : Object.keys(reports).sort((a,b)=>{return reports[b].lastHeared - reports[a].lastHeared})
     var tab = sortedReports.slice(-10).map((key, index) => {
       const item = reports[key]
       const d = -item.lastHeared.diff(now, 'minutes');

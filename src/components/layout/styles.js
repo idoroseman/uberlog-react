@@ -1,4 +1,3 @@
-import { alpha } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 
 const drawerWidth = 190;

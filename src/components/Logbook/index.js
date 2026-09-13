@@ -1,18 +1,13 @@
-import React, { Component, useRef} from 'react';
+import React, { useRef} from 'react';
 import clsx from 'clsx';
 import { compose } from '../../utils/compose';
 
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import List from '@mui/material/List';
-import { FixedSizeList, VariableSizeList } from 'react-window';
+import { FixedSizeList } from 'react-window';
 import AutoSizer from "react-virtualized-auto-sizer";
 
 import { withAuthorization } from '../Session';
-import { withStyles } from '@mui/styles';
 import { alpha } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 
@@ -149,8 +144,8 @@ const LogbookPage = (props) => {
           </IconButton>
       </div>
       { props.loading ? "loading...":""}
-      { (props.qsos.length==0) && !props.loading ?"No QSOs to show. go make some":""}
-      { search && filtered_list.length==0?"No QSOs matching search":""}
+      { (props.qsos.length===0) && !props.loading ?"No QSOs to show. go make some":""}
+      { search && filtered_list.length===0?"No QSOs matching search":""}
       <div style={{ height: '80vh' }}>
         <AutoSizer>
           {({ height, width }) => (

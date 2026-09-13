@@ -1,9 +1,5 @@
 import Firebase from '../Firebase';
 
-const pub_url = "http://www.arrl.org/country-lists-prefixes";
-const url = "https://www.arrl.org/files/file/DXCC/2020%20Current_Deleted.txt";
-
-
 class DXCC {
   constructor(){
     let doc = localStorage.getItem('dxcclist') 
@@ -57,7 +53,7 @@ class DXCC {
     if (!(callsign))
       return null
 
-    while (callsign != "")
+    while (callsign !== "")
     {
       if (callsign in this.list)
         return this.list[callsign];

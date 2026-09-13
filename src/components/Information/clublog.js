@@ -64,7 +64,7 @@ class Clublog extends EventEmitter {
         body: data // body data type must match "Content-Type" header
       })
       .then((response)=>{
-        if (response.status == 200) {
+        if (response.status === 200) {
           this.emit('status', {"clublog":"idle"})
           resolve()
         } else {

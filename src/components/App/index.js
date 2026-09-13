@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
-import { HashRouter as Router , Redirect, Route, useLocation} from 'react-router-dom';
+import React, { useEffect, useCallback } from 'react';
+import { HashRouter as Router , Redirect, Route} from 'react-router-dom';
 import { compose } from '../../utils/compose';
 
-import { makeStyles } from '@mui/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import clsx from 'clsx';
@@ -13,7 +12,6 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
 import Badge from '@mui/material/Badge';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import Drawer from '@mui/material/Drawer';
 import Divider from '@mui/material/Divider';
 import List from '@mui/material/List';
@@ -22,9 +20,6 @@ import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Tooltip from '@mui/material/Tooltip';
 
-import InputBase from '@mui/material/InputBase';
-import SearchIcon from '@mui/icons-material/Search';
-import ClearIcon from "@mui/icons-material/Clear";
 import SyncIcon from '@mui/icons-material/Sync';
 import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet';
 import ListIcon from '@mui/icons-material/List';
@@ -36,7 +31,6 @@ import SignInPage from '../SignIn';
 import PasswordForgetPage from '../PasswordForget';
 import LogbookPage from '../Logbook';
 import AccountPage from '../Account';
-import AdminPage from '../Admin';
 import AddPage from '../Add';
 import MapPage from '../Map';
 import SettingsPage from "../Settings";
@@ -50,7 +44,6 @@ import { AuthUserContext } from '../Session';
 import { withAuthentication } from '../Session';
 
 import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
 
 import { withStyles } from '@mui/styles';
 import {useStyles} from '../layout'
@@ -62,7 +55,6 @@ import { DXCC, Adif } from '../Helpers'
 import {fetchCors} from '../Information'
 
 import isElectron from 'is-electron';
-import { MergeType } from '@mui/icons-material';
 
 const HtmlTooltip = withStyles((theme) => ({
   tooltip: {
@@ -88,19 +80,6 @@ const Copyright = () => {
     </Typography>
   );
 };
-
-//------------------------------------------------------------------------------
-const NoMatch = () => {
-  const location = useLocation();
-  console.log(location.pathname);
-  return ( <>           
-  <Typography variant="h4">404</Typography>
-  <Typography variant="subtitle1">
-   Page not found!
-  </Typography>
-  <pre>{location.pathname}</pre>
-   </>)
-}
 
 //------------------------------------------------------------------------------
 
@@ -198,6 +177,8 @@ const MyDrawer = (props) => {
 
 //------------------------------------------------------------------------------
 
+const dxcc = new DXCC();
+
 function App ({firebase}) {
   const classes = useStyles();
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -217,8 +198,7 @@ function App ({firebase}) {
   const handleDrawerClose = () => {
     setDrawerOpen(false);
   };
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-  
+
   // update user auth status
   useEffect(() => {
     if (!firebase || !firebase.auth) return undefined;
@@ -294,11 +274,11 @@ function App ({firebase}) {
     {
       var f = field.replaceAll("SENT","RCVD")
       // only update fields relevant to QSLs
-      if ((field.includes(filter) || field.startsWith("APP_")) && (logbook.qsos[index][f] != qsl[field])) {
+      if ((field.includes(filter) || field.startsWith("APP_")) && (logbook.qsos[index][f] !== qsl[field])) {
         was_changed[f] = qsl[field]
       }
     }
-    if (Object.keys(was_changed).length==0)
+    if (Object.keys(was_changed).length===0)
       return 0
     console.log(logbook.qsos[index].id_, logbook.qsos[index].CALL, filter, was_changed)
     firebase.logbook(logbookIndex).doc(logbook.qsos[index].id_).update(was_changed)
@@ -319,7 +299,7 @@ function App ({firebase}) {
         j--;
         timestamp_a = moment.utc(logbook.qsos[j]["QSO_DATE"] + " " + logbook.qsos[j]["TIME_ON"], "YYYYMMDD HHmm");
       }
-      if ((qso.CALL==logbook.qsos[j].CALL) && (qso.QSO_DATE==logbook.qsos[j].QSO_DATE))
+      if ((qso.CALL===logbook.qsos[j].CALL) && (qso.QSO_DATE===logbook.qsos[j].QSO_DATE))
         ok_count += mergeQsl(j, qso, filter)
       else
         mismatchs.push(qso)
@@ -327,7 +307,7 @@ function App ({firebase}) {
     console.log(mismatchs.length, "mismatches")
     for (let i in mismatchs){
       for (let j in logbook.qsos)
-        if ((mismatchs[i].CALL==logbook.qsos[j].CALL) && (mismatchs[i].QSO_DATE==logbook.qsos[j].QSO_DATE)) {
+        if ((mismatchs[i].CALL===logbook.qsos[j].CALL) && (mismatchs[i].QSO_DATE===logbook.qsos[j].QSO_DATE)) {
           const timestamp_a = moment.utc(logbook.qsos[j]["QSO_DATE"] + " " + logbook.qsos[j]["TIME_ON"], "YYYYMMDD HHmm");
           const timestamp_b = moment.utc(mismatchs[i]["QSO_DATE"] + " " + mismatchs[i]["TIME_ON"], "YYYYMMDD HHmm");
           var diff = Math.abs(moment.duration(timestamp_b.diff(timestamp_a)).asMinutes());
@@ -346,9 +326,6 @@ function App ({firebase}) {
   const findQsosId = (qsls) => {
     let j = logbook.qsos.length - 1;
     let timestamp_a = moment.utc(logbook.qsos[j]["QSO_DATE"] + " " + logbook.qsos[j]["TIME_ON"], "YYYYMMDD HHmm");
-    let mismatchs = []
-    let ok_count = 0;
-    let err_count = 0;
 
     // quick match
     for (var i in qsls){ 
@@ -357,10 +334,10 @@ function App ({firebase}) {
         j--;
         timestamp_a = moment.utc(logbook.qsos[j]["QSO_DATE"] + " " + logbook.qsos[j]["TIME_ON"], "YYYYMMDD HHmm");
       }
-      if ((qsls[i].CALL==logbook.qsos[j].CALL) && (qsls[i].QSO_DATE==logbook.qsos[j].QSO_DATE)){
+      if ((qsls[i].CALL===logbook.qsos[j].CALL) && (qsls[i].QSO_DATE===logbook.qsos[j].QSO_DATE)){
         qsls[i].j_ = j
       }
-        
+
     }
 
     // slow match for the rest
@@ -368,16 +345,15 @@ function App ({firebase}) {
       if (qsls[i].id_)
         continue;
       for (let j in logbook.qsos)
-        if ((qsls[i].CALL==logbook.qsos[j].CALL) && (qsls[i].QSO_DATE==logbook.qsos[j].QSO_DATE)) {
+        if ((qsls[i].CALL===logbook.qsos[j].CALL) && (qsls[i].QSO_DATE===logbook.qsos[j].QSO_DATE)) {
           const timestamp_a = moment.utc(logbook.qsos[j]["QSO_DATE"] + " " + logbook.qsos[j]["TIME_ON"], "YYYYMMDD HHmm");
           const timestamp_b = moment.utc(qsls[i]["QSO_DATE"] + " " + qsls[i]["TIME_ON"], "YYYYMMDD HHmm");
           var diff = Math.abs(moment.duration(timestamp_b.diff(timestamp_a)).asMinutes());
           if ((diff<=15) || (Math.abs(diff-120)<=15) || (Math.abs(diff-180)<=15)) {
             qsls[i].j_ = j
-            break;  
+            break;
           }
         }
-      err_count++;
       }
 
       return qsls
@@ -400,7 +376,7 @@ function App ({firebase}) {
         // check for eqsl images
         for (let i in qsls) {
           const qsl = qsls[i]
-          if ((!!qsl.j_) && (qsl.QSL_SENT_VIA=="E") && (logbook.qsos[qsl.j_].eqslcc_image_url_===undefined)) {
+          if ((!!qsl.j_) && (qsl.QSL_SENT_VIA==="E") && (logbook.qsos[qsl.j_].eqslcc_image_url_===undefined)) {
             try {
               const storageName = authUser.uid + "/" + logbook.qsos[qsl.j_].id_ + ".jpg"
               const url = await eqsl_service.fetchImageAlt(qsl)
@@ -427,21 +403,17 @@ function App ({firebase}) {
       console.debug("eQSL sync is only available in the desktop app")
     }
 
-    // LoTW (Electron-only: native module, unavailable in a plain browser)
-    if (LoTW) {
-      const lotw_service = new LoTW(secrets["lotw"]);
-      count++
+    // LoTW
+    const lotw_service = new LoTW(secrets["lotw"]);
+    count++
+    setQslServiceCount(count)
+    lotw_service.fetchQsls().then((text)=>{
+      console.log(text)
+      const qsls = adif.parseAdifFile(text)
+      mergeQslList(qsls)
+      count--
       setQslServiceCount(count)
-      lotw_service.fetchQsls().then((text)=>{
-        console.log(text)
-        const qsls = adif.parseAdifFile(text)
-        mergeQslList(qsls)
-        count--
-        setQslServiceCount(count)
-      })
-    } else {
-      console.debug("LoTW sync is only available in the desktop app")
-    }
+    })
 
     // qrz.com
     const qrzcom_service = new QRZ_COM_logbook(secrets['qrz.com'])
@@ -454,19 +426,15 @@ function App ({firebase}) {
       setQslServiceCount(count)
     })
     
-    // clublog (Electron-only: native module, unavailable in a plain browser)
-    if (Clublog) {
-      const clublog_service = new Clublog(secrets['clublog'], currentCallsign)
-      count++
+    // clublog
+    const clublog_service = new Clublog(secrets['clublog'], currentCallsign)
+    count++
+    setQslServiceCount(count)
+    clublog_service.fetchQsls().then((qsls)=>{
+      mergeQslList(qsls.sort(comapare))
+      count--
       setQslServiceCount(count)
-      clublog_service.fetchQsls().then((qsls)=>{
-        mergeQslList(qsls.sort(comapare))
-        count--
-        setQslServiceCount(count)
-      })
-    } else {
-      console.debug("Clublog sync is only available in the desktop app")
-    }
+    })
 
   }
 
@@ -502,7 +470,7 @@ function App ({firebase}) {
           // eQSL 
           try { 
             const eqsl_service = new eqsl(secrets['eqsl.cc']);
-            const result = await eqsl_service.sendEQsl(text)
+            await eqsl_service.sendEQsl(text)
             console.log("eqsl.cc sent"); 
             output.QSL_SENT = "Y" 
           }
@@ -515,7 +483,7 @@ function App ({firebase}) {
           // qrz.com
           try{
             const qrzcom_service = new QRZ_COM_logbook(secrets['qrz.com'])
-            const result = await qrzcom_service.sendEQsl(text)
+            await qrzcom_service.sendEQsl(text)
             console.log("qrz.com sent"); 
             output.QSL_SENT = "Y" 
           }
@@ -525,7 +493,7 @@ function App ({firebase}) {
           // clublog
           try{
             const clublog_service = new Clublog(secrets['clublog'], currentCallsign)
-            const result = await clublog_service.sendEQsl(text)
+            await clublog_service.sendEQsl(text)
             console.log("clublog sent"); 
             output.QSL_SENT = "Y" 
           }
@@ -542,14 +510,13 @@ function App ({firebase}) {
   //-----------------------------------------------------------------------------
   //                               Connections
   //-----------------------------------------------------------------------------
-  const dxcc = new DXCC();
 
-  const handleWsjtxQso = (event, qso)=>{
+  const handleWsjtxQso = useCallback((event, qso)=>{
     const info = dxcc.countryOf(qso.CALL.toUpperCase())
     console.log(info)
     if(info){
-      qso.COUNTRY = info.name 
-      qso.DXCC = info.entity_code 
+      qso.COUNTRY = info.name
+      qso.DXCC = info.entity_code
       qso.CQZ = info.cq_zone
       qso.ITUZ = info.itu_zone
       qso.flag_ = info.flag
@@ -560,7 +527,7 @@ function App ({firebase}) {
         console.log("submited")
       })
       .catch((err)=>{console.log(err)})
-  }
+  }, [firebase, logbookIndex])
 
   const handleWsjtxHeartbear = (event) => {
     console.log("ping")
@@ -571,7 +538,7 @@ function App ({firebase}) {
       window.ipcRenderer.on('qso', handleWsjtxQso)
       return ()=>{window.ipcRenderer.removeEventListener('qso', handleWsjtxQso)}
     }
-  }, [])
+  }, [handleWsjtxQso])
   
   useEffect(()=>{
     if (window.ipcRenderer){
@@ -672,9 +639,6 @@ function App ({firebase}) {
                 loading={logbook.loading}
                 />)}
             />
-{
-//            <Route component={NoMatch} /> 
-}
           <Box pt={4}>
             <Copyright />
           </Box>

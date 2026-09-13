@@ -1,15 +1,12 @@
-import React, { Component } from 'react';
-import clsx from 'clsx';
+import React from 'react';
 import { compose } from '../../utils/compose';
 
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardActionArea from '@mui/material/CardActionArea';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import { Doughnut, Bar } from "react-chartjs-2";
 
 import BannerImg from './banner.png';
@@ -201,10 +198,8 @@ const DashCardHistory = (props) => {
 
 const StatsPage = (props) => {
 
-    const classes = useStyles();  
-    
     let counter = {};
-    props.qsos.map((qso)=>{
+    props.qsos.forEach((qso)=>{
       for (var field in qso)
         {
           if (!(field in counter))

@@ -1,4 +1,3 @@
-import React, { Component } from 'react';
 import fetchCors from './fetchcors';
 const EventEmitter = require('events');
 
@@ -27,7 +26,7 @@ class PSKReporter extends EventEmitter{
     this.emit('status',{"PSKR":"idle"})
     this.countdown--
     this.emit('tick', this.countdown)
-    if (this.countdown==0){
+    if (this.countdown===0){
       this.countdown = this.interval
       this.emit('status',{"PSKR":"active"})
       this.fetchData()

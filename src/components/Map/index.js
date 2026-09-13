@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { makeStyles } from '@mui/styles';
 import { compose } from '../../utils/compose';
 import { withAuthorization } from '../Session';
@@ -17,32 +17,34 @@ const MapPage = ( props ) => {
         if (item.GRID){
             try {
                 let color = "red";
-                if (item["MODE"] == "SSB")
+                if (item["MODE"] === "SSB")
                 color = "green";
-                if ((item["MODE"] == "FT8") || (item["MODE"] == "JT65"))
+                if ((item["MODE"] === "FT8") || (item["MODE"] === "JT65"))
                 color = "blue"
-                if ((item["MODE"] == "PSK") || (item["MODE"] == "RTTY"))
+                if ((item["MODE"] === "PSK") || (item["MODE"] === "RTTY"))
                     color = "purple";
                 return <Marker
                     title={item.CALL}
                     key={item.QSO_DATE+item.TIME_ON+item.CALL}
                     name={item.Call}
-                    position={toLatLon(gridSquareToLatLon(item.GRID))} 
+                    position={toLatLon(gridSquareToLatLon(item.GRID))}
                     icon={{ url:"http://maps.google.com/mapfiles/ms/icons/"+color+".png" }}
                 />
             }
             catch(err){
                 console.log(item.CALL, item.GRID, err)
+                return null
             }
 
         }
+        return null
     })
     return (<>
-        <p> 
-        <img src="http://maps.google.com/mapfiles/ms/icons/green.png" height="16"/> Voice
-        <img src="http://maps.google.com/mapfiles/ms/icons/blue.png" height="16"/> WSJT
-        <img src="http://maps.google.com/mapfiles/ms/icons/purple.png" height="16"/> Digital
-        <img src="http://maps.google.com/mapfiles/ms/icons/red.png" height="16"/> Other
+        <p>
+        <img src="http://maps.google.com/mapfiles/ms/icons/green.png" height="16" alt=""/> Voice
+        <img src="http://maps.google.com/mapfiles/ms/icons/blue.png" height="16" alt=""/> WSJT
+        <img src="http://maps.google.com/mapfiles/ms/icons/purple.png" height="16" alt=""/> Digital
+        <img src="http://maps.google.com/mapfiles/ms/icons/red.png" height="16" alt=""/> Other
         </p>
         <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
         <Map

@@ -1,6 +1,5 @@
 const dgram =require('dgram');
 const EventEmitter = require('events');
-var moment = require('moment');
 var JulianDate = require('julian-date');
 
 // https://sourceforge.net/p/wsjt/wsjt/HEAD/tree/branches/wsjtx/NetworkMessage.hpp#l229
@@ -29,7 +28,7 @@ class buffer{
     return this.getNumber(1);
   }
   getBool(){
-    return this.buffer[this.index++] != 0;
+    return this.buffer[this.index++] !== 0;
   }
   getDateTime(){
 /*
@@ -44,7 +43,7 @@ class buffer{
     var qdate = this.getUInt64();
     var qtime = this.getUInt32();
     var timespec = this.getUInt8();
-    if (timespec == 2) // offset from UTC (Sec)
+    if (timespec === 2) // offset from UTC (Sec)
       this.getUInt32();
     var dt = new JulianDate().julian(qdate);
     // this is so dump, but havnt found a better way
@@ -110,18 +109,18 @@ class wsjtx extends EventEmitter{
   handleMessage(message, remote){
     var buff = new buffer(message);
     var magicnumber = buff.getUInt32();
-    var schema = buff.getUInt32();
+    buff.getUInt32(); // schema
     var messagetype = buff.getUInt32();
-    var id = buff.getUTF8();
-    if (magicnumber != 0xADBCCBDA)
+    buff.getUTF8(); // id
+    if (magicnumber !== 0xADBCCBDA)
       return;
 //    console.log(magicnumber, schema, messagetype, id);
     switch (messagetype)
     {
         case 0: // heartbeat
-            var MaxSchema = buff.getUInt32();
-            var version = buff.getUTF8();
-            var revision = buff.getUTF8();
+            buff.getUInt32(); // MaxSchema
+            buff.getUTF8(); // version
+            buff.getUTF8(); // revision
 //            console.log("heartbeat", version, revision);
             this.emit('status',{"WSJT-X":"idle"})
             break;
@@ -149,14 +148,14 @@ class wsjtx extends EventEmitter{
             this.status = status
             break;
         case 2: // decoded
-            var isNew = buff.getBool();
-            var time = buff.getUInt32();
-            var snr = buff.getUInt32();
-            var dtime = buff.getUInt64();
-            var deltafreq = buff.getUInt32();
-            var qsomode = buff.getUTF8();
-            var message = buff.getUTF8();
-            var lowConf = buff.getBool();
+            buff.getBool(); // isNew
+            buff.getUInt32(); // time
+            buff.getUInt32(); // snr
+            buff.getUInt64(); // dtime
+            buff.getUInt32(); // deltafreq
+            buff.getUTF8(); // qsomode
+            buff.getUTF8(); // message
+            buff.getBool(); // lowConf
 //            console.log(isNew, time, snr, dtime, deltafreq, qsomode, message, lowConf);
             break;
         case 5: // QSO Logged
@@ -173,10 +172,10 @@ class wsjtx extends EventEmitter{
             qso["MODE"] = buff.getUTF8();
             qso["RST_SENT"] = buff.getUTF8();
             qso["RST_RCVD"] = buff.getUTF8();
-            var txpwr = buff.getUTF8();
+            buff.getUTF8(); // txpwr
             qso["COMMENT"] = buff.getUTF8();
-            var dxname = buff.getUTF8();
-            var whenStarted = buff.getDateTime();
+            buff.getUTF8(); // dxname
+            buff.getDateTime(); // whenStarted
             console.log("QSO: ", qso.CALL, " ", qso.RST_SENT,  " ",qso.RST_RCVD, " ", qso.QTH, " ", whenFinished);
             this.emit('qso', qso);
             this.emit('status',{"WSJT-X":"active"})

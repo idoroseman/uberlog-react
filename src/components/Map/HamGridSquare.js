@@ -27,7 +27,7 @@ function latLonToGridSquare(param1,param2){
     if (typeof(x) === 'number') return x;
     if (typeof(x) === 'string') return parseFloat(x);
     // dont call a function property here because of binding issue
-    throw "HamGridSquare -- toNum -- can not convert input: "+x;
+    throw new Error("HamGridSquare -- toNum -- can not convert input: "+x);
   }
   if (typeof(param1)==='object'){
     if (param1.length === 2){
@@ -40,17 +40,17 @@ function latLonToGridSquare(param1,param2){
       lat = (typeof(param1.latitude)==='function')? toNum(param1.latitude()): toNum(param1.latitude);
       lon = (typeof(param1.longitude)==='function')? toNum(param1.longitude()): toNum(param1.longitude);
     } else {
-      throw "HamGridSquare -- can not convert object -- "+param1;
+      throw new Error("HamGridSquare -- can not convert object -- "+param1);
     }
   } else {
     lat = toNum(param1);
     lon = toNum(param2);
   }
-  if (isNaN(lat)) throw "lat is NaN";
-  if (isNaN(lon)) throw "lon is NaN";
-  if (Math.abs(lat) === 90.0) throw "grid squares invalid at N/S poles";
-  if (Math.abs(lat) > 90) throw "invalid latitude: "+lat;
-  if (Math.abs(lon) > 180) throw "invalid longitude: "+lon;
+  if (isNaN(lat)) throw new Error("lat is NaN");
+  if (isNaN(lon)) throw new Error("lon is NaN");
+  if (Math.abs(lat) === 90.0) throw new Error("grid squares invalid at N/S poles");
+  if (Math.abs(lat) > 90) throw new Error("invalid latitude: "+lat);
+  if (Math.abs(lon) > 180) throw new Error("invalid longitude: "+lon);
   adjLat = lat + 90;
   adjLon = lon + 180;
   GLat = U[Math.trunc(adjLat/10)];
@@ -74,14 +74,14 @@ export function gridSquareToLatLon(grid, obj){
   function lon4(g){
     return 20*(g.charCodeAt(0)-numA)+2*parseInt(g.charAt(2))-180;
   }
-  if ((grid.length!=4) && (grid.length!=6)) throw "gridSquareToLatLon: grid must be 4 or 6 chars: "+grid;
+  if ((grid.length!==4) && (grid.length!==6)) throw new Error("gridSquareToLatLon: grid must be 4 or 6 chars: "+grid);
   if (/^[A-X][A-X][0-9][0-9]$/.test(grid)){
     lat = lat4(grid)+0.5;
     lon = lon4(grid)+1;
   } else if (/^[A-X][A-X][0-9][0-9][a-x][a-x]$/.test(grid)){
     lat = lat4(grid)+(1.0/60.0)*2.5*(grid.charCodeAt(5)-aNum+0.5);
     lon = lon4(grid)+(1.0/60.0)*5*(grid.charCodeAt(4)-aNum+0.5);
-  } else throw "gridSquareToLatLon: invalid grid: "+grid;
+  } else throw new Error("gridSquareToLatLon: invalid grid: "+grid);
   if (returnLatLonConstructor) return new LatLon(lat,lon);
   if (returnObj){
     obj.lat = lat;
@@ -126,3 +126,5 @@ let HamGridSquare = {
   fromLatLon: latLonToGridSquare,
   test: testGridSquare
 };
+
+export { HamGridSquare };

@@ -7,7 +7,7 @@ export default class Adif {
     objectToAdif(qso){
       var rv = "";
       for (var key in qso){
-        if ((key.startsWith("_")) || (key.endsWith("_")) || (qso[key].length == 0))
+        if ((key.startsWith("_")) || (key.endsWith("_")) || (qso[key].length === 0))
           continue;
         try {
         if (qso[key] !== null)
@@ -20,16 +20,16 @@ export default class Adif {
 
     parseAdifLine(line){
       // Change how to handle the file content
-      var qualityRegex = /\<\w*\:\d*(\:[A-Z])?\>(\w|\s|\d|\-|\+)*/g,
+      var qualityRegex = /<\w*:\d*(:[A-Z])?>(\w|\s|\d|-|\+)*/g,
           matches,
           tokens = [];
 
-      while (matches = qualityRegex.exec(line)) {
+      while ((matches = qualityRegex.exec(line))) {
           tokens.push(matches[0]);
         }
       var qso = {}
       tokens.forEach((t)=>{
-        var tmp = t.split(/[\<\>\:]+/)
+        var tmp = t.split(/[<>:]+/)
         qso[tmp[1].toUpperCase()] = tmp[tmp.length-1];
       })
       return qso

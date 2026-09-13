@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { makeStyles } from '@mui/styles';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Button from '@mui/material/Button';
@@ -12,9 +11,7 @@ import { compose } from '../../utils/compose';
 
 import { AuthUserContext, withAuthorization } from '../Session';
 import { withFirebase } from '../Firebase';
-import { Unsubscribe } from '@mui/icons-material';
 import { DXCC, Adif} from '../Helpers'
-import { lookup_QRZ_COM } from '../Information'
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -29,8 +26,6 @@ const useStyles = makeStyles((theme) => ({
 const SettingsPage = (props) => {
     const classes = useStyles();
     const [fields, setFields] = React.useState({})
-    const [fileDownloadUrl, setFileDownloadUrl] = React.useState("")
-    const downloadRef = React.createRef();
 
     useEffect(()=>{
       setFields(props.logbooksMetadata[props.logbookIndex])
@@ -144,7 +139,7 @@ const SettingsPage = (props) => {
       const adif = new Adif();
       output += "UBerLog\n"
       output += "<EOH>\n"
-      props.qsos.map((item)=>{
+      props.qsos.forEach((item)=>{
         output += adif.objectToAdif(item)+"\n"
       });
 

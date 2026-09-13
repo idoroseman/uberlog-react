@@ -100,7 +100,7 @@ fetchImage(qso, downloaddir, filename){
      fetch(furl, {credentials: 'same-origin'})
        .then((response)=>{return response.text();})
        .then((text)=>{
-         var rv = /\<img\ src\=\".*\"\ alt\=/g.exec(text);
+         var rv = /<img src=".*" alt=/g.exec(text);
          if (rv !== null){
            this.download("http://www.eqsl.cc"+rv[0].split("\"")[1], path.join(downloaddir,filename), ()=>{
              resolve();
@@ -130,7 +130,7 @@ fetchImage(qso, downloaddir, filename){
        fetchCors(furl, {credentials: 'same-origin'})
          .then((response)=>{return response.text();})
          .then((text)=>{
-           var rv = /\<img\ src\=\".*\"\ alt\=/g.exec(text);
+           var rv = /<img src=".*" alt=/g.exec(text);
            if (rv !== null){
              var file_url = "http://www.eqsl.cc"+rv[0].split("\"")[1]
              this.emit('status', {"eQSL":"idle"})
@@ -150,7 +150,7 @@ fetchImage(qso, downloaddir, filename){
     console.log("archiving", qso["CALL"], "-", qso["QSO_DATE"]);
     var furl = "https://www.eqsl.cc/QSLCard/DisplayeQSL.cfm"
              + "?Callsign=" + qso["CALL"]
-             + "&VisitorCallsign=" + "4X6UB"
+             + "&VisitorCallsign=4X6UB"
              + "&QSODate=" + qso["QSO_DATE"].substr(0,4) + "-" + qso["QSO_DATE"].substr(4,2) + "-"
                            + qso["QSO_DATE"].substr(6,2) + "%20" + qso["TIME_ON"].substr(0,2) + ":"
                            + qso["TIME_ON"].substr(2,4) + ":00.0"
@@ -183,7 +183,7 @@ fetchImage(qso, downloaddir, filename){
             resolve()
           }
           else {
-            var rv = /Warning.*\<BR\>/g.exec(text);
+            var rv = /Warning.*<BR>/g.exec(text);
             console.log(rv[0]);
             this.emit('status', {"eQSL":"error"})
             reject()

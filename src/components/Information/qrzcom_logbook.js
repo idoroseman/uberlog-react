@@ -28,19 +28,6 @@ class QRZ_COM_logbook extends EventEmitter {
       return encodeURIComponent(key)+'='+encodeURIComponent(data[key])
     }).join('&')
 
-    var options = {
-        method: 'POST', // *GET, POST, PUT, DELETE, etc.
-        mode: 'cors', // no-cors, cors, *same-origin
-        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-        credentials: 'same-origin', // include, *same-origin, omit
-        headers: {
-            //'Content-Type': 'application/json',
-           'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        redirect: 'follow', // manual, *follow, error
-        referrer: 'no-referrer', // no-referrer, *client
-        body: searchParams, // body data type must match "Content-Type" header
-    }
     return fetchCors(url+"?"+searchParams)
   }
 
@@ -85,7 +72,7 @@ class QRZ_COM_logbook extends EventEmitter {
             resolve()
           }
           else {
-            var rv = /REASON\=.*\&/g.exec(text);
+            var rv = /REASON=.*&/g.exec(text);
             console.log(rv[0]);
             this.emit('status', {"qrz.com":"error"})
             reject()

@@ -12,7 +12,6 @@ import LinuxIcon from './LinuxIcon.svg';
 import IOSIcon from './IOSIcon.svg';
 import AndroidIcon from './AndroidIcon.svg';
 import GithubIcon from './githubIcon.svg'
-import Firebase from '../Firebase';
 
 
 const styles = (theme) => ({
@@ -60,17 +59,8 @@ const styles = (theme) => ({
   },
 });
 
-async function getLink(filename){
-    const firebase = new Firebase()
-    const url = await firebase.storageRef().child('public/'+filename).getDownloadURL()
-    console.log(url)
-    return url
-}
-
 function ProductDownload(props) {
   const { classes } = props;
-//   const windowsUrl = getLink('UberLog-win32-x64.zip');
-//   const osxUrl = getLink('UberLog-darwin-x64.zip');
   return (
     <section className={classes.root}>
       <Container className={classes.container}>

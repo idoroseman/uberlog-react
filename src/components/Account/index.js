@@ -1,44 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@mui/styles';
+import React, { useEffect } from 'react';
 
-import Button from '@mui/material/Button';
-import { withStyles } from '@mui/styles';
 import { withFirebase } from '../Firebase';
 import { compose } from '../../utils/compose';
 
-import { PasswordForgetForm } from '../PasswordForget';
 import PasswordChangeForm from '../PasswordChange';
 import { AuthUserContext, withAuthorization } from '../Session';
 import SignOutButton from '../SignOut';
 
-const useStyles = makeStyles((theme) => ({
-  input: {
-      display: 'none'
-  }
-}));
-
 const AccountPage = (props) => {
   const isInvalid = false;
-
-  const lotw_username = '';
-  const lotw_password = '';
 
   const [secrets, setSecrets] = React.useState({});
   const [qslmsg, setQslmsg] = React.useState("");
 
   useEffect(() => {
-    return props.firebase.user().collection("secrets_"+props.logbookIndex.toString()).onSnapshot(snapshot => { 
+    return props.firebase.user().collection("secrets_"+props.logbookIndex.toString()).onSnapshot(snapshot => {
       var s = {}
       snapshot.docs.forEach((doc)=>{s[doc.id] = doc.data()})
       setSecrets(s)
     })
-  }, [props.logbookIndex]);
+  }, [props.logbookIndex, props.firebase]);
 
   useEffect(() => {
     props.firebase.user().get().then(snapshot => {
       setQslmsg(snapshot.data().qslmsg || "")
     })
-  }, []);
+  }, [props.firebase]);
 
   const handleTextChange = (e) => {
     const t = e.target.name.split("_")
@@ -52,14 +39,6 @@ const AccountPage = (props) => {
   const handleSave = (event) => {
     props.firebase.user().collection("secrets_"+props.logbookIndex.toString()).doc(event.target.name).set(secrets[event.target.name])
   };
-
-  const handleEqslSync = () => {
-    console.log("click")
-    // const eqsl = new Eqsl(secrets["eqsl.cc"].username, secrets["eqsl.cc"].password)
-    // eqsl.fetchQsls().then(text=>console.log(text)).catch(err=>console.log(err))
-  }
-
-  const classes = useStyles();
 
   return  <AuthUserContext.Consumer>
     {authUser => (
@@ -111,11 +90,6 @@ const AccountPage = (props) => {
             Save
           </button>
           <br/>
-          {/*
-        <Button variant="text" component="span" className={classes.button} onClick={handleEqslSync}>
-            Sync
-        </Button>
-        */}
         <hr/>
 
         qrz.com lookup
